@@ -8,7 +8,9 @@ import org.hibernate.annotations.NotFoundAction;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -21,8 +23,13 @@ public class MessageSentRecord {
     @CreationTimestamp
     private LocalDateTime sendDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mailing_history_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private MailingHistory mailingHistory;
+    @Override
+    public String toString() {
+        return "\nMessageSentRecord{" +
+                "id=" + id +
+                ", countMessages=" + countMessages +
+                ", sendDate=" + sendDate +
+                '}';
+    }
 }
+

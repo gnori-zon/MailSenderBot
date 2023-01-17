@@ -1,9 +1,7 @@
 package org.gnori.mailsenderbot.entity;
 
 import lombok.*;
-import org.gnori.mailsenderbot.entity.enums.UserState;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import org.gnori.mailsenderbot.entity.enums.State;
 
 import javax.persistence.*;
 
@@ -17,29 +15,22 @@ import javax.persistence.*;
 @Table(name = "account")
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //TODO chatId telegram
     private Long id;
+    @Column(unique = true)
     private String email;
-    private String password;
-    private String mailForDistribution;
     private String keyForMail;
-    private boolean isActive;
-    @Enumerated(EnumType.STRING)
-    private UserState state;
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @NotFound(action = NotFoundAction.IGNORE)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "mailing_history_id")
     private MailingHistory mailingHistory;
+
+    private State state;
 
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", mailForDistribution='" + mailForDistribution + '\'' +
-                ", keyForMail='" + keyForMail + '\'' +
-                ", isActive=" + isActive +
-                ", state=" + state +
                 ", mailingHistory=" + mailingHistory +
                 '}';
     }

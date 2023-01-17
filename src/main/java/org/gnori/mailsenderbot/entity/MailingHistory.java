@@ -1,9 +1,6 @@
 package org.gnori.mailsenderbot.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -11,27 +8,30 @@ import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mailing_histories")
+@Table(name = "mailing_history")
 public class MailingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
-    private List<MessageSentRecord> mailingList;
-    @OneToOne(fetch = FetchType.LAZY)
-    @NotFound(action = NotFoundAction.IGNORE)
-    @JoinColumn(name = "account_id")
+
+    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},
+            mappedBy = "mailingHistory")
     private Account account;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "mailing_history_id")
+    private List<MessageSentRecord> mailingList;
 
     @Override
     public String toString() {
         return "MailingHistory{" +
                 "id=" + id +
-                ", account=" + account.getId() +
+                ", mailingList=" + mailingList +
                 '}';
     }
 }

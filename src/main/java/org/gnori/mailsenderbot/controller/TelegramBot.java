@@ -1,12 +1,12 @@
 package org.gnori.mailsenderbot.controller;
 
+import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -14,6 +14,24 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
+
+    private final UpdateController updateController;
+    private final SendBotMessageService sendBotMessageService;
+
+    public TelegramBot(UpdateController updateController, SendBotMessageService sendBotMessageService) {
+        this.updateController = updateController;
+        this.sendBotMessageService = sendBotMessageService;
+    }
+    @PostConstruct
+    public void init(){
+        sendBotMessageService.registerBot(this);
+    }
+
+    @Override
+    public void onUpdateReceived(Update update) {
+            var originalMessage = update.getMessage();
+            updateController.processUpdate(update);
+    }
     @Override
     public String getBotUsername() {
         return botName;
@@ -22,24 +40,5 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return botToken;
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-        if(update.getMessage().hasText()){
-            var text = update.getMessage().getText();
-            var chatId = update.getMessage().getChatId();
-
-            var sendMessage = new SendMessage();
-            sendMessage.setChatId(chatId);
-            sendMessage.setText(text);
-
-            try{
-                execute(sendMessage);
-            } catch (TelegramApiException e) {
-                System.out.println(e.toString());
-            }
-
-        }
     }
 }
