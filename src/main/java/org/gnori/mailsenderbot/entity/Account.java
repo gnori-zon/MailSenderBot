@@ -31,7 +31,9 @@ public class Account {
         return "Account{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
+                ", keyForMail='" + keyForMail + '\'' +
                 ", mailingHistory=" + mailingHistory +
+                ", state=" + state +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package org.gnori.mailsenderbot.controller;
 
+import org.gnori.mailsenderbot.command.CommandContainer;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-            var originalMessage = update.getMessage();
             updateController.processUpdate(update);
     }
     @Override

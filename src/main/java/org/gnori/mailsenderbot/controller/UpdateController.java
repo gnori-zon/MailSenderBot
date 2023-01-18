@@ -1,6 +1,8 @@
 package org.gnori.mailsenderbot.controller;
 
 import lombok.extern.log4j.Log4j;
+import org.checkerframework.checker.units.qual.A;
+import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -20,7 +22,7 @@ public class UpdateController {
             return;
         }
 
-        if (update.hasMessage()) {
+        if (update.hasMessage() || update.hasCallbackQuery()) {
             distributorService.distributeMessageByType(update);
         } else {
             log.error("Unsupported message type is received: " + update);
