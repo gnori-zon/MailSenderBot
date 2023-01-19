@@ -19,14 +19,11 @@ import java.util.List;
 @SpringBootApplication
 public class MailSenderBotApplication implements ApplicationRunner {
     private final AccountDao accountDao;
-    private final MessageSentRecordDao messageSentRecordDao;
     private final MailingHistoryDao mailingHistoryDao;
 
     public MailSenderBotApplication(AccountDao accountDao,
-                                    MessageSentRecordDao messageSentRecordDao,
                                     MailingHistoryDao mailingHistoryDao) {
         this.accountDao = accountDao;
-        this.messageSentRecordDao = messageSentRecordDao;
         this.mailingHistoryDao = mailingHistoryDao;
     }
 

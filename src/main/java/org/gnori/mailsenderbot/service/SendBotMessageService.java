@@ -11,7 +11,8 @@ public interface SendBotMessageService {
     void executeEditMessage( Long chatId,
                              Integer messageId,
                              String textForMessage,
-                             List<List<String>> newCallbackData);
+                             List<List<String>> newCallbackData,
+                             Boolean witBackButton);
     void createChangeableMessage(Long chatId,
                                  String textForMessage,
                                  List<List<String>> newCallbackData);

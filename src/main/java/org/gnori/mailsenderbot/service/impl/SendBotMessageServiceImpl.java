@@ -40,16 +40,21 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
     public void executeEditMessage(Long chatId,
                                    Integer messageId,
                                    String textForMessage,
-                                   List<List<String>> newCallbackData) {
+                                   List<List<String>> newCallbackData, Boolean witBackButton) {
+        var markupInline = new InlineKeyboardMarkup();
+        if(!newCallbackData.isEmpty()){
+            markupInline = newInlineKeyboardMarkupColumn(newCallbackData);
+        }
+
         var message = EditMessageText.builder()
                 .chatId(chatId)
                 .messageId(messageId)
                 .text(textForMessage)
                 .parseMode("Markdown")
+                .replyMarkup(markupInline)
                 .build();
 
-        if(!newCallbackData.isEmpty()){
-            addNewCallbackData(newCallbackData,message);
+        if(witBackButton){
             addBackCallBackData(message);
         }
 
@@ -61,17 +66,35 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
     public void createChangeableMessage(Long chatId,
                                         String textForMessage,
                                         List<List<String>> newCallbackData) {
+        var markupInline = new InlineKeyboardMarkup();
+        if(!newCallbackData.isEmpty()){
+            markupInline = newInlineKeyboardMarkupColumn(newCallbackData);
+        }
+
         var message = SendMessage.builder()
                 .chatId(chatId)
                 .text(textForMessage)
                 .parseMode("Markdown")
+                .replyMarkup(markupInline)
                 .build();
 
-        if(!newCallbackData.isEmpty()){
-            addNewCallbackData(newCallbackData,message);
-        }
-
         executeMessage(message);
+    }
+
+    private InlineKeyboardMarkup newInlineKeyboardMarkupColumn(List<List<String>> newCallbackData) {
+        var markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        for(var callbackData : newCallbackData.get(0)){
+            var index = newCallbackData.get(0).indexOf(callbackData);
+            List<InlineKeyboardButton> rowInline = new ArrayList<>();
+            var buttonIntermediate = new InlineKeyboardButton();
+            buttonIntermediate.setCallbackData(newCallbackData.get(0).get(index));
+            buttonIntermediate.setText(newCallbackData.get(1).get(index));
+            rowInline.add(buttonIntermediate);
+            rowsInline.add(rowInline);
+        }
+        markupInline.setKeyboard(rowsInline);
+        return markupInline;
     }
 
     public void executeMessage(SendMessage message) {
@@ -89,41 +112,10 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         }
     }
 
-    public void addNewCallbackData(List<List<String>> newCallbackData, EditMessageText message){
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for(var callbackData : newCallbackData.get(0)){
-            var index = newCallbackData.get(0).indexOf(callbackData);
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            var buttonIntermediate = new InlineKeyboardButton();
-            buttonIntermediate.setCallbackData(newCallbackData.get(0).get(index));
-            buttonIntermediate.setText(newCallbackData.get(1).get(index));
-            rowInline.add(buttonIntermediate);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
-        message.setReplyMarkup(markupInline);
-    }
-
-    public void addNewCallbackData(List<List<String>> newCallbackData, SendMessage message){
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for(var callbackData : newCallbackData.get(0)){
-            var index = newCallbackData.get(0).indexOf(callbackData);
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            var buttonIntermediate = new InlineKeyboardButton();
-            buttonIntermediate.setCallbackData(newCallbackData.get(0).get(index));
-            buttonIntermediate.setText(newCallbackData.get(1).get(index));
-            rowInline.add(buttonIntermediate);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
-        message.setReplyMarkup(markupInline);
-    }
-
     public void addBackCallBackData(EditMessageText message){
+        List<List<InlineKeyboardButton>> ROWS_INLINE = new ArrayList<>();
         var markupInline = message.getReplyMarkup();
-        var rowsInline = markupInline.getKeyboard();
+        var rowsInline = markupInline.getKeyboard()!=null ? markupInline.getKeyboard() : ROWS_INLINE ;
 
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var buttonIntermediate = new InlineKeyboardButton();

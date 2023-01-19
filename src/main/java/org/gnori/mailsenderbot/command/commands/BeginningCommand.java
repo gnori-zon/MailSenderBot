@@ -26,9 +26,14 @@ public class BeginningCommand implements Command {
         List<String> callbackData = List.of("MAILING_HISTORY","CREATE_MAILING", "PROFILE");
         List<String> callbackDataText = List.of("📃История рассылок","📧Создать рассылку", "⚙Профиль");
         List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
-        var account = createAccount(chatId);
-        modifyDataBaseService.saveAccount(account);
-        sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData);
+        //TODO add valid (used this command in first time)
+        if(modifyDataBaseService.findAccountById(chatId)==null) {
+            var account = createAccount(chatId);
+            modifyDataBaseService.saveAccount(account);
+        }else{
+            modifyDataBaseService.updateStateById(chatId,State.NOTHING_PENDING);
+        }
+        sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData,false);
     }
 
     private Account createAccount(Long chatId) {

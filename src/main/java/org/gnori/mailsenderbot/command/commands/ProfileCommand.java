@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.dto.AccountDto;
+import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -23,12 +24,15 @@ public class ProfileCommand implements Command {
         var account = modifyDataBaseService.findAccountById(chatId);
         var text = prepareTextForMessage(account);
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
-        List<String> callbackData = List.of("CHANGE_MAIL","CHANGE_PASSWORD");
-        List<String> callbackDataText = List.of("Изменить почту","Изменить пароль");
+        List<String> callbackData = List.of("CHANGE_MAIL","CHANGE_KEY");
+        List<String> callbackDataText = List.of("Изменить почту","Изменить ключ");
         List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
 
-        sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData);
+        modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
+
+        sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData,true);
     }
+
 
     private String prepareTextForMessage(AccountDto account) {
         var email = account.getEmail()!=null ? account.getEmail() : "❌";
