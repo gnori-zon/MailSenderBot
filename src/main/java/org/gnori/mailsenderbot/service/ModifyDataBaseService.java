@@ -4,6 +4,7 @@ import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.enums.State;
+import org.springframework.dao.DataIntegrityViolationException;
 
 public interface ModifyDataBaseService {
     AccountDto findAccountById(Long id);
@@ -15,5 +16,5 @@ public interface ModifyDataBaseService {
 
     void updateKeyForMailById(Long id, String newKey);
 
-    void updateMailById(Long id, String mail);
+    void updateMailById(Long id, String mail) throws DataIntegrityViolationException;
 }

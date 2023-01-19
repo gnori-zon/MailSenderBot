@@ -10,6 +10,7 @@ import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -54,7 +55,7 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     }
 
     @Override
-    public void updateMailById(Long id, String mail) {
+    public void updateMailById(Long id, String mail) throws DataIntegrityViolationException {
         accountDao.updateMailById(id, mail);
     }
 

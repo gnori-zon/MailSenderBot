@@ -24,8 +24,8 @@ public class CommandContainer {
                 .put(MAILING_HISTORY.getCommandName(), new MailingHistoryCommand(modifyDataBaseService, sendBotMessageService))
                 .put(CHANGE_KEY.getCommandName(), new BeforeChangeKeyForMailCommand(modifyDataBaseService, sendBotMessageService))
                 .put(CHANGE_MAIL.getCommandName(), new BeforeChangeMailCommand(modifyDataBaseService, sendBotMessageService))
-                .put(KEY_FOR_MAIL_PENDING.getCommandName(), new AfterChangeKeyForMailCommand(modifyDataBaseService, sendBotMessageService, messageTypesDistributorService))
-                .put(MAIL_PENDING.getCommandName(), new AfterChangeMailCommand(modifyDataBaseService, sendBotMessageService, messageTypesDistributorService))
+                .put(KEY_FOR_MAIL_PENDING.getCommandName(), new AfterChangeKeyForMailCommand(modifyDataBaseService, sendBotMessageService))
+                .put(MAIL_PENDING.getCommandName(), new AfterChangeMailCommand(modifyDataBaseService, sendBotMessageService))
                 .put(CREATE_MAILING.getCommandName(), new CreateMailingCommand())
                 .build();
         unknownCommand = new UnknownCommand(sendBotMessageService);

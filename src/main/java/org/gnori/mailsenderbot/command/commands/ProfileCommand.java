@@ -9,6 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForProfileMessage;
+
 public class ProfileCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;
@@ -22,7 +24,7 @@ public class ProfileCommand implements Command {
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var account = modifyDataBaseService.findAccountById(chatId);
-        var text = prepareTextForMessage(account);
+        var text = prepareTextForProfileMessage(account);
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         List<String> callbackData = List.of("CHANGE_MAIL","CHANGE_KEY");
         List<String> callbackDataText = List.of("Изменить почту","Изменить ключ");
@@ -31,15 +33,5 @@ public class ProfileCommand implements Command {
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
 
         sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData,true);
-    }
-
-
-    private String prepareTextForMessage(AccountDto account) {
-        var email = account.getEmail()!=null ? account.getEmail() : "❌";
-        var keyPresent = account.hasKey()? "✔" : "❌";
-
-        return String.format("*Аккаунт:*\n" +
-                "почта: %s\n" +
-                "ключ доступа к почте: %s",email,keyPresent);
     }
 }

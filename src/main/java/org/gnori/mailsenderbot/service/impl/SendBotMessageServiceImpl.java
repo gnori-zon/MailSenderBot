@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Log4j
@@ -42,6 +43,7 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
                                    String textForMessage,
                                    List<List<String>> newCallbackData, Boolean witBackButton) {
         var markupInline = new InlineKeyboardMarkup();
+        markupInline.setKeyboard(Collections.emptyList());
         if(!newCallbackData.isEmpty()){
             markupInline = newInlineKeyboardMarkupColumn(newCallbackData);
         }
@@ -97,14 +99,14 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         return markupInline;
     }
 
-    public void executeMessage(SendMessage message) {
+    private void executeMessage(SendMessage message) {
         try {
             telegramBot.execute(message);
         } catch (TelegramApiException e) {
             log.error(ERROR_TEXT + e.getMessage());
         }
     }
-    public void executeMessage(EditMessageText message) {
+    private void executeMessage(EditMessageText message) {
         try {
             telegramBot.execute(message);
         } catch (TelegramApiException e) {
@@ -112,10 +114,10 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         }
     }
 
-    public void addBackCallBackData(EditMessageText message){
+    private void addBackCallBackData(EditMessageText message){
         List<List<InlineKeyboardButton>> ROWS_INLINE = new ArrayList<>();
         var markupInline = message.getReplyMarkup();
-        var rowsInline = markupInline.getKeyboard()!=null ? markupInline.getKeyboard() : ROWS_INLINE ;
+        var rowsInline = !(markupInline.getKeyboard().isEmpty()) ? markupInline.getKeyboard() : ROWS_INLINE ;
 
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var buttonIntermediate = new InlineKeyboardButton();
@@ -127,5 +129,6 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         markupInline.setKeyboard(rowsInline);
         message.setReplyMarkup(markupInline);
     }
+
 
 }
