@@ -41,6 +41,15 @@ public class BackCommand implements Command {
                     update.getCallbackQuery().setData(PROFILE.getCommandName());
                     messageTypesDistributorService.distributeMessageByType(update);
             }
+        } else if (CHANGE_ITEM.getCommandName().equals(firstCallBackDataFromOriginal)){
+            update.getCallbackQuery().setData(BEGINNING.getCommandName());
+            messageTypesDistributorService.distributeMessageByType(update);
+        }else if (CHANGE_ITEM_TITLE.getCommandName().equals(firstCallBackDataFromOriginal)) {
+            update.getCallbackQuery().setData(CREATE_MAILING.getCommandName());
+            messageTypesDistributorService.distributeMessageByType(update);
+        }else if (SEND_ANONYMOUSLY.getCommandName().equals(firstCallBackDataFromOriginal)) {
+            update.getCallbackQuery().setData(CREATE_MAILING.getCommandName());
+            messageTypesDistributorService.distributeMessageByType(update);
         }
     }
 }

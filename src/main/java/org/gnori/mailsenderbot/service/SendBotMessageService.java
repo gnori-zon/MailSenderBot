@@ -15,5 +15,6 @@ public interface SendBotMessageService {
                              Boolean witBackButton);
     void createChangeableMessage(Long chatId,
                                  String textForMessage,
-                                 List<List<String>> newCallbackData);
+                                 List<List<String>> newCallbackData,
+                                 Boolean witBackButton);
 }

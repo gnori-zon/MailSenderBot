@@ -42,7 +42,7 @@ public class AfterChangeKeyForMailCommand implements Command {
         List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
 
         sendBotMessageService.executeEditMessage(chatId,lastMessageId,"✔Успешно", Collections.emptyList(),false);
-        sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData);
+        sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
 
     }
 

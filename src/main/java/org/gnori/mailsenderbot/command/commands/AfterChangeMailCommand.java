@@ -48,7 +48,7 @@ public class AfterChangeMailCommand implements Command {
         List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
 
         sendBotMessageService.executeEditMessage(chatId, lastMessageId, textForOldMessage, Collections.emptyList(), false);
-        sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData);
+        sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData,true);
 
     }
 

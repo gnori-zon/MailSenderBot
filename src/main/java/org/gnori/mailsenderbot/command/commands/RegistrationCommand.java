@@ -28,7 +28,7 @@ public class RegistrationCommand implements Command {
 
         //TODO changeStateForAccount
 
-        sendBotMessageService.createChangeableMessage(chatId,textForMessage,newCallbackData);
+        sendBotMessageService.createChangeableMessage(chatId,textForMessage,newCallbackData,false);
 
     }
 }

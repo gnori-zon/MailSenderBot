@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.service.impl;
 
 import org.gnori.mailsenderbot.command.CommandContainer;
 import org.gnori.mailsenderbot.entity.enums.State;
+import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
@@ -18,9 +19,10 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     private final ModifyDataBaseService modifyDataBaseService;
 
     public MessageTypesDistributorServiceImpl(SendBotMessageService sendBotMessageService,
-                                              ModifyDataBaseService modifyDataBaseService, ModifyDataBaseService modifyDataBaseService1) {
-        this.modifyDataBaseService = modifyDataBaseService1;
-        this.commandContainer = new CommandContainer(sendBotMessageService, modifyDataBaseService, this);
+                                              ModifyDataBaseService modifyDataBaseService,
+                                              MessageRepository messageRepository) {
+        this.modifyDataBaseService = modifyDataBaseService;
+        this.commandContainer = new CommandContainer(sendBotMessageService, modifyDataBaseService,messageRepository, this);
     }
 
     @Override
@@ -54,6 +56,12 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 commandContainer.retrieveCommand(KEY_FOR_MAIL_PENDING.getCommandName()).execute(update);
             }else if(State.MAIL_PENDING.equals(account.getState())){
                 commandContainer.retrieveCommand(MAIL_PENDING.getCommandName()).execute(update);
+            }else{
+                var message = update.getMessage();
+                        if(message!=null){
+                            var command = message.getText();
+                            commandContainer.retrieveCommand(command).execute(update);
+                        }
             }
         }else {
             var command = update.getMessage().getText();

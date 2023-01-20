@@ -1,7 +1,7 @@
 package org.gnori.mailsenderbot.entity.enums;
 
 public enum State {
-    APPS_PENDING,
+    ANNEX_PENDING,
     TITLE_PENDING,
     CONTENT_PENDING,
     NOTHING_PENDING,

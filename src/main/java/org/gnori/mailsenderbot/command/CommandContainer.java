@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.command;
 
 import com.google.common.collect.ImmutableMap;
 import org.gnori.mailsenderbot.command.commands.*;
+import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
@@ -15,6 +16,7 @@ public class CommandContainer {
     @Autowired
     public CommandContainer(SendBotMessageService sendBotMessageService,
                             ModifyDataBaseService modifyDataBaseService,
+                            MessageRepository messageRepository,
                             MessageTypesDistributorService messageTypesDistributorService) {
         commandMap =  ImmutableMap.<String, Command>builder()
                 .put(REGISTRATION.getCommandName(), new RegistrationCommand(sendBotMessageService))
@@ -26,7 +28,9 @@ public class CommandContainer {
                 .put(CHANGE_MAIL.getCommandName(), new BeforeChangeMailCommand(modifyDataBaseService, sendBotMessageService))
                 .put(KEY_FOR_MAIL_PENDING.getCommandName(), new AfterChangeKeyForMailCommand(modifyDataBaseService, sendBotMessageService))
                 .put(MAIL_PENDING.getCommandName(), new AfterChangeMailCommand(modifyDataBaseService, sendBotMessageService))
-                .put(CREATE_MAILING.getCommandName(), new CreateMailingCommand())
+                .put(CREATE_MAILING.getCommandName(), new CreateMailingCommand(sendBotMessageService, messageRepository))
+                .put(CHANGE_ITEM.getCommandName(), new ChangeItemCommand(sendBotMessageService))
+                .put(SEND.getCommandName(), new SendCommand(sendBotMessageService))
                 .build();
         unknownCommand = new UnknownCommand(sendBotMessageService);
     }

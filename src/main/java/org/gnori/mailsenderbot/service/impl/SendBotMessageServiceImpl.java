@@ -41,11 +41,17 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
     public void executeEditMessage(Long chatId,
                                    Integer messageId,
                                    String textForMessage,
-                                   List<List<String>> newCallbackData, Boolean witBackButton) {
+                                   List<List<String>> newCallbackData,
+                                   Boolean witBackButton) {
         var markupInline = new InlineKeyboardMarkup();
         markupInline.setKeyboard(Collections.emptyList());
         if(!newCallbackData.isEmpty()){
-            markupInline = newInlineKeyboardMarkupColumn(newCallbackData);
+            markupInline = newInlineKeyboardMarkupColumn(newCallbackData, witBackButton);
+        }else if(witBackButton){
+            markupInline = new InlineKeyboardMarkup();
+            List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+            rowsInline.add(createBackInlineKeyboardButton());
+            markupInline.setKeyboard(rowsInline);
         }
 
         var message = EditMessageText.builder()
@@ -56,10 +62,6 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
                 .replyMarkup(markupInline)
                 .build();
 
-        if(witBackButton){
-            addBackCallBackData(message);
-        }
-
         executeMessage(message);
 
     }
@@ -67,10 +69,11 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
     @Override
     public void createChangeableMessage(Long chatId,
                                         String textForMessage,
-                                        List<List<String>> newCallbackData) {
+                                        List<List<String>> newCallbackData,
+                                        Boolean witBackButton) {
         var markupInline = new InlineKeyboardMarkup();
         if(!newCallbackData.isEmpty()){
-            markupInline = newInlineKeyboardMarkupColumn(newCallbackData);
+            markupInline = newInlineKeyboardMarkupColumn(newCallbackData, witBackButton);
         }
 
         var message = SendMessage.builder()
@@ -83,7 +86,7 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         executeMessage(message);
     }
 
-    private InlineKeyboardMarkup newInlineKeyboardMarkupColumn(List<List<String>> newCallbackData) {
+    private InlineKeyboardMarkup newInlineKeyboardMarkupColumn(List<List<String>> newCallbackData,Boolean witBackButton) {
         var markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         for(var callbackData : newCallbackData.get(0)){
@@ -94,6 +97,10 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
             buttonIntermediate.setText(newCallbackData.get(1).get(index));
             rowInline.add(buttonIntermediate);
             rowsInline.add(rowInline);
+
+        }
+        if(witBackButton){
+            rowsInline.add(createBackInlineKeyboardButton());
         }
         markupInline.setKeyboard(rowsInline);
         return markupInline;
@@ -114,21 +121,15 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         }
     }
 
-    private void addBackCallBackData(EditMessageText message){
-        List<List<InlineKeyboardButton>> ROWS_INLINE = new ArrayList<>();
-        var markupInline = message.getReplyMarkup();
-        var rowsInline = !(markupInline.getKeyboard().isEmpty()) ? markupInline.getKeyboard() : ROWS_INLINE ;
-
+    private List<InlineKeyboardButton> createBackInlineKeyboardButton() {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var buttonIntermediate = new InlineKeyboardButton();
         buttonIntermediate.setCallbackData("BACK");
         buttonIntermediate.setText("Назад");
         rowInline.add(buttonIntermediate);
-        rowsInline.add(rowInline);
-
-        markupInline.setKeyboard(rowsInline);
-        message.setReplyMarkup(markupInline);
+        return rowInline;
     }
+
 
 
 }
