@@ -37,9 +37,17 @@ public class BackCommand implements Command {
                     messageTypesDistributorService.distributeMessageByType(update);
             }
                 if(account!=null && (State.MAIL_PENDING.equals(account.getState()) ||
-                                 State.KEY_FOR_MAIL_PENDING.equals(account.getState()))){
+                                     State.KEY_FOR_MAIL_PENDING.equals(account.getState()))){
                     update.getCallbackQuery().setData(PROFILE.getCommandName());
                     messageTypesDistributorService.distributeMessageByType(update);
+            }
+            if(account!=null && (State.TITLE_PENDING.equals(account.getState()) ||
+                                 State.CONTENT_PENDING.equals(account.getState()) ||
+                                 State.ANNEX_PENDING.equals(account.getState()) ||
+                                 State.RECIPIENTS_PENDING.equals(account.getState()) ||
+                                 State.COUNT_FOR_RECIPIENT_PENDING.equals(account.getState()))){
+                update.getCallbackQuery().setData(CREATE_MAILING.getCommandName());
+                messageTypesDistributorService.distributeMessageByType(update);
             }
         } else if (CHANGE_ITEM.getCommandName().equals(firstCallBackDataFromOriginal)){
             update.getCallbackQuery().setData(BEGINNING.getCommandName());

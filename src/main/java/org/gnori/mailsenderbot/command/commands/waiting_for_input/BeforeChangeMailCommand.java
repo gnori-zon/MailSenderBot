@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.command.commands;
+package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;

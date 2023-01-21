@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForPreviewMessage;
+
 public class CreateMailingCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final MessageRepository messageRepository;
@@ -28,11 +30,11 @@ public class CreateMailingCommand implements Command {
         sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData,true);
     }
 
-    private String prepareTextForMessage(Long chatId) {
-        var message = messageRepository.getMessage(chatId);
-        if(message==null){
+    private String prepareTextForMessage(Long id) {
+        var message = messageRepository.getMessage(id);
+        if (message == null) {
             var newMessage = new Message();
-            messageRepository.putMessage(chatId, newMessage);
+            messageRepository.putMessage(id, newMessage);
             message = newMessage;
             // for testing
 //            newMessage.setTitle(" TITLE ");
@@ -44,30 +46,6 @@ public class CreateMailingCommand implements Command {
 //            newMessage.setCountForRecipient(2);
 //            newMessage.setRecipients(List.of("asdasd@bk.ru", "13a@gmail.com", "fff00x@yandex.ru","asdasd@bk.ru", "13a@gmail.com", "fff00x@yandex.ru","asdasd@bk.ru", "13a@gmail.com", "fff00x@yandex.ru"));
         }
-        var messageText = message.getText().trim();
-        var textForResult = messageText.length() > 100 ? messageText.substring(0,75) : messageText;
-        var messageTitle= message.getTitle().trim();
-        var titleForResult = messageTitle.equals("") ? "Без заголовка" : messageTitle;
-        return "*Preview:*" +
-                "\n" +
-                "\n*"+titleForResult+"*" +
-                "\n "+textForResult+"..." +
-                "\n Приложение: "+(message.hasAnnex()? "✔" : "❌")+
-                "\n Получатели: "+ recipientsToString(message.getRecipients())+
-                "\n Шт. каждому: "+ message.getCountForRecipient();
-    }
-
-    private static String recipientsToString(List<String> recipients) {
-        var resultText = " ";
-        var count = 3;
-        if(!recipients.isEmpty()) {
-            StringBuilder rawText = new StringBuilder();
-            recipients.stream().limit(count).forEach(recipient->{rawText.append(recipient).append(", ");});
-
-            var countRemain = recipients.size() - count;
-            resultText = (rawText.substring(0,rawText.length()-2))+"... и еще "+countRemain;
-
-        }
-        return resultText;
+        return prepareTextForPreviewMessage(message);
     }
 }

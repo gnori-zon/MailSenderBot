@@ -1,6 +1,8 @@
 package org.gnori.mailsenderbot.model;
 
 import lombok.*;
+import org.telegram.telegrambots.meta.api.objects.Document;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +13,8 @@ import java.util.List;
 public class Message {
     private String title;
     private String text;
-    private  byte[] annex;
+    private Document DocAnnex;
+    private PhotoSize PhotoAnnex;
     private List<String> recipients;
     private Integer countForRecipient = 1;
 
@@ -23,11 +26,16 @@ public class Message {
         return text!=null? text : "";
     }
 
-    public byte[] getAnnex() {
-        return annex;
+    public Document getDocAnnex() {
+        return DocAnnex;
     }
+
+    public PhotoSize getPhotoAnnex() {
+        return PhotoAnnex;
+    }
+
     public boolean hasAnnex(){
-        return annex!=null;
+        return (DocAnnex!=null || PhotoAnnex!=null);
     }
 
     public List<String> getRecipients() {

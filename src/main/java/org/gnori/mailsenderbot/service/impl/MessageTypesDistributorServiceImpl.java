@@ -9,8 +9,7 @@ import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.gnori.mailsenderbot.command.CommandName.KEY_FOR_MAIL_PENDING;
-import static org.gnori.mailsenderbot.command.CommandName.MAIL_PENDING;
+import static org.gnori.mailsenderbot.command.CommandName.*;
 
 @Service
 public class MessageTypesDistributorServiceImpl implements MessageTypesDistributorService {
@@ -56,6 +55,14 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 commandContainer.retrieveCommand(KEY_FOR_MAIL_PENDING.getCommandName()).execute(update);
             }else if(State.MAIL_PENDING.equals(account.getState())){
                 commandContainer.retrieveCommand(MAIL_PENDING.getCommandName()).execute(update);
+            }else if(State.TITLE_PENDING.equals(account.getState())){
+                commandContainer.retrieveCommand(TITLE_PENDING.getCommandName()).execute(update);
+            }else if(State.CONTENT_PENDING.equals(account.getState())){
+                commandContainer.retrieveCommand(CONTENT_PENDING.getCommandName()).execute(update);
+            }else if(State.RECIPIENTS_PENDING.equals(account.getState())){
+                commandContainer.retrieveCommand(RECIPIENTS_PENDING.getCommandName()).execute(update);
+            }else if(State.COUNT_FOR_RECIPIENT_PENDING.equals(account.getState())){
+                commandContainer.retrieveCommand(COUNT_FOR_RECIPIENT_PENDING.getCommandName()).execute(update);
             }else{
                 var message = update.getMessage();
                         if(message!=null){
@@ -70,14 +77,24 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processDocMessage(Update update) {
-
+        var account = modifyDataBaseService.findAccountById(update.getMessage().getChatId());
+        if(account!=null) {
+            if (State.ANNEX_PENDING.equals(account.getState())) {
+                commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);
+            }
+        }
     }
 
     private void processPhotoMessage(Update update) {
-
+        var account = modifyDataBaseService.findAccountById(update.getMessage().getChatId());
+        if(account!=null) {
+            if (State.ANNEX_PENDING.equals(account.getState())) {
+                commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);
+            }
+        }
     }
 
     private void processUnsupportedMessageTypeView(Update update) {
-
+        //TODO implements this
     }
 }

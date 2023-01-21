@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.command;
 
 import com.google.common.collect.ImmutableMap;
 import org.gnori.mailsenderbot.command.commands.*;
+import org.gnori.mailsenderbot.command.commands.waiting_for_input.*;
 import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
@@ -30,6 +31,16 @@ public class CommandContainer {
                 .put(MAIL_PENDING.getCommandName(), new AfterChangeMailCommand(modifyDataBaseService, sendBotMessageService))
                 .put(CREATE_MAILING.getCommandName(), new CreateMailingCommand(sendBotMessageService, messageRepository))
                 .put(CHANGE_ITEM.getCommandName(), new ChangeItemCommand(sendBotMessageService))
+                .put(CHANGE_ITEM_TITLE.getCommandName(), new BeforeChangeTitleCommand(sendBotMessageService,modifyDataBaseService))
+                .put(TITLE_PENDING.getCommandName(), new AfterChangeTitleCommand(modifyDataBaseService,sendBotMessageService,messageRepository))
+                .put(CHANGE_ITEM_TEXT.getCommandName(), new BeforeChangeContentCommand(sendBotMessageService, modifyDataBaseService))
+                .put(CONTENT_PENDING.getCommandName(), new AfterChangeContentCommand(modifyDataBaseService,sendBotMessageService,messageRepository))
+                .put(CHANGE_ITEM_ANNEX.getCommandName(), new BeforeChangeAnnexCommand(sendBotMessageService,modifyDataBaseService))
+                .put(ANNEX_PENDING.getCommandName(), new AfterChangeAnnexCommand(modifyDataBaseService,sendBotMessageService,messageRepository))
+                .put(CHANGE_ITEM_RECIPIENTS.getCommandName(), new BeforeChangeRecipientsCommand(sendBotMessageService, modifyDataBaseService))
+                .put(RECIPIENTS_PENDING.getCommandName(), new AfterChangeRecipientsCommand(modifyDataBaseService, sendBotMessageService, messageRepository))
+                .put(CHANGE_ITEM_COUNT_FOR_RECIPIENTS.getCommandName(), new BeforeChangeCountForRecipientCommand(sendBotMessageService, modifyDataBaseService))
+                .put(COUNT_FOR_RECIPIENT_PENDING.getCommandName(), new AfterChangeCountForRecipientCommand(modifyDataBaseService, sendBotMessageService, messageRepository))
                 .put(SEND.getCommandName(), new SendCommand(sendBotMessageService))
                 .build();
         unknownCommand = new UnknownCommand(sendBotMessageService);

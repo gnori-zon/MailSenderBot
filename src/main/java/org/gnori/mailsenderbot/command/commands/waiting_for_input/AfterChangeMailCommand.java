@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.command.commands;
+package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.dto.AccountDto;
@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.gnori.mailsenderbot.command.CommandName.PROFILE;
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForProfileMessage;
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForProfileMessage;
 
 public class AfterChangeMailCommand implements Command {
@@ -43,20 +44,11 @@ public class AfterChangeMailCommand implements Command {
         var lastMessageId = update.getMessage().getMessageId() - 1;
         var account = modifyDataBaseService.findAccountById(chatId);
         var text = prepareTextForProfileMessage(account);
-        List<String> callbackData = List.of("CHANGE_MAIL", "CHANGE_KEY");
-        List<String> callbackDataText = List.of("Изменить почту", "Изменить ключ");
-        List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
+        var newCallbackData = prepareCallbackDataForProfileMessage();
 
         sendBotMessageService.executeEditMessage(chatId, lastMessageId, textForOldMessage, Collections.emptyList(), false);
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData,true);
 
-    }
-
-    private CallbackQuery newCallbackQuery(Update update) {
-        var callbackQuery = new CallbackQuery();
-        callbackQuery.setData(PROFILE.getCommandName());
-        callbackQuery.setMessage(update.getMessage());
-        return callbackQuery;
     }
 
 }
