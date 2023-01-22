@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForPreviewMessage;
 
 public class CreateMailingCommand implements Command {
@@ -24,9 +25,8 @@ public class CreateMailingCommand implements Command {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var text = prepareTextForMessage(chatId);
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
-        List<String> callbackData = List.of("CHANGE_ITEM","SEND");
-        List<String> callbackDataText = List.of("Изменить пункт","Отправить");
-        List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
+        var newCallbackData = prepareCallbackDataForCreateMailingMessage();
+
         sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData,true);
     }
 

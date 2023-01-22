@@ -7,6 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForCreateMailingMessage;
+
 public class UnknownCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
 
@@ -23,7 +26,7 @@ public class UnknownCommand implements Command {
         var text = "Выберите необходимый пункт👇🏿";
         List<String> callbackData = List.of("MAILING_HISTORY","CREATE_MAILING", "PROFILE");
         List<String> callbackDataText = List.of("📃История рассылок","📧Создать рассылку", "⚙Профиль");
-        List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
+        var newCallbackData = prepareCallbackDataForBeginningMessage();
 
         sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);

@@ -8,10 +8,14 @@ import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
+import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
@@ -37,9 +41,10 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     }
     @Override
     public MailingHistoryDto getMailingHistoryById(Long id){
-        var optionalMailingHistory = mailingHistoryDao.findById(id);
-        if(optionalMailingHistory.isPresent()) {
-            return new MailingHistoryDto(optionalMailingHistory.get());
+        var optionalMailingHistory = accountDao.findById(id).get().getMailingHistory();
+        var mailingList =  optionalMailingHistory.getMailingList();
+        if(mailingList!=null && mailingList.size()>0) {
+            return new MailingHistoryDto(optionalMailingHistory);
         }
         return null;
     }
@@ -57,6 +62,30 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     @Override
     public void updateMailById(Long id, String mail) throws DataIntegrityViolationException {
         accountDao.updateMailById(id, mail);
+    }
+
+    @Override
+    public void addMessageSentRecord(Long id, MessageSentRecord message) {
+        var optionalMailingHistory = mailingHistoryDao.findById(id);
+        MailingHistory mailingHistory;
+        if(optionalMailingHistory.isPresent()) {
+            mailingHistory = optionalMailingHistory.get();
+            var records = mailingHistory.getMailingList().stream().sorted().collect(Collectors.toList());
+            var overflow = records.size()-30;
+            if(overflow > 0){
+                records = records.stream().skip(overflow).collect(Collectors.toList());
+            }
+            records.add(message);
+            mailingHistoryDao.save(mailingHistory);
+        }else{
+            var account = accountDao.findById(id).get();
+            account.setMailingHistory(
+                    MailingHistory.builder()
+                    .mailingList(List.of(message))
+                    .build());
+            accountDao.save(account);
+        }
+
     }
 
     @Override

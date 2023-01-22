@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForMessage;
+
 public class MailingHistoryCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;
@@ -27,13 +29,5 @@ public class MailingHistoryCommand implements Command {
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);
     }
 
-    private String prepareTextForMessage(MailingHistoryDto mailingHistory) {
-        var text = "*История рассылок: *";
-        if(mailingHistory!=null) {
-            for(var record : mailingHistory.getMailingList()){
-                var line = record.getSendDate()+ "-" +record.getCountMessages().toString()+ "шт. каждому получателю ";
-            }
-        }
-        return text+"\nВы не создавали рассылок!";
-    }
+
 }

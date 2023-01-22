@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 public class MessageSentRecordDto {
-    private final Long countMessages;
+    private final Integer countMessages;
     private final String sendDate;
     public MessageSentRecordDto(MessageSentRecord messageSentRecord) {
         this.countMessages = messageSentRecord.getCountMessages();
@@ -14,7 +14,7 @@ public class MessageSentRecordDto {
 
     }
 
-    public Long getCountMessages() {
+    public Integer getCountMessages() {
         return countMessages;
     }
 

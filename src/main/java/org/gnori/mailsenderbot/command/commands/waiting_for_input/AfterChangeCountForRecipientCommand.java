@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForPreviewMessage;
 
 public class AfterChangeCountForRecipientCommand implements Command {
@@ -30,20 +31,24 @@ public class AfterChangeCountForRecipientCommand implements Command {
 
             var newCount = update.getMessage().getText();
             var chatId = update.getMessage().getChatId();
+            var textForOld = "";
 
             modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
 
             var message = messageRepository.getMessage(chatId);
-            message.setCountForRecipient(Integer.parseInt(newCount));
-            messageRepository.putMessage(chatId,message);
+            try {
+                message.setCountForRecipient(Integer.parseInt(newCount));
+                messageRepository.putMessage(chatId,message);
+                textForOld = "✔Успешно";
+            }catch (NumberFormatException e){
+                textForOld = "❌Необходимо ввести число, попробуйте снова";
+            }
 
             var lastMessageId = update.getMessage().getMessageId() - 1;
             var text = prepareTextForMessage(chatId);
-            List<String> callbackData = List.of("CHANGE_ITEM","SEND");
-            List<String> callbackDataText = List.of("Изменить пункт","Отправить");
-            List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
+            var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
-            sendBotMessageService.executeEditMessage(chatId,lastMessageId,"✔Успешно", Collections.emptyList(),false);
+            sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
             sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
         }
 

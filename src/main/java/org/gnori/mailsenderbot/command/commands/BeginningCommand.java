@@ -9,6 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
+
 public class BeginningCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -23,9 +25,8 @@ public class BeginningCommand implements Command {
         var chatId =  update.getCallbackQuery().getMessage().getChatId();
         var text = "Выберите необходимый пункт👇🏿";
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
-        List<String> callbackData = List.of("MAILING_HISTORY","CREATE_MAILING", "PROFILE");
-        List<String> callbackDataText = List.of("📃История рассылок","📧Создать рассылку", "⚙Профиль");
-        List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
+        var newCallbackData = prepareCallbackDataForBeginningMessage();
+
         //TODO add valid (used this command in first time)
         if(modifyDataBaseService.findAccountById(chatId)==null) {
             var account = createAccount(chatId);

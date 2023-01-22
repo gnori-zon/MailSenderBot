@@ -26,6 +26,7 @@ public class BackCommand implements Command {
     public void execute(Update update) {
         var originalMessage = update.getCallbackQuery().getMessage();
         var firstCallBackDataFromOriginal = originalMessage.getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData();
+        var chatId = originalMessage.getChatId();
 
         if (CHANGE_MAIL.getCommandName().equals(firstCallBackDataFromOriginal)){
             update.getCallbackQuery().setData(BEGINNING.getCommandName());
@@ -39,6 +40,7 @@ public class BackCommand implements Command {
                 if(account!=null && (State.MAIL_PENDING.equals(account.getState()) ||
                                      State.KEY_FOR_MAIL_PENDING.equals(account.getState()))){
                     update.getCallbackQuery().setData(PROFILE.getCommandName());
+                    modifyDataBaseService.updateStateById(chatId,State.NOTHING_PENDING);
                     messageTypesDistributorService.distributeMessageByType(update);
             }
             if(account!=null && (State.TITLE_PENDING.equals(account.getState()) ||
@@ -47,6 +49,7 @@ public class BackCommand implements Command {
                                  State.RECIPIENTS_PENDING.equals(account.getState()) ||
                                  State.COUNT_FOR_RECIPIENT_PENDING.equals(account.getState()))){
                 update.getCallbackQuery().setData(CREATE_MAILING.getCommandName());
+                modifyDataBaseService.updateStateById(chatId,State.NOTHING_PENDING);
                 messageTypesDistributorService.distributeMessageByType(update);
             }
         } else if (CHANGE_ITEM.getCommandName().equals(firstCallBackDataFromOriginal)){

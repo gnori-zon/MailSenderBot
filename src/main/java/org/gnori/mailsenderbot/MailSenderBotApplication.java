@@ -35,14 +35,14 @@ public class MailSenderBotApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         var record = new MessageSentRecord();
-        record.setCountMessages(13L);
+        record.setCountMessages(13);
         var record3 = new MessageSentRecord();
-        record3.setCountMessages(1111L);
+        record3.setCountMessages(111);
         var history = new MailingHistory();
         history.setMailingList(List.of(record,record3));
 
         var record2 = new MessageSentRecord();
-        record2.setCountMessages(167L);
+        record2.setCountMessages(167);
         var history2 = new MailingHistory();
         history2.setMailingList(Collections.singletonList(record2));
 

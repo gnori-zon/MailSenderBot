@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForProfileMessage;
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForProfileMessage;
 
 public class ProfileCommand implements Command {
@@ -26,9 +27,7 @@ public class ProfileCommand implements Command {
         var account = modifyDataBaseService.findAccountById(chatId);
         var text = prepareTextForProfileMessage(account);
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
-        List<String> callbackData = List.of("CHANGE_MAIL","CHANGE_KEY");
-        List<String> callbackDataText = List.of("Изменить почту","Изменить ключ");
-        List<List<String>> newCallbackData = List.of(callbackData, callbackDataText);
+        var newCallbackData = prepareCallbackDataForProfileMessage();
 
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
 
