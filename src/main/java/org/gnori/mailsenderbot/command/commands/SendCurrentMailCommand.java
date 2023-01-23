@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.mail.internet.AddressException;
 
+import java.util.Collections;
+
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
 
 public class SendCurrentMailCommand implements Command {
@@ -36,19 +38,20 @@ public class SendCurrentMailCommand implements Command {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
-        var text = "неотправлено:❌";
-
         var messageToSend = messageRepository.getMessage(chatId);
 
-        var sendResult = mailSenderService.sendWithUserMail(chatId,messageToSend);
+        sendBotMessageService.executeEditMessage(chatId,messageId,"Производится отправка...🛫", Collections.emptyList(),false);
 
-        if (sendResult==1){text="отправлено✔";}
+        var sendResult = mailSenderService.sendWithUserMail(chatId,messageToSend);
+        var text = "неотправлено:❌";
+        if (sendResult==1){
+            text="отправлено✔";
+            createAndAddMessageSentRecord(chatId, messageToSend);
+            messageRepository.removeMessage(chatId);
+        }
         text += "\nВыберите необходимый пункт👇🏿";
 
-        createAndAddMessageSentRecord(chatId, messageToSend);
-        messageRepository.removeMessage(chatId);
         sendBotMessageService.executeEditMessage(chatId, messageId, text, newCallbackData, false);
-
     }
 
     private void createAndAddMessageSentRecord(Long id, Message message) {

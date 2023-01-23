@@ -44,7 +44,7 @@ public class CommandContainer {
                 .put(CHANGE_ITEM_COUNT_FOR_RECIPIENTS.getCommandName(), new BeforeChangeCountForRecipientCommand(sendBotMessageService, modifyDataBaseService))
                 .put(COUNT_FOR_RECIPIENT_PENDING.getCommandName(), new AfterChangeCountForRecipientCommand(modifyDataBaseService, sendBotMessageService, messageRepository))
                 .put(SEND.getCommandName(), new SendCommand(sendBotMessageService))
-                .put(SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository))
+                .put(SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, mailSenderService))
                 .put(SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,mailSenderService))
                 .build();
         unknownCommand = new UnknownCommand(sendBotMessageService);

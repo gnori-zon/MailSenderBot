@@ -1,0 +1,17 @@
+package org.gnori.mailsenderbot.service.utils;
+
+import java.util.Properties;
+
+public class UtilsMail {
+    public static Properties getBaseProperties(){
+        var props = new Properties();
+        props.put("mail.smtp.host","smtp.gmail.com");
+        props.put("mail.smtp.port","587");
+        props.put("mail.protocol","smtp");
+        props.put("mail.smtp.auth","true");
+        props.put("mail.smtp.starttls.enable","true");
+        props.put("mail.debug","true");
+        return props;
+    }
+
+}
