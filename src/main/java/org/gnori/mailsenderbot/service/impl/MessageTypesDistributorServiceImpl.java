@@ -1,8 +1,10 @@
 package org.gnori.mailsenderbot.service.impl;
 
+import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.command.CommandContainer;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.repository.MessageRepository;
+import org.gnori.mailsenderbot.service.MailSenderService;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
@@ -11,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.command.CommandName.*;
 
+@Log4j
 @Service
 public class MessageTypesDistributorServiceImpl implements MessageTypesDistributorService {
 
@@ -19,9 +22,14 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
 
     public MessageTypesDistributorServiceImpl(SendBotMessageService sendBotMessageService,
                                               ModifyDataBaseService modifyDataBaseService,
-                                              MessageRepository messageRepository) {
+                                              MessageRepository messageRepository,
+                                              MailSenderService mailSenderService) {
         this.modifyDataBaseService = modifyDataBaseService;
-        this.commandContainer = new CommandContainer(sendBotMessageService, modifyDataBaseService,messageRepository, this);
+        this.commandContainer = new CommandContainer(sendBotMessageService,
+                modifyDataBaseService,
+                messageRepository,
+                mailSenderService,
+                this);
     }
 
     @Override

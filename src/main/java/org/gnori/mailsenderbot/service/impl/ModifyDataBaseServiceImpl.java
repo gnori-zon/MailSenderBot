@@ -1,5 +1,6 @@
 package org.gnori.mailsenderbot.service.impl;
 
+import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.command.commands.MailingHistoryCommand;
 import org.gnori.mailsenderbot.dao.AccountDao;
 import org.gnori.mailsenderbot.dao.MailingHistoryDao;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j
 @Service
 public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     static final String ERROR_TEXT = "Error occurred: ";

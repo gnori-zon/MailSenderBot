@@ -4,9 +4,12 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.repository.MessageRepository;
+import org.gnori.mailsenderbot.service.MailSenderService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import javax.mail.internet.AddressException;
 
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
 
@@ -14,13 +17,16 @@ public class SendCurrentMailCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
     private final MessageRepository messageRepository;
+    private final MailSenderService mailSenderService;
 
     public SendCurrentMailCommand(SendBotMessageService sendBotMessageService,
                                   ModifyDataBaseService modifyDataBaseService,
-                                  MessageRepository messageRepository) {
+                                  MessageRepository messageRepository,
+                                  MailSenderService mailSenderService) {
         this.sendBotMessageService = sendBotMessageService;
         this.modifyDataBaseService = modifyDataBaseService;
         this.messageRepository = messageRepository;
+        this.mailSenderService = mailSenderService;
     }
 
     @Override
@@ -30,10 +36,14 @@ public class SendCurrentMailCommand implements Command {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
-        var text = "отправлено:✔" +
-                "\nВыберите необходимый пункт👇🏿";
+        var text = "неотправлено:❌";
+
         var messageToSend = messageRepository.getMessage(chatId);
-        //TODO send mail logic
+
+        var sendResult = mailSenderService.sendWithUserMail(chatId,messageToSend);
+
+        if (sendResult==1){text="отправлено✔";}
+        text += "\nВыберите необходимый пункт👇🏿";
 
         createAndAddMessageSentRecord(chatId, messageToSend);
         messageRepository.removeMessage(chatId);
