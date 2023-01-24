@@ -4,10 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.command.CommandContainer;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.repository.MessageRepository;
-import org.gnori.mailsenderbot.service.MailSenderService;
-import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
-import org.gnori.mailsenderbot.service.ModifyDataBaseService;
-import org.gnori.mailsenderbot.service.SendBotMessageService;
+import org.gnori.mailsenderbot.service.*;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -19,7 +16,6 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
 
     private final CommandContainer commandContainer;
     private final ModifyDataBaseService modifyDataBaseService;
-
     public MessageTypesDistributorServiceImpl(SendBotMessageService sendBotMessageService,
                                               ModifyDataBaseService modifyDataBaseService,
                                               MessageRepository messageRepository,

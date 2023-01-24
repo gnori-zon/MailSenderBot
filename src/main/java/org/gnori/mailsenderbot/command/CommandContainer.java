@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.gnori.mailsenderbot.command.commands.*;
 import org.gnori.mailsenderbot.command.commands.waiting_for_input.*;
 import org.gnori.mailsenderbot.repository.MessageRepository;
-import org.gnori.mailsenderbot.service.MailSenderService;
-import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
-import org.gnori.mailsenderbot.service.ModifyDataBaseService;
-import org.gnori.mailsenderbot.service.SendBotMessageService;
+import org.gnori.mailsenderbot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.gnori.mailsenderbot.command.CommandName.*;

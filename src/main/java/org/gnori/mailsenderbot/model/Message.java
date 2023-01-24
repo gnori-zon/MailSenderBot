@@ -6,15 +6,16 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
 import java.util.Collections;
 import java.util.List;
-@Setter
 @RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class Message {
     private String title;
     private String text;
-    private Document DocAnnex;
-    private PhotoSize PhotoAnnex;
+    private Document docAnnex;
+    private PhotoSize photoAnnex;
+    private byte[] binaryContentForAnnex;
+
     private List<String> recipients;
     private Integer countForRecipient = 1;
 
@@ -27,15 +28,15 @@ public class Message {
     }
 
     public Document getDocAnnex() {
-        return DocAnnex;
+        return docAnnex;
     }
 
     public PhotoSize getPhotoAnnex() {
-        return PhotoAnnex;
+        return photoAnnex;
     }
 
     public boolean hasAnnex(){
-        return (DocAnnex!=null || PhotoAnnex!=null);
+        return (docAnnex !=null || photoAnnex !=null);
     }
 
     public List<String> getRecipients() {
@@ -44,5 +45,40 @@ public class Message {
 
     public Integer getCountForRecipient() {
         return countForRecipient;
+    }
+    public byte[] getBinaryContentForAnnex() {
+        return binaryContentForAnnex;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setDocAnnex(Document docAnnex) {
+        this.docAnnex = docAnnex;
+        photoAnnex = null;
+        this.binaryContentForAnnex = null;
+    }
+
+    public void setPhotoAnnex(PhotoSize photoAnnex) {
+        this.photoAnnex = photoAnnex;
+        docAnnex = null;
+        this.binaryContentForAnnex = null;
+    }
+
+    public void setBinaryContentForAnnex(byte[] binaryContentForAnnex) {
+        this.binaryContentForAnnex = binaryContentForAnnex;
+    }
+
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
+    }
+
+    public void setCountForRecipient(Integer countForRecipient) {
+        this.countForRecipient = countForRecipient;
     }
 }

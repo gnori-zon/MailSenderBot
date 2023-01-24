@@ -8,7 +8,6 @@ import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForPreviewMessage;
@@ -46,7 +45,6 @@ public class AfterChangeAnnexCommand implements Command {
         }
 
         messageRepository.putMessage(chatId,message);
-
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
 
         var lastMessageId = update.getMessage().getMessageId() - 1;

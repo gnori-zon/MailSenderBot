@@ -4,6 +4,9 @@ import java.util.Properties;
 
 public class UtilsMail {
     public static Properties getBaseProperties(){
+        return getGmailProperties();
+    }
+    public static Properties getGmailProperties(){
         var props = new Properties();
         props.put("mail.smtp.host","smtp.gmail.com");
         props.put("mail.smtp.port","587");

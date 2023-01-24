@@ -9,8 +9,6 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.mail.internet.AddressException;
-
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
@@ -33,8 +31,6 @@ public class SendCurrentMailCommand implements Command {
 
     @Override
     public void execute(Update update) {
-        //TODO added impl service for send Mail
-        // and send Success alert for telegram
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
