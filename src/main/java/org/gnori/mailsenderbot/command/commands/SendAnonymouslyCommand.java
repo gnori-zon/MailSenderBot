@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
 
 public class SendAnonymouslyCommand implements Command {
     private final SendBotMessageService sendBotMessageService;

@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.service.utils;
+package org.gnori.mailsenderbot.utils;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

@@ -7,9 +7,8 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
-
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.checkedRegistrationCommand;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
 
 public class BeginningCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -26,16 +25,18 @@ public class BeginningCommand implements Command {
         var text = "Выберите необходимый пункт👇🏿";
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
-
-        //TODO add valid (used this command in first time)
-        if(modifyDataBaseService.findAccountById(chatId)==null) {
-            var account = createAccount(chatId);
-            modifyDataBaseService.saveAccount(account);
+        var isRegistrationCommand = checkedRegistrationCommand(update.getCallbackQuery().getMessage());
+        if(isRegistrationCommand) {
+            if (modifyDataBaseService.findAccountById(chatId) == null) {
+                var account = createAccount(chatId);
+                modifyDataBaseService.saveAccount(account);
+            }
         }else{
             modifyDataBaseService.updateStateById(chatId,State.NOTHING_PENDING);
         }
         sendBotMessageService.executeEditMessage(chatId,messageId,text,newCallbackData,false);
     }
+
 
     private Account createAccount(Long chatId) {
         return Account.builder()

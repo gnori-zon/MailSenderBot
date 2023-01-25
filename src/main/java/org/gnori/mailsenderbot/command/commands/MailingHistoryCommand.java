@@ -1,14 +1,13 @@
 package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
-import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForMessage;
 
 public class MailingHistoryCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;

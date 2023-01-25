@@ -2,17 +2,15 @@ package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
-import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
-import java.util.List;
 
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
 
 public class AfterChangeTitleCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;

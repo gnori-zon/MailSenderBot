@@ -9,9 +9,10 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.mail.AuthenticationFailedException;
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
 
 public class SendCurrentMailCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -36,18 +37,24 @@ public class SendCurrentMailCommand implements Command {
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var messageToSend = messageRepository.getMessage(chatId);
 
-        sendBotMessageService.executeEditMessage(chatId,messageId,"Производится отправка...🛫", Collections.emptyList(),false);
+        sendBotMessageService.executeEditMessage(chatId, messageId, "Производится отправка...🛫", Collections.emptyList(), false);
 
-        var sendResult = mailSenderService.sendWithUserMail(chatId,messageToSend);
+        int sendResult = 0;
         var text = "неотправлено:❌";
-        if (sendResult==1){
-            text="отправлено✔";
-            createAndAddMessageSentRecord(chatId, messageToSend);
-            messageRepository.removeMessage(chatId);
-        }
-        text += "\nВыберите необходимый пункт👇🏿";
+        try {
+            sendResult = mailSenderService.sendWithUserMail(chatId, messageToSend);
+            if (sendResult == 1) {
+                text = "отправлено✔";
+                createAndAddMessageSentRecord(chatId, messageToSend);
+                messageRepository.removeMessage(chatId);
+            }
+        } catch (AuthenticationFailedException e) {
+            text = "неотправлено:❌ Неверный ключ доступа";
+        } finally {
+            text += "\nВыберите необходимый пункт👇🏿";
 
-        sendBotMessageService.executeEditMessage(chatId, messageId, text, newCallbackData, false);
+            sendBotMessageService.executeEditMessage(chatId, messageId, text, newCallbackData, false);
+        }
     }
 
     private void createAndAddMessageSentRecord(Long id, Message message) {

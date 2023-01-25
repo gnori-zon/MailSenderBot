@@ -5,6 +5,7 @@ import org.gnori.mailsenderbot.command.CommandContainer;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.*;
+import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -19,12 +20,14 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     public MessageTypesDistributorServiceImpl(SendBotMessageService sendBotMessageService,
                                               ModifyDataBaseService modifyDataBaseService,
                                               MessageRepository messageRepository,
-                                              MailSenderService mailSenderService) {
+                                              MailSenderService mailSenderService,
+                                              CryptoTool cryptoTool) {
         this.modifyDataBaseService = modifyDataBaseService;
         this.commandContainer = new CommandContainer(sendBotMessageService,
                 modifyDataBaseService,
                 messageRepository,
                 mailSenderService,
+                cryptoTool,
                 this);
     }
 

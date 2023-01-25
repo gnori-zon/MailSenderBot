@@ -24,12 +24,11 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     static final String ERROR_TEXT = "Error occurred: ";
     private final AccountDao accountDao;
     private final MailingHistoryDao mailingHistoryDao;
-    private final MessageSentRecordDao messageSentRecordDao;
 
-    public ModifyDataBaseServiceImpl(AccountDao accountDao, MailingHistoryDao mailingHistoryDao, MessageSentRecordDao messageSentRecordDao) {
+    public ModifyDataBaseServiceImpl(AccountDao accountDao,
+                                     MailingHistoryDao mailingHistoryDao) {
         this.accountDao = accountDao;
         this.mailingHistoryDao = mailingHistoryDao;
-        this.messageSentRecordDao = messageSentRecordDao;
 
     }
 
@@ -44,9 +43,11 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     @Override
     public MailingHistoryDto getMailingHistoryById(Long id){
         var optionalMailingHistory = accountDao.findById(id).get().getMailingHistory();
-        var mailingList =  optionalMailingHistory.getMailingList();
-        if(mailingList!=null && mailingList.size()>0) {
-            return new MailingHistoryDto(optionalMailingHistory);
+        if(optionalMailingHistory!=null) {
+            var mailingList = optionalMailingHistory.getMailingList();
+            if (mailingList != null && mailingList.size() > 0) {
+                return new MailingHistoryDto(optionalMailingHistory);
+            }
         }
         return null;
     }

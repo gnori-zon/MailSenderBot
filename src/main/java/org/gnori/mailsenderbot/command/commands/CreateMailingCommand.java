@@ -6,10 +6,8 @@ import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
-
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.command.commands.Utils.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
 
 public class CreateMailingCommand implements Command {
     private final SendBotMessageService sendBotMessageService;

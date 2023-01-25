@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.service.utils;
+package org.gnori.mailsenderbot.utils;
 
 import java.util.Properties;
 

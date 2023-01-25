@@ -5,11 +5,13 @@ import org.gnori.mailsenderbot.dao.AccountDao;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.service.FileService;
 import org.gnori.mailsenderbot.service.MailSenderService;
-import org.gnori.mailsenderbot.service.utils.LoginAuthenticator;
+import org.gnori.mailsenderbot.utils.CryptoTool;
+import org.gnori.mailsenderbot.utils.LoginAuthenticator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -18,7 +20,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-import static org.gnori.mailsenderbot.service.utils.UtilsMail.getBaseProperties;
+import static org.gnori.mailsenderbot.utils.UtilsMail.getBaseProperties;
 
 @Log4j
 @Service
@@ -29,11 +31,14 @@ public class MailSenderServiceImpl implements MailSenderService {
     private String BASE_KEY;
     private final AccountDao accountDao;
     private final FileService fileService;
+    private final CryptoTool cryptoTool;
 
-    public MailSenderServiceImpl(AccountDao accountDao, FileService fileService) {
+    public MailSenderServiceImpl(AccountDao accountDao, FileService fileService, CryptoTool cryptoTool) {
 
         this.accountDao = accountDao;
         this.fileService = fileService;
+        this.cryptoTool = cryptoTool;
+
     }
 
     @Override
@@ -50,15 +55,15 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @Override
-    public int sendWithUserMail(Long id, Message message){
+    public int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException {
         var optionalAccount = accountDao.findById(id);
         if(optionalAccount.isEmpty()){return 0;}
 
         var account = optionalAccount.get();
         var username = account.getEmail();
-        var keyForMail = account.getKeyForMail();
+        var keyForMail = cryptoTool.decrypt(account.getKeyForMail());
 
-        //TODO move the definition of props to a separate Utils class
+        //TODO move the definition of props to a separate UtilsCommand class
         var props = new Properties();
         props.put("mail.smtp.host","smtp.gmail.com");
         props.put("mail.smtp.port","587");
@@ -68,10 +73,13 @@ public class MailSenderServiceImpl implements MailSenderService {
         props.put("mail.debug","true");
 
         var session = Session.getDefaultInstance(props, new LoginAuthenticator(username,keyForMail));
-        try{
-            sendMessage(id, username,session,message);
-                return 1;
+        try {
+            sendMessage(id, username, session, message);
+            return 1;
+        }catch (AuthenticationFailedException e) {
+            throw new AuthenticationFailedException();
         }catch (Exception e){
+            log.error(e);
             return 0;
         }
     }

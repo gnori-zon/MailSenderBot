@@ -11,14 +11,11 @@ import static org.gnori.mailsenderbot.command.CommandName.*;
 
 public class BackCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
-    private final SendBotMessageService sendBotMessageService;
     private final MessageTypesDistributorService messageTypesDistributorService;
 
     public BackCommand(ModifyDataBaseService modifyDataBaseService,
-                       SendBotMessageService sendBotMessageService,
                        MessageTypesDistributorService messageTypesDistributorService) {
         this.modifyDataBaseService = modifyDataBaseService;
-        this.sendBotMessageService = sendBotMessageService;
         this.messageTypesDistributorService = messageTypesDistributorService;
     }
 

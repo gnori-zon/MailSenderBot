@@ -1,13 +1,13 @@
-package org.gnori.mailsenderbot.command.commands;
+package org.gnori.mailsenderbot.utils;
 
 import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.model.Message;
-import org.gnori.mailsenderbot.repository.MessageRepository;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class Utils {
+public class UtilsCommand {
     public static String prepareTextForProfileMessage(AccountDto account) {
         var email = account.getEmail()!=null ? account.getEmail() : "❌";
         var keyPresent = account.hasKey()? "✔" : "❌";
@@ -68,11 +68,28 @@ public class Utils {
                 var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " шт. каждому получателю ";
                 text.append("\n").append(line);
             }
+            return text.toString();
+        }else {
+            return text + "\nВы не создавали рассылок!";
         }
-        return text+"\nВы не создавали рассылок!";
     }
     private static String convertDate(String date){
         var pointIndex = date.indexOf(".");
         return date.replace("T"," ").substring(0,pointIndex-3) + " UTC+3";
+    }
+    public static boolean validateMail(String emailAddress) {
+        var regexPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
+    private static boolean patternMatches(String emailAddress, String regexPattern) {
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
+
+    public static boolean checkedRegistrationCommand(org.telegram.telegrambots.meta.api.objects.Message message) {
+        return (message.hasText() && message.getText().contains("Кликните по кнопке,"));
     }
 }

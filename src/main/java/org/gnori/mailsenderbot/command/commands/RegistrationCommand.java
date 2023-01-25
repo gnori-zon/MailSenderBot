@@ -20,13 +20,10 @@ public class RegistrationCommand implements Command {
     public void execute(Update update) {
         var message = update.getMessage();
         var chatId = message.getChatId();
-        var stateForChange = State.NOTHING_PENDING;
         var textForMessage = "Кликните по кнопке, для начала работы";
         List<String> callbackData = List.of("BEGINNING");
         List<String> callbackDataText = List.of("✔Just click button");
         List<List<String>> newCallbackData = List.of(callbackData,callbackDataText);
-
-        //TODO changeStateForAccount
 
         sendBotMessageService.createChangeableMessage(chatId,textForMessage,newCallbackData,false);
 
