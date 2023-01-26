@@ -17,4 +17,26 @@ public class UtilsMail {
         return props;
     }
 
+    public static Properties getMailProperties(){
+        var props = new Properties();
+        props.put("mail.smtp.host","smtp.mail.ru");
+        props.put("mail.smtp.port","465");
+        props.put("mail.protocol","smtp");
+        props.put("mail.smtp.auth","true");
+        props.put("mail.smtp.ssl.enable","true");
+        props.put("mail.debug","true");
+        return props;
+    }
+
+    public static Properties getYandexProperties(){
+        var props = new Properties();
+        props.put("mail.smtp.host","smtp.yandex.ru");
+        props.put("mail.smtp.port","465");
+        props.put("mail.protocol","smtp");
+        props.put("mail.smtp.auth","true");
+        props.put("mail.smtp.ssl.enable","true");
+        props.put("mail.debug","true");
+        return props;
+    }
+
 }

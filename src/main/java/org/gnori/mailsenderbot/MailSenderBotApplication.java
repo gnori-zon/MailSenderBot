@@ -60,8 +60,8 @@ public class MailSenderBotApplication implements ApplicationRunner {
                 .mailingHistory(history2)
                 .build());
 
-        var account = mailingHistoryDao.findByAccount_Id(2L);
-        System.out.println(account.getMailingList().toString());
+        var mailingHistory = mailingHistoryDao.findByAccount_Id(2L);
+        System.out.println((mailingHistory.isPresent())? mailingHistory.get().toString() : " empty");
     }
 
 }

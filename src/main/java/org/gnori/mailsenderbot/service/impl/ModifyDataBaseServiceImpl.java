@@ -69,7 +69,7 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
 
     @Override
     public void addMessageSentRecord(Long id, MessageSentRecord message) {
-        var optionalMailingHistory = mailingHistoryDao.findById(id);
+        var optionalMailingHistory = mailingHistoryDao.findByAccount_Id(id);
         MailingHistory mailingHistory;
         if(optionalMailingHistory.isPresent()) {
             mailingHistory = optionalMailingHistory.get();
@@ -79,6 +79,7 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
                 records = records.stream().skip(overflow).collect(Collectors.toList());
             }
             records.add(message);
+            mailingHistory.setMailingList(records);
             mailingHistoryDao.save(mailingHistory);
         }else{
             var account = accountDao.findById(id).get();

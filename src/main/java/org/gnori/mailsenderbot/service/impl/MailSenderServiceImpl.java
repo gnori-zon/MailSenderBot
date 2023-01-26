@@ -5,6 +5,7 @@ import org.gnori.mailsenderbot.dao.AccountDao;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.service.FileService;
 import org.gnori.mailsenderbot.service.MailSenderService;
+import org.gnori.mailsenderbot.service.impl.enums.MailDomain;
 import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.gnori.mailsenderbot.utils.LoginAuthenticator;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +20,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
-import static org.gnori.mailsenderbot.utils.UtilsMail.getBaseProperties;
+import static org.gnori.mailsenderbot.utils.UtilsMail.*;
 
 @Log4j
 @Service
@@ -63,16 +65,9 @@ public class MailSenderServiceImpl implements MailSenderService {
         var username = account.getEmail();
         var keyForMail = cryptoTool.decrypt(account.getKeyForMail());
 
-        //TODO move the definition of props to a separate UtilsCommand class
-        var props = new Properties();
-        props.put("mail.smtp.host","smtp.gmail.com");
-        props.put("mail.smtp.port","587");
-        props.put("mail.protocol","smtp");
-        props.put("mail.smtp.auth","true");
-        props.put("mail.smtp.starttls.enable","true");
-        props.put("mail.debug","true");
+        var props = getPropertiesBasedOnDomain(username);
 
-        var session = Session.getDefaultInstance(props, new LoginAuthenticator(username,keyForMail));
+        var session = Session.getInstance(props, new LoginAuthenticator(username,keyForMail));
         try {
             sendMessage(id, username, session, message);
             return 1;
@@ -82,6 +77,29 @@ public class MailSenderServiceImpl implements MailSenderService {
             log.error(e);
             return 0;
         }
+    }
+
+    private Properties getPropertiesBasedOnDomain(String mail) {
+        if(mail!=null){
+            var indexSeparator = mail.indexOf("@");
+            var domainPart = mail.substring(indexSeparator);
+            for(var domain : MailDomain.GMAIL.getDomainList()) {
+                if (domainPart.contains(domain)) {
+                    return getGmailProperties();
+                }
+            }
+            for(var domain : MailDomain.YANDEX.getDomainList()) {
+                if (domainPart.contains(domain)) {
+                    return getYandexProperties();
+                }
+            }
+            for(var domain : MailDomain.MAIL.getDomainList()) {
+                if (domainPart.contains(domain)) {
+                    return getMailProperties();
+                }
+            }
+        }
+        return null;
     }
 
     private InternetAddress[] prepareRecipients(Message message) throws AddressException{
