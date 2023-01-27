@@ -4,6 +4,7 @@ import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class MessageSentRecordDto {
     private final Integer countMessages;
@@ -20,5 +21,18 @@ public class MessageSentRecordDto {
 
     public String getSendDate() {
         return sendDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MessageSentRecordDto that = (MessageSentRecordDto) o;
+        return Objects.equals(getCountMessages(), that.getCountMessages()) && Objects.equals(getSendDate(), that.getSendDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCountMessages(), getSendDate());
     }
 }

@@ -82,7 +82,7 @@ public class FileServiceImpl implements FileService {
             prefix = "photo:"+id;
         }
         try{
-            File temp = File.createTempFile("tempFile"+id, suffix);
+            File temp = File.createTempFile(prefix, suffix);
             temp.deleteOnExit();
             FileUtils.writeByteArrayToFile(temp, binaryContent);
             return new FileSystemResource(temp);

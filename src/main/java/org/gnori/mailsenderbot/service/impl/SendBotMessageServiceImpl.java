@@ -97,7 +97,6 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
             buttonIntermediate.setText(newCallbackData.get(1).get(index));
             rowInline.add(buttonIntermediate);
             rowsInline.add(rowInline);
-
         }
         if(witBackButton){
             rowsInline.add(createBackInlineKeyboardButton());
