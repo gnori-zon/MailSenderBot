@@ -9,6 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForRegistrationMessage;
+
 public class RegistrationCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
 
@@ -21,9 +23,7 @@ public class RegistrationCommand implements Command {
         var message = update.getMessage();
         var chatId = message.getChatId();
         var textForMessage = "Кликните по кнопке, для начала работы";
-        List<String> callbackData = List.of("BEGINNING");
-        List<String> callbackDataText = List.of("✔Just click button");
-        List<List<String>> newCallbackData = List.of(callbackData,callbackDataText);
+        var newCallbackData = prepareCallbackDataForRegistrationMessage();
 
         sendBotMessageService.createChangeableMessage(chatId,textForMessage,newCallbackData,false);
 
