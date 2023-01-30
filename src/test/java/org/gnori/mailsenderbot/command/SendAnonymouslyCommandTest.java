@@ -1,5 +1,6 @@
 package org.gnori.mailsenderbot.command;
 
+import lombok.SneakyThrows;
 import org.gnori.mailsenderbot.command.commands.SendAnonymouslyCommand;
 import org.gnori.mailsenderbot.command.commands.SendCurrentMailCommand;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
@@ -22,6 +23,7 @@ public class SendAnonymouslyCommandTest extends AbstractCommandTest{
     private MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
     private MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
     private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
+    @SneakyThrows
     @Override
     String getCommandMessage() {
     var id = 12L; // id from abstractTest
@@ -51,6 +53,7 @@ public class SendAnonymouslyCommandTest extends AbstractCommandTest{
                                           mailSenderService);
     }
 
+    @SneakyThrows
     @Test
     public void SuccessSend() throws AuthenticationFailedException {
         var id = 12L; // id from abstractTest

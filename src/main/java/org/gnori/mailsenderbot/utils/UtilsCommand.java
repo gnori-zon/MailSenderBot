@@ -5,6 +5,7 @@ import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.model.Message;
 
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UtilsCommand {
@@ -41,8 +42,8 @@ public class UtilsCommand {
         return List.of(callbackData, callbackDataText);
     }
     public static List<List<String>> prepareCallbackDataForCreateMailingMessage(){
-        List<String> callbackData = List.of("CHANGE_ITEM","SEND");
-        List<String> callbackDataText = List.of("Изменить пункт","Отправить");
+        List<String> callbackData = List.of("CLEAR_MESSAGE","DOWNLOAD_MESSAGE","CHANGE_ITEM","SEND");
+        List<String> callbackDataText = List.of("Очистить письмо","Загрузить письмо","Изменить пункт","Отправить");
         return List.of(callbackData, callbackDataText);
     }
     public static List<List<String>> prepareCallbackDataForBeginningMessage(){
@@ -53,13 +54,15 @@ public class UtilsCommand {
     public static String prepareTextForPreviewMessage(Message message){
 
         var messageText = message.getText().trim();
-        var textForResult = messageText.length() > 100 ? messageText.substring(0,75) : messageText;
+        var lengthTextConstraint = messageText.length() > 100;
+        var textForResult = lengthTextConstraint ? messageText.substring(0,75) : messageText;
+        var suffixResultText = (lengthTextConstraint || messageText.isEmpty())? "...": "";
         var messageTitle= message.getTitle().trim();
         var titleForResult = messageTitle.equals("") ? "Без заголовка" : messageTitle;
         return "*Preview:*" +
                 "\n" +
                 "\n*"+titleForResult+"*" +
-                "\n "+textForResult+"..." +
+                "\n "+textForResult+suffixResultText +
                 "\n Приложение: "+(message.hasAnnex()? "✔" : "❌")+
                 "\n Получатели: "+ recipientsToString(message.getRecipients())+
                 "\n Шт. каждому: "+ message.getCountForRecipient();
@@ -101,6 +104,23 @@ public class UtilsCommand {
         return Pattern.compile(regexPattern)
                 .matcher(emailAddress)
                 .matches();
+    }
+    public static String getTitleFromContent(String content){
+        var regexPatternForTitle = Pattern.compile("###(.*)###");
+        Matcher matcherTitle = regexPatternForTitle.matcher(content);
+        if(matcherTitle.find()){
+            return matcherTitle.group(1);
+        }
+        return null;
+    }
+    public static String getTextFromContent(String content){
+        var regexPatternForText = Pattern.compile("///((.*|\\n|\\r)+)///");
+
+        Matcher matcherText = regexPatternForText.matcher(content);
+        if(matcherText.find()){
+            return matcherText.group(1);
+        }
+        return null;
     }
     private static boolean patternMatches(String emailAddress, String regexPattern) {
         return Pattern.compile(regexPattern)

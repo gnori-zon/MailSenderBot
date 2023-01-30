@@ -10,6 +10,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.telegram.telegrambots.meta.api.objects.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,29 @@ public class FileServiceImpl implements FileService {
 
     public FileServiceImpl(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
+    }
+
+    @Override
+    public FileSystemResource processMail(Long id, Document mailDoc) {
+        var fileId = mailDoc.getFileId();
+        ResponseEntity<String> response = getFilePath(fileId);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            var fileInByte = getBinaryContent(response);
+            var suffix = getSuffix(mailDoc.getFileName());
+            var prefix = "file_"+id;
+            try{
+                File temp = File.createTempFile(prefix, suffix);
+                temp.deleteOnExit();
+                FileUtils.writeByteArrayToFile(temp, fileInByte);
+                return new FileSystemResource(temp);
+            }catch (IOException e){
+                log.error(e);
+                return null;
+            }
+        } else {
+            log.error("Bad response: " + response);
+            return null;
+        }
     }
 
     @Override
@@ -76,10 +100,10 @@ public class FileServiceImpl implements FileService {
         var suffix = "";
         if(message.getDocAnnex()!=null) {
             suffix = getSuffix(message.getDocAnnex().getFileName());
-            prefix = "file:"+id;
+            prefix = "file_"+id;
         } else if (message.getPhotoAnnex()!=null) {
             suffix = ".jpeg";
-            prefix = "photo:"+id;
+            prefix = "photo_"+id;
         }
         try{
             File temp = File.createTempFile(prefix, suffix);

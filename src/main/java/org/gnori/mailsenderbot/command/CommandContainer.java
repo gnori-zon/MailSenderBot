@@ -19,6 +19,7 @@ public class CommandContainer {
                             MessageRepository messageRepository,
                             MailSenderService mailSenderService,
                             CryptoTool cryptoTool,
+                            FileService fileService,
                             MessageTypesDistributorService messageTypesDistributorService) {
         commandMap =  ImmutableMap.<String, Command>builder()
                 .put(REGISTRATION.getCommandName(), new RegistrationCommand(sendBotMessageService))
@@ -45,6 +46,9 @@ public class CommandContainer {
                 .put(SEND.getCommandName(), new SendCommand(sendBotMessageService, modifyDataBaseService))
                 .put(SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, mailSenderService))
                 .put(SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,mailSenderService))
+                .put(CLEAR_MESSAGE.getCommandName(), new ClearMessageCommand(sendBotMessageService,messageRepository))
+                .put(DOWNLOAD_MESSAGE.getCommandName(), new BeforeDownloadMessage(sendBotMessageService,modifyDataBaseService))
+                .put(DOWNLOAD_MESSAGE_PENDING.getCommandName(), new AfterDownloadMessageCommand(sendBotMessageService,modifyDataBaseService, messageRepository, fileService ))
                 .build();
         unknownCommand = new UnknownCommand(sendBotMessageService);
     }

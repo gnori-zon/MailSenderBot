@@ -22,6 +22,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static org.gnori.mailsenderbot.utils.UtilsCommand.validateMail;
 import static org.gnori.mailsenderbot.utils.UtilsMail.*;
 
 @Log4j
@@ -44,12 +45,14 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @Override
-    public int sendAnonymously(Long id, Message message) {
+    public int sendAnonymously(Long id, Message message) throws AddressException {
         var props = getBaseProperties();
         var session = Session.getDefaultInstance(props, new LoginAuthenticator(BASE_MAIL, BASE_KEY));
         try {
             sendMessage(id, BASE_MAIL,session,message);
             return 1;
+        } catch (AddressException e) {
+            throw e;
         } catch (Exception e) {
             log.error(e);
             return 0;
@@ -57,7 +60,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @Override
-    public int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException {
+    public int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException, AddressException {
         var optionalAccount = accountDao.findById(id);
         if(optionalAccount.isEmpty()){return 0;}
 
@@ -71,8 +74,10 @@ public class MailSenderServiceImpl implements MailSenderService {
         try {
             sendMessage(id, username, session, message);
             return 1;
+        } catch (AddressException e) {
+            throw e;
         }catch (AuthenticationFailedException e) {
-            throw new AuthenticationFailedException();
+            throw new AuthenticationFailedException("Неверный ключ доступа");
         }catch (Exception e){
             log.error(e);
             return 0;
@@ -103,12 +108,20 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     private InternetAddress[] prepareRecipients(Message message) throws AddressException{
-        var recipientsStr = message.getRecipients().toString();
+        //var recipientsStr = message.getRecipients().toString();
+        var recipientsStr = message.getRecipients().stream().filter(address->validateMail(address)).collect(Collectors.toList()).toString();
+        if (recipientsStr.length()<3){
+            throw new AddressException("Отсутсвуют валидные адреса получаетелей");
+        }
         return InternetAddress.parse(recipientsStr.substring(1, recipientsStr.length()-1));
     }
     private void sendMessage(Long id, String mail, Session session, Message message) throws MessagingException {
         InternetAddress[] recipients;
-        recipients = prepareRecipients(message);
+        try {
+            recipients = prepareRecipients(message);
+        } catch (AddressException e) {
+            throw e;
+        }
         var mailMessage = new MimeMessage(session);
         var helper = new MimeMessageHelper(mailMessage,true);
         helper.setFrom(mail);

@@ -44,12 +44,13 @@ public class BackCommand implements Command {
                                  State.CONTENT_PENDING.equals(account.getState()) ||
                                  State.ANNEX_PENDING.equals(account.getState()) ||
                                  State.RECIPIENTS_PENDING.equals(account.getState()) ||
+                                 State.DOWNLOAD_MESSAGE_PENDING.equals(account.getState()) ||
                                  State.COUNT_FOR_RECIPIENT_PENDING.equals(account.getState()))){
                 update.getCallbackQuery().setData(CREATE_MAILING.getCommandName());
                 modifyDataBaseService.updateStateById(chatId,State.NOTHING_PENDING);
                 messageTypesDistributorService.distributeMessageByType(update);
             }
-        } else if (CHANGE_ITEM.getCommandName().equals(firstCallBackDataFromOriginal)){
+        } else if (CLEAR_MESSAGE.getCommandName().equals(firstCallBackDataFromOriginal)){
             update.getCallbackQuery().setData(BEGINNING.getCommandName());
             messageTypesDistributorService.distributeMessageByType(update);
         }else if (CHANGE_ITEM_TITLE.getCommandName().equals(firstCallBackDataFromOriginal)) {

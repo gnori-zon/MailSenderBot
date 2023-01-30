@@ -10,6 +10,7 @@ import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.mail.AuthenticationFailedException;
+import javax.mail.internet.AddressException;
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
@@ -48,8 +49,8 @@ public class SendCurrentMailCommand implements Command {
                 createAndAddMessageSentRecord(chatId, messageToSend);
                 messageRepository.removeMessage(chatId);
             }
-        } catch (AuthenticationFailedException e) {
-            text = "неотправлено:❌ Неверный ключ доступа";
+        } catch (AddressException | AuthenticationFailedException e) {
+            text = "неотправлено:❌"+e.getMessage();
         } finally {
             text += "\nВыберите необходимый пункт👇🏿";
 

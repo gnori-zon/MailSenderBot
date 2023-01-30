@@ -21,6 +21,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                                               ModifyDataBaseService modifyDataBaseService,
                                               MessageRepository messageRepository,
                                               MailSenderService mailSenderService,
+                                              FileService fileService,
                                               CryptoTool cryptoTool) {
         this.modifyDataBaseService = modifyDataBaseService;
         this.commandContainer = new CommandContainer(sendBotMessageService,
@@ -28,6 +29,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 messageRepository,
                 mailSenderService,
                 cryptoTool,
+                fileService,
                 this);
     }
 
@@ -88,6 +90,8 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
         if(account!=null) {
             if (State.ANNEX_PENDING.equals(account.getState())) {
                 commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);
+            }else if(State.DOWNLOAD_MESSAGE_PENDING.equals(account.getState())){
+                commandContainer.retrieveCommand(DOWNLOAD_MESSAGE_PENDING.getCommandName()).execute(update);
             }
         }
     }

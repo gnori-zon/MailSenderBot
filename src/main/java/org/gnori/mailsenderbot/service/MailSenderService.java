@@ -6,6 +6,6 @@ import javax.mail.AuthenticationFailedException;
 import javax.mail.internet.AddressException;
 
 public interface MailSenderService {
-    int sendAnonymously(Long id, Message message);
-    int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException;
+    int sendAnonymously(Long id, Message message) throws AddressException;
+    int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException, AddressException;
 }

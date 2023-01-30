@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.command;
 
 import org.gnori.mailsenderbot.command.commands.UnknownCommand;
 import org.gnori.mailsenderbot.repository.MessageRepository;
+import org.gnori.mailsenderbot.service.FileService;
 import org.gnori.mailsenderbot.service.impl.MailSenderServiceImpl;
 import org.gnori.mailsenderbot.service.impl.MessageTypesDistributorServiceImpl;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
@@ -24,6 +25,7 @@ public class CommandContainerTest {
         SendBotMessageServiceImpl sendBotMessageService = Mockito.mock(SendBotMessageServiceImpl.class);
         ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
         MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
+        FileService fileService = Mockito.mock(FileService.class);
         MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
         CryptoTool cryptoTool = Mockito.mock(CryptoTool.class);
         MessageTypesDistributorServiceImpl messageTypesDistributorService = Mockito.mock(MessageTypesDistributorServiceImpl.class);
@@ -33,6 +35,7 @@ public class CommandContainerTest {
                                                 messageRepository,
                                                 mailSenderService,
                                                 cryptoTool,
+                                                fileService,
                                                 messageTypesDistributorService);
 
     }
