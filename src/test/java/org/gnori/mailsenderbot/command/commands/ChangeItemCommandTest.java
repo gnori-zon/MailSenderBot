@@ -1,29 +1,29 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
-import org.gnori.mailsenderbot.command.commands.ChangeItemCommand;
+import org.gnori.mailsenderbot.command.Command;
 
 import java.util.List;
 
 import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForChangeItemMessage;
 
-public class ChangeItemCommandTest extends AbstractCommandTest{
+public class ChangeItemCommandTest extends AbstractCommandTest {
     @Override
-    String getCommandMessage() {
+    public String getCommandMessage() {
         return "*Выберите пункт, для изменения:*";
     }
 
     @Override
-    List<List<String>> getCallbackData() {
+    public List<List<String>> getCallbackData() {
         return prepareCallbackDataForChangeItemMessage();
     }
 
     @Override
-    boolean withButton() {
+    public boolean withButton() {
         return true;
     }
 
     @Override
-    Command getCommand() {
+    public Command getCommand() {
         return new ChangeItemCommand(getSendBotMessageService());
     }
 }

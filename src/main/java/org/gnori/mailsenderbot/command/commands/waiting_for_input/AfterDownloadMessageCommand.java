@@ -46,7 +46,10 @@ public class AfterDownloadMessageCommand implements Command {
             var content = getContent(chatId,newDocument);
             var titleForMessage = getTitleFromContent(content);
             var textForMessage =  getTextFromContent(content);
-
+            var recipients = getRecipientsFromContent(content);
+            var countForRecipient = getCountForRecipientFromContent(content);
+            message.setCountForRecipient(countForRecipient);
+            message.setRecipients(recipients);
             message.setTitle(titleForMessage);
             message.setText(textForMessage);
             messageRepository.putMessage(chatId,message);

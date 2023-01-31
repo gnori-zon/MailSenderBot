@@ -8,11 +8,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-public class BeforeDownloadMessage implements Command{
+public class BeforeDownloadMessageCommand implements Command{
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
 
-    public BeforeDownloadMessage(SendBotMessageService sendBotMessageService, ModifyDataBaseService modifyDataBaseService) {
+    public BeforeDownloadMessageCommand(SendBotMessageService sendBotMessageService, ModifyDataBaseService modifyDataBaseService) {
         this.sendBotMessageService = sendBotMessageService;
         this.modifyDataBaseService = modifyDataBaseService;
     }
@@ -21,8 +21,10 @@ public class BeforeDownloadMessage implements Command{
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var text ="*Загрузите письмо в формате .txt\nШаблон: *"+
-                "\n\n ###ЗАГОЛОВОК###"+
-                "\n ///ТЕКСТ///";
+                "\n\n ###Заголовок###"+
+                "\n ///Текст письма///"+
+                "\n ===Количество писем каждому==="+
+                "\n :::Получатели через \",\":::";
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         modifyDataBaseService.updateStateById(chatId, State.DOWNLOAD_MESSAGE_PENDING);
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);

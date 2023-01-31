@@ -1,6 +1,6 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
-import org.gnori.mailsenderbot.command.commands.BeginningCommand;
+import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -12,26 +12,26 @@ import java.util.List;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
 
 @DisplayName("Unit-level testing for BeginningCommandTest")
-public class BeginningCommandTest extends AbstractCommandTest{
+public class BeginningCommandTest extends AbstractCommandTest {
     private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
 
     @Override
-    String getCommandMessage() {
+    public String getCommandMessage() {
         return "Выберите необходимый пункт👇🏿";
     }
 
     @Override
-    List<List<String>> getCallbackData() {
+    public List<List<String>> getCallbackData() {
         return prepareCallbackDataForBeginningMessage();
     }
 
     @Override
-    boolean withButton() {
+    public boolean withButton() {
         return false;
     }
 
     @Override
-    Command getCommand() {
+    public Command getCommand() {
         return new BeginningCommand(getSendBotMessageService(),modifyDataBaseService);
     }
 

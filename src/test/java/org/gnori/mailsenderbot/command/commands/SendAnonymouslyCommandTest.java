@@ -1,12 +1,10 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
 import lombok.SneakyThrows;
-import org.gnori.mailsenderbot.command.commands.SendCurrentMailCommand;
+import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.repository.MessageRepository;
-import org.gnori.mailsenderbot.service.MailSenderService;
-import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.impl.MailSenderServiceImpl;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -20,40 +18,35 @@ import java.util.List;
 
 import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
 
-public class SendCurrentMailCommandTest extends AbstractCommandTest{
+public class SendAnonymouslyCommandTest extends AbstractCommandTest {
     private MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
     private MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
     private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
-
     @SneakyThrows
     @Override
-    String getCommandMessage() {
-        var id = 12L; // id from abstractTest
+    public String getCommandMessage() {
+    var id = 12L; // id from abstractTest
 
-        var message = Mockito.mock(Message.class);
+    var message = Mockito.mock(Message.class);
         Mockito.when(messageRepository.getMessage(id)).thenReturn(message);
-        try {
-            Mockito.when(mailSenderService.sendWithUserMail(id, message)).thenReturn(0);
-        } catch (AuthenticationFailedException e) {
-            throw new RuntimeException(e);
-        }
+        Mockito.when(mailSenderService.sendAnonymously(id, message)).thenReturn(0);
 
         return "неотправлено:❌"+"\nВыберите необходимый пункт👇🏿";
-    }
+}
 
     @Override
-    List<List<String>> getCallbackData() {
+    public List<List<String>> getCallbackData() {
         return prepareCallbackDataForBeginningMessage();
     }
 
     @Override
-    boolean withButton() {
+    public boolean withButton() {
         return false;
     }
 
     @Override
-    Command getCommand() {
-        return new SendCurrentMailCommand(getSendBotMessageService(),
+    public Command getCommand() {
+        return new SendAnonymouslyCommand(getSendBotMessageService(),
                                           modifyDataBaseService,
                                           messageRepository,
                                           mailSenderService);
@@ -70,7 +63,7 @@ public class SendCurrentMailCommandTest extends AbstractCommandTest{
         var countMessages = message.getRecipients().size() * message.getCountForRecipient();
         var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();
         Mockito.when(messageRepository.getMessage(id)).thenReturn(message);
-        Mockito.when(mailSenderService.sendWithUserMail(id, message)).thenReturn(1);
+        Mockito.when(mailSenderService.sendAnonymously(id, message)).thenReturn(1);
         Update update = new Update();
         CallbackQuery callbackQuery = new CallbackQuery();
         org.telegram.telegrambots.meta.api.objects.Message messageTelegram = Mockito.mock(org.telegram.telegrambots.meta.api.objects.Message.class);
@@ -79,7 +72,7 @@ public class SendCurrentMailCommandTest extends AbstractCommandTest{
 
         callbackQuery.setMessage(messageTelegram);
         update.setCallbackQuery(callbackQuery);
-        var command = new SendCurrentMailCommand(getSendBotMessageService(),modifyDataBaseService,messageRepository,mailSenderService);
+        var command = new SendAnonymouslyCommand(getSendBotMessageService(),modifyDataBaseService,messageRepository,mailSenderService);
 
         command.execute(update);
 
@@ -89,5 +82,4 @@ public class SendCurrentMailCommandTest extends AbstractCommandTest{
         Mockito.verify(modifyDataBaseService).addMessageSentRecord(id, messageSentRecord);
 
     }
-
 }

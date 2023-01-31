@@ -41,7 +41,7 @@ public class FileServiceImplTest {
         var result = fileServiceImpl.getFileSystemResource((long)id);
 
         Assertions.assertTrue(result!=null &&
-                result.getFilename().contains(firstPartName +":"+ id) &&
+                result.getFilename().contains(firstPartName +"_"+ id) &&
                 result.getFilename().contains(secondPartName));
     }
 
@@ -63,7 +63,7 @@ public class FileServiceImplTest {
         Mockito.verify(message).getDocAnnex();
         Mockito.verify(message).getPhotoAnnex();
         Assertions.assertTrue(result!=null &&
-                result.getFilename().contains(firstPartName+":"+id) &&
+                result.getFilename().contains(firstPartName+"_"+id) &&
                 result.getFilename().contains(secondPartName));
     }
 

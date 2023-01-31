@@ -4,9 +4,11 @@ import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.model.Message;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class UtilsCommand {
     public static String prepareTextForProfileMessage(AccountDto account) {
@@ -110,6 +112,22 @@ public class UtilsCommand {
         Matcher matcherTitle = regexPatternForTitle.matcher(content);
         if(matcherTitle.find()){
             return matcherTitle.group(1);
+        }
+        return null;
+    }
+    public static Integer getCountForRecipientFromContent(String content){
+        var regexPatternForTitle = Pattern.compile("===(\\d+)===");
+        Matcher matcherTitle = regexPatternForTitle.matcher(content);
+        if(matcherTitle.find()){
+            return Integer.valueOf(matcherTitle.group(1));
+        }
+        return null;
+    }
+    public static List<String> getRecipientsFromContent(String content){
+        var regexPatternForTitle = Pattern.compile(":::((.*|\\n|\\r)+):::");
+        Matcher matcherTitle = regexPatternForTitle.matcher(content);
+        if(matcherTitle.find()){
+            return Arrays.stream(matcherTitle.group(1).split(",")).map(String::trim).collect(Collectors.toList());
         }
         return null;
     }

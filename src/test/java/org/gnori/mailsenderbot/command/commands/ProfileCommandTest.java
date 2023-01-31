@@ -1,6 +1,6 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
-import org.gnori.mailsenderbot.command.commands.ProfileCommand;
+import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
@@ -12,12 +12,12 @@ import java.util.List;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForProfileMessage;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForProfileMessage;
 
-public class ProfileCommandTest extends AbstractCommandTest{
+public class ProfileCommandTest extends AbstractCommandTest {
     private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
     private final AccountDto account = Mockito.mock(AccountDto.class);
 
     @Override
-    String getCommandMessage() {
+    public String getCommandMessage() {
         var id = 12L; // id from abstractTest
 
         Mockito.when(modifyDataBaseService.findAccountById(id)).thenReturn(account);
@@ -28,17 +28,17 @@ public class ProfileCommandTest extends AbstractCommandTest{
     }
 
     @Override
-    List<List<String>> getCallbackData() {
+    public List<List<String>> getCallbackData() {
         return prepareCallbackDataForProfileMessage();
     }
 
     @Override
-    boolean withButton() {
+    public boolean withButton() {
         return true;
     }
 
     @Override
-    Command getCommand() {
+    public Command getCommand() {
         return new ProfileCommand(modifyDataBaseService,getSendBotMessageService());
     }
 

@@ -18,7 +18,7 @@ public class BeforeChangeContentCommand implements Command {
     @Override
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
-        var text ="*Введите новый основной текс: *";
+        var text ="*Введите новый основной текст: *";
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         modifyDataBaseService.updateStateById(chatId, State.CONTENT_PENDING);
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);

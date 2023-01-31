@@ -1,5 +1,6 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
+import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.controller.TelegramBot;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.junit.jupiter.api.Test;
@@ -12,16 +13,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.List;
 
 public abstract class AbstractCommandTest {
-    SendBotMessageService sendBotMessageService = Mockito.mock(SendBotMessageService.class);
+    public SendBotMessageService sendBotMessageService = Mockito.mock(SendBotMessageService.class);
 
     public SendBotMessageService getSendBotMessageService() {
         return sendBotMessageService;
     }
 
-    abstract String getCommandMessage();
-    abstract List<List<String>> getCallbackData();
-    abstract boolean withButton();
-    abstract Command getCommand();
+    public abstract String getCommandMessage();
+    public abstract List<List<String>> getCallbackData();
+    public abstract boolean withButton();
+    public abstract Command getCommand();
 
     @Test
     public void shouldProperlyExecuteCommand() {
@@ -41,7 +42,7 @@ public abstract class AbstractCommandTest {
     }
 
 
-    private static Update prepareUpdate(Long chatId, int messageId){
+    public static Update prepareUpdate(Long chatId, int messageId){
         Update update = new Update();
         CallbackQuery callbackQuery = new CallbackQuery();
         Message message = Mockito.mock(Message.class);

@@ -1,24 +1,24 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
-import org.gnori.mailsenderbot.command.commands.SendCommand;
+import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
 import org.mockito.Mockito;
 
 import java.util.List;
 
-public class SendCommandTest extends AbstractCommandTest{
+public class SendCommandTest extends AbstractCommandTest {
     private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
     private final AccountDto account = Mockito.mock(AccountDto.class);
 
     private String text = "*Выберите способ отправки:*";
     @Override
-    String getCommandMessage() {
+    public String getCommandMessage() {
         return text;
     }
 
     @Override
-    List<List<String>> getCallbackData() {
+    public List<List<String>> getCallbackData() {
         var id = 12L; // id from abstractTest
 
         Mockito.when(modifyDataBaseService.findAccountById(id)).thenReturn(account);
@@ -31,12 +31,12 @@ public class SendCommandTest extends AbstractCommandTest{
     }
 
     @Override
-    boolean withButton() {
+    public boolean withButton() {
         return true;
     }
 
     @Override
-    Command getCommand() {
+    public Command getCommand() {
         return new SendCommand(getSendBotMessageService(),modifyDataBaseService);
     }
 }

@@ -1,6 +1,6 @@
-package org.gnori.mailsenderbot.command;
+package org.gnori.mailsenderbot.command.commands;
 
-import org.gnori.mailsenderbot.command.commands.CreateMailingCommand;
+import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.mockito.Mockito;
@@ -14,7 +14,7 @@ public class CreateMailingCommandTest extends AbstractCommandTest {
     private MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
 
     @Override
-    String getCommandMessage() {
+    public String getCommandMessage() {
         var id = 12L; // id from abstractTest
         var message = new Message();
 
@@ -23,17 +23,17 @@ public class CreateMailingCommandTest extends AbstractCommandTest {
     }
 
     @Override
-    List<List<String>> getCallbackData() {
+    public List<List<String>> getCallbackData() {
         return prepareCallbackDataForCreateMailingMessage();
     }
 
     @Override
-    boolean withButton() {
+    public boolean withButton() {
         return true;
     }
 
     @Override
-    Command getCommand() {
+    public Command getCommand() {
         return new CreateMailingCommand(getSendBotMessageService(),messageRepository);
     }
 }
