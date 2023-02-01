@@ -1,5 +1,6 @@
 package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
+import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.repository.MessageRepository;
@@ -20,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.gnori.mailsenderbot.utils.UtilsCommand.*;
-
+@Log4j
 public class AfterDownloadMessageCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -40,6 +41,7 @@ public class AfterDownloadMessageCommand implements Command {
         var lastMessageId = update.getMessage().getMessageId() - 1;
         var newCallbackData = prepareCallbackDataForCreateMailingMessage();
         var message = messageRepository.getMessage(chatId);
+        var textForOld = "❌Пришлите файл в формате .txt";
 
         if (update.getMessage().hasDocument()) {
             var newDocument = update.getMessage().getDocument();
@@ -53,12 +55,12 @@ public class AfterDownloadMessageCommand implements Command {
             message.setTitle(titleForMessage);
             message.setText(textForMessage);
             messageRepository.putMessage(chatId,message);
-
+            textForOld = "✔Успешно";
         }
         var text = prepareTextForPreviewMessage(message);
 
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
-        sendBotMessageService.executeEditMessage(chatId,lastMessageId,"✔Успешно", Collections.emptyList(),false);
+        sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
 
     }
@@ -66,22 +68,12 @@ public class AfterDownloadMessageCommand implements Command {
     private String getContent(Long id, Document doc) {
         StringBuilder content = new StringBuilder();
             var document = fileService.processMail(id, doc);
-
-//            try (var reader = new FileReader(document.getFile())) {
-//                var buffer = new char[256];
-//                int constraint;
-//                while ((constraint = reader.read(buffer)) > 0) {
-//
-//                    if (constraint < 256) {
-//                        buffer = Arrays.copyOf(buffer, constraint);
-//                    }
-//                    content.append(buffer.toString());
-//                }
                 try {
                     content.append(Files.readString(document.getFile().toPath(), StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                //TODO error
+            } catch (IOException | NullPointerException e) {
+                log.error(e);
             }
+
             return content.toString();
     }
 

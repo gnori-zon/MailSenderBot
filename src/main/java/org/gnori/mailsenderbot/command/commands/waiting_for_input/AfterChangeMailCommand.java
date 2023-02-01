@@ -23,7 +23,7 @@ public class AfterChangeMailCommand implements Command {
 
     @Override
     public void execute(Update update) {
-        var mail = update.getMessage().getText();
+        var mail = update.getMessage().getText().trim();
         var chatId = update.getMessage().getChatId();
         var textForOldMessage = "";
 
@@ -35,10 +35,10 @@ public class AfterChangeMailCommand implements Command {
             } catch (DataIntegrityViolationException e) {
                 textForOldMessage = "❌Такой mail уже используется, попробуйте снова";
             }
-            modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         }else {
             textForOldMessage = "❌Некорректный mail, попробуйте снова";
         }
+        modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         var lastMessageId = update.getMessage().getMessageId() - 1;
         var account = modifyDataBaseService.findAccountById(chatId);
         var text = prepareTextForProfileMessage(account);

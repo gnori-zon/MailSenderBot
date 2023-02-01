@@ -35,7 +35,6 @@ public class AfterChangeKeyForMailCommand implements Command {
         if(newKey!=null) {
             newKey = cryptoTool.encrypt(newKey);
             modifyDataBaseService.updateKeyForMailById(chatId, newKey);
-            modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         }else{
             textForOld = "❌Необходимо ввести ключ, попробуйте снова";
         }
@@ -45,6 +44,7 @@ public class AfterChangeKeyForMailCommand implements Command {
         var text = prepareTextForProfileMessage(account);
         var newCallbackData = prepareCallbackDataForProfileMessage();
 
+        modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
 
