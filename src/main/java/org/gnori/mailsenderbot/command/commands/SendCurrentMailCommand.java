@@ -13,7 +13,8 @@ import javax.mail.AuthenticationFailedException;
 import javax.mail.internet.AddressException;
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class SendCurrentMailCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -37,22 +38,23 @@ public class SendCurrentMailCommand implements Command {
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var messageToSend = messageRepository.getMessage(chatId);
+        var textForWaiting = prepareTextForWaitingForConcreteSendingMessage();
 
-        sendBotMessageService.executeEditMessage(chatId, messageId, "Производится отправка...🛫", Collections.emptyList(), false);
+        sendBotMessageService.executeEditMessage(chatId, messageId, textForWaiting, Collections.emptyList(), false);
 
         int sendResult = 0;
-        var text = "неотправлено:❌";
+        var text = prepareTextForBadConcreteSendingMessage();
         try {
             sendResult = mailSenderService.sendWithUserMail(chatId, messageToSend);
             if (sendResult == 1) {
-                text = "отправлено✔";
+                text = prepareTextForSuccessConcreteSendingMessage();
                 createAndAddMessageSentRecord(chatId, messageToSend);
                 messageRepository.removeMessage(chatId);
             }
         } catch (AddressException | AuthenticationFailedException e) {
-            text = "неотправлено:❌"+e.getMessage();
+            text += e.getMessage();
         } finally {
-            text += "\nВыберите необходимый пункт👇🏿";
+            text += "\n"+prepareTextForBeginningMessage();
 
             sendBotMessageService.executeEditMessage(chatId, messageId, text, newCallbackData, false);
         }

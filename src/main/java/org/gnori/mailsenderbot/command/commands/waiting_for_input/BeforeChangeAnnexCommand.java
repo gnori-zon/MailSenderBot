@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeAnnexMessage;
+
 public class BeforeChangeAnnexCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -20,8 +22,9 @@ public class BeforeChangeAnnexCommand implements Command {
     @Override
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
-        var text ="*Введите новое приложение (фото/файл): *";
+        var text = prepareTextForBeforeChangeAnnexMessage();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
+
         modifyDataBaseService.updateStateById(chatId, State.ANNEX_PENDING);
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);
     }

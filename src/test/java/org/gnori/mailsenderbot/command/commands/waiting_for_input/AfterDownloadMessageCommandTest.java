@@ -18,8 +18,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.File;
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class AfterDownloadMessageCommandTest {
     private final SendBotMessageService sendBotMessageService = Mockito.mock(SendBotMessageServiceImpl.class);
@@ -29,12 +29,12 @@ public class AfterDownloadMessageCommandTest {
 
     @Test
     public void positiveTest(){
-        test("✔Успешно",true);
+        test(prepareSuccessTextForChangingLastMessage(),true);
     }
 
     @Test
     public void docIsAbsentTest(){
-        test("❌Пришлите файл в формате .txt",false);
+        test(prepareTextForAfterBadDownloadMessage(),false);
     }
 
     private void test(String textForOld, boolean isPositive){

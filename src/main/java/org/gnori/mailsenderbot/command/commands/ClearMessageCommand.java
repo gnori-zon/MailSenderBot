@@ -8,8 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
 
 public class ClearMessageCommand implements Command {
     private final MessageRepository messageRepository;
@@ -26,10 +27,11 @@ public class ClearMessageCommand implements Command {
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var message = new Message();
         var text = prepareTextForPreviewMessage(message);
+        var textForLatMessage = prepareSuccessTextForChangingLastMessage();
         var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
         messageRepository.putMessage(chatId,message);
-        sendBotMessageService.executeEditMessage(chatId,messageId,"✔Успешно", Collections.emptyList(),false);
+        sendBotMessageService.executeEditMessage(chatId,messageId,textForLatMessage, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
     }
 }

@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Table(name = "account")
 public class Account {
     @Id
-    //TODO chatId telegram
     private Long id;
     @Column(unique = true)
     private String email;

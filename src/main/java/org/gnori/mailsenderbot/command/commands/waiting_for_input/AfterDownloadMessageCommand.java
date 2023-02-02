@@ -10,17 +10,15 @@ import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.*;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.FileDataParser.*;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+
 @Log4j
 public class AfterDownloadMessageCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -41,7 +39,7 @@ public class AfterDownloadMessageCommand implements Command {
         var lastMessageId = update.getMessage().getMessageId() - 1;
         var newCallbackData = prepareCallbackDataForCreateMailingMessage();
         var message = messageRepository.getMessage(chatId);
-        var textForOld = "❌Пришлите файл в формате .txt";
+        var textForOld = prepareTextForAfterBadDownloadMessage();
 
         if (update.getMessage().hasDocument()) {
             var newDocument = update.getMessage().getDocument();
@@ -55,7 +53,7 @@ public class AfterDownloadMessageCommand implements Command {
             message.setTitle(titleForMessage);
             message.setText(textForMessage);
             messageRepository.putMessage(chatId,message);
-            textForOld = "✔Успешно";
+            textForOld = prepareTextForAfterSuccessDownloadMessage();
         }
         var text = prepareTextForPreviewMessage(message);
 

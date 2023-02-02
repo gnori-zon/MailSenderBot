@@ -9,12 +9,11 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import javax.mail.AuthenticationFailedException;
-import javax.mail.SendFailedException;
 import javax.mail.internet.AddressException;
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class SendAnonymouslyCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -38,20 +37,22 @@ public class SendAnonymouslyCommand implements Command {
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var messageToSend = messageRepository.getMessage(chatId);
+        var textForWaiting = prepareTextForWaitingForConcreteSendingMessage();
 
-        sendBotMessageService.executeEditMessage(chatId, messageId, "Производится отправка...🛫", Collections.emptyList(), false);
-        var text = "неотправлено:❌";
+
+        sendBotMessageService.executeEditMessage(chatId, messageId, textForWaiting, Collections.emptyList(), false);
+        var text = prepareTextForBadConcreteSendingMessage();
         try {
             var sendResult = mailSenderService.sendAnonymously(chatId, messageToSend);
             if (sendResult == 1) {
-                text = "отправлено✔";
+                text = prepareTextForSuccessConcreteSendingMessage();
                 createAndAddMessageSentRecord(chatId, messageToSend);
                 messageRepository.removeMessage(chatId);
             }
         } catch (AddressException e) {
-            text = "неотправлено:❌" + e.getMessage();
+            text += e.getMessage();
         } finally {
-            text += "\nВыберите необходимый пункт👇🏿";
+            text += "\n"+prepareTextForBeginningMessage();
 
             sendBotMessageService.executeEditMessage(chatId, messageId, text, newCallbackData, false);
         }

@@ -1,24 +1,22 @@
 package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
-import org.gnori.mailsenderbot.command.commands.RegistrationCommand;
-import org.gnori.mailsenderbot.command.commands.UnknownCommand;
-import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForLastForUnknownMessage;
 
 public class UnknownCommandTest extends AbstractCommandTest{
     @Override
     public String getCommandMessage() {
-        return "Выберите необходимый пункт👇🏿";
+        return prepareTextForBeginningMessage();
     }
 
     @Override
@@ -41,8 +39,7 @@ public class UnknownCommandTest extends AbstractCommandTest{
     public void shouldProperlyExecuteCommand() {
         var chatId = 12L;
         var messageId = 12;
-        var textForOld = "Данная команда не реализована👀\n" +
-                "Пожалуйста, используйте кнопки👌";
+        var textForOld = prepareTextForLastForUnknownMessage();
         var text = getCommandMessage();
         var newCallbackData = getCallbackData();
         var withButton = withButton();

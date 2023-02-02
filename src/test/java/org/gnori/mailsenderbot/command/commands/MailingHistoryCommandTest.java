@@ -9,10 +9,10 @@ import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForMessage;
 
 public class MailingHistoryCommandTest extends AbstractCommandTest {
-    private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
+    private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
 
     @Override
     public String getCommandMessage() {

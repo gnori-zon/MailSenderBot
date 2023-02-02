@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeContentMessage;
+
 public class BeforeChangeContentCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -18,8 +20,9 @@ public class BeforeChangeContentCommand implements Command {
     @Override
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
-        var text ="*Введите новый основной текст: *";
+        var text = prepareTextForBeforeChangeContentMessage();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
+
         modifyDataBaseService.updateStateById(chatId, State.CONTENT_PENDING);
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);
     }

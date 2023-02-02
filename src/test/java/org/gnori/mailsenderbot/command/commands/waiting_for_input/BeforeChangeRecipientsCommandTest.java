@@ -4,11 +4,12 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.RECIPIENTS_PENDING;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeRecipientsMessage;
 
 public class BeforeChangeRecipientsCommandTest extends AbstractBeforeCommandTest{
     @Override
     public String getCommandMessage() {
-        return"*Введите новых получателей : *";
+        return prepareTextForBeforeChangeRecipientsMessage();
     }
 
     @Override

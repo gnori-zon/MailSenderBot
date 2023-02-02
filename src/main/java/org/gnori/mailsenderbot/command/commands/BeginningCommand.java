@@ -7,8 +7,9 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.checkedRegistrationCommand;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
 
 public class BeginningCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -22,7 +23,7 @@ public class BeginningCommand implements Command {
     @Override
     public void execute(Update update) {
         var chatId =  update.getCallbackQuery().getMessage().getChatId();
-        var text = "Выберите необходимый пункт👇🏿";
+        var text = prepareTextForBeginningMessage();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var isRegistrationCommand = checkedRegistrationCommand(update.getCallbackQuery().getMessage());

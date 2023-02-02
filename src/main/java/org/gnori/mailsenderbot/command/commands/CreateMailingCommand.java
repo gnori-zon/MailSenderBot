@@ -6,8 +6,8 @@ import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
 
 public class CreateMailingCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -34,15 +34,6 @@ public class CreateMailingCommand implements Command {
             var newMessage = new Message();
             messageRepository.putMessage(id, newMessage);
             message = newMessage;
-            // for testing
-//            newMessage.setTitle(" TITLE ");
-//            newMessage.setText(" Подписку оформите а ну что вам сложно чтолим а Москва ээто город и река, да да суперпозиция. И да да счастье в деньгах");
-//            byte o = 0;
-//            byte i = 1;
-//            byte[] annex = {i,o,o,o,o,i,i,o,i,o,i,o,i,o,i,i,o,i,i,i,o};
-//            newMessage.setAnnex(annex);
-//            newMessage.setCountForRecipient(2);
-//            newMessage.setRecipients(List.of("asdasd@bk.ru", "13a@gmail.com", "fff00x@yandex.ru","asdasd@bk.ru", "13a@gmail.com", "fff00x@yandex.ru","asdasd@bk.ru", "13a@gmail.com", "fff00x@yandex.ru"));
         }
         return prepareTextForPreviewMessage(message);
     }

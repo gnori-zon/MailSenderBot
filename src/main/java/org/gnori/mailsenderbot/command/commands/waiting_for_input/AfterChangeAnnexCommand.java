@@ -9,8 +9,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
+
 
 public class AfterChangeAnnexCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
@@ -29,6 +31,7 @@ public class AfterChangeAnnexCommand implements Command {
     public void execute(Update update) {
         var chatId = update.getMessage().getChatId();
         var message = messageRepository.getMessage(chatId);
+        var textForOld = prepareSuccessTextForChangingLastMessage();
 
         if(update.getMessage().hasDocument()){
             var newDocument = update.getMessage().getDocument();
@@ -51,7 +54,7 @@ public class AfterChangeAnnexCommand implements Command {
         var text = prepareTextForMessage(chatId);
         var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
-        sendBotMessageService.executeEditMessage(chatId,lastMessageId,"✔Успешно", Collections.emptyList(),false);
+        sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
     }
 

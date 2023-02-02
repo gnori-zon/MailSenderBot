@@ -9,8 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class AfterChangeCountForRecipientCommand implements Command {
         private final ModifyDataBaseService modifyDataBaseService;
@@ -38,9 +38,9 @@ public class AfterChangeCountForRecipientCommand implements Command {
             try {
                 message.setCountForRecipient(Integer.parseInt(newCount));
                 messageRepository.putMessage(chatId,message);
-                textForOld = "✔Успешно";
+                textForOld = prepareSuccessTextForChangingLastMessage();
             }catch (NumberFormatException e){
-                textForOld = "❌Необходимо ввести число, попробуйте снова";
+                textForOld = prepareTextForAfterNotNumberChangeCountForRecipientsMessage();
             }
 
             var lastMessageId = update.getMessage().getMessageId() - 1;

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForProfileMessage;
-
 @DisplayName("Unit-level testing for SendBotMessageServiceImpl")
 public class SendBotMessageServiceImplTest {
     private TelegramBot telegramBot;

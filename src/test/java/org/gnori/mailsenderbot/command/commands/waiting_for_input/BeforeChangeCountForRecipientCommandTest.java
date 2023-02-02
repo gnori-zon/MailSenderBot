@@ -4,11 +4,12 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.COUNT_FOR_RECIPIENT_PENDING;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeCountForRecipientsMessage;
 
 public class BeforeChangeCountForRecipientCommandTest extends AbstractBeforeCommandTest{
     @Override
     public String getCommandMessage() {
-        return "*Введите новое количество сообщений каждому получателю: *";
+        return prepareTextForBeforeChangeCountForRecipientsMessage();
     }
 
     @Override

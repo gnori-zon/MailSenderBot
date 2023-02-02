@@ -1,15 +1,11 @@
 package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
-import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForRegistrationMessage;
 
 public class RegistrationCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
@@ -22,7 +18,7 @@ public class RegistrationCommand implements Command {
     public void execute(Update update) {
         var message = update.getMessage();
         var chatId = message.getChatId();
-        var textForMessage = "Кликните по кнопке, для начала работы";
+        var textForMessage = prepareTextForRegistrationMessage();
         var newCallbackData = prepareCallbackDataForRegistrationMessage();
 
         sendBotMessageService.createChangeableMessage(chatId,textForMessage,newCallbackData,false);

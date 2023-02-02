@@ -9,6 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.*;
 
 public class AfterChangeMailCommand implements Command {
@@ -31,12 +33,12 @@ public class AfterChangeMailCommand implements Command {
         if(emailIsValid) {
             try {
                 modifyDataBaseService.updateMailById(chatId, mail);
-                textForOldMessage = "✔Успешно";
+                textForOldMessage = prepareSuccessTextForChangingLastMessage();
             } catch (DataIntegrityViolationException e) {
-                textForOldMessage = "❌Такой mail уже используется, попробуйте снова";
+                textForOldMessage = prepareTextForAfterMailIsExistChangeMailMessage();
             }
         }else {
-            textForOldMessage = "❌Некорректный mail, попробуйте снова";
+            textForOldMessage = prepareTextForAfterInvalidMailChangeMailMessage();
         }
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         var lastMessageId = update.getMessage().getMessageId() - 1;

@@ -2,6 +2,8 @@ package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+
 public class AfterChangeRecipientsCommandTest extends AbstractAfterChangeItemMessageCommandTest{
     @Override
     public Command getCommand() {
@@ -15,6 +17,6 @@ public class AfterChangeRecipientsCommandTest extends AbstractAfterChangeItemMes
 
     @Override
     public String getTextForOldMessage() {
-        return "✔Успешно";
+        return prepareSuccessTextForChangingLastMessage();
     }
 }

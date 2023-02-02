@@ -4,12 +4,13 @@ import org.gnori.mailsenderbot.command.Command;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForChangeItemMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForChangeItemMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForChangeItemMessage;
 
 public class ChangeItemCommandTest extends AbstractCommandTest {
     @Override
     public String getCommandMessage() {
-        return "*Выберите пункт, для изменения:*";
+        return prepareTextForChangeItemMessage();
     }
 
     @Override

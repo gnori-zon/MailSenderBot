@@ -1,7 +1,6 @@
 package org.gnori.mailsenderbot.service;
 
 import org.gnori.mailsenderbot.controller.TelegramBot;
-import org.gnori.mailsenderbot.entity.enums.State;
 
 import java.util.List;
 

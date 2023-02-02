@@ -9,11 +9,11 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
 
 public class AfterChangeAnnexCommandTest extends AbstractAfterChangeItemMessageCommandTest{
     @Override
@@ -28,7 +28,7 @@ public class AfterChangeAnnexCommandTest extends AbstractAfterChangeItemMessageC
 
     @Override
     public String getTextForOldMessage() {
-        return "✔Успешно";
+        return prepareSuccessTextForChangingLastMessage();
     }
     @Override
     public void shouldProperlyExecuteCommand() {

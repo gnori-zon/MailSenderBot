@@ -1,8 +1,6 @@
 package org.gnori.mailsenderbot.controller;
 
 import lombok.extern.log4j.Log4j;
-import org.checkerframework.checker.units.qual.A;
-import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;

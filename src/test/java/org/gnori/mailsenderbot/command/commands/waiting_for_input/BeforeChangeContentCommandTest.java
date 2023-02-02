@@ -4,11 +4,12 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.CONTENT_PENDING;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeContentMessage;
 
 public class BeforeChangeContentCommandTest extends AbstractBeforeCommandTest{
     @Override
     public String getCommandMessage() {
-        return "*Введите новый основной текст: *";
+        return prepareTextForBeforeChangeContentMessage();
     }
 
     @Override

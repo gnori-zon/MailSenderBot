@@ -7,11 +7,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.gnori.mailsenderbot.entity.enums.State.ANNEX_PENDING;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeAnnexMessage;
 
 public class BeforeChangeAnnexCommandTest extends AbstractBeforeCommandTest {
     @Override
     public String getCommandMessage() {
-        return "*Введите новое приложение (фото/файл): *";
+        return prepareTextForBeforeChangeAnnexMessage();
     }
 
     @Override

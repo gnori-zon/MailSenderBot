@@ -1,22 +1,20 @@
 package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
-import org.gnori.mailsenderbot.command.commands.RegistrationCommand;
-import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForRegistrationMessage;
 
 public class RegistrationCommandTest extends AbstractCommandTest {
     @Override
     public String getCommandMessage() {
-        return "Кликните по кнопке, для начала работы";
+        return prepareTextForRegistrationMessage();
     }
 
     @Override

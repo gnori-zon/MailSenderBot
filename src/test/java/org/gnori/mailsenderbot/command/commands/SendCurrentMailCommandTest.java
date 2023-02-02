@@ -16,12 +16,13 @@ import javax.mail.AuthenticationFailedException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class SendCurrentMailCommandTest extends AbstractCommandTest {
-    private MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
-    private MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
-    private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
+    private final MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
+    private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
 
     @SneakyThrows
     @Override
@@ -36,7 +37,7 @@ public class SendCurrentMailCommandTest extends AbstractCommandTest {
             throw new RuntimeException(e);
         }
 
-        return "неотправлено:❌"+"\nВыберите необходимый пункт👇🏿";
+        return prepareTextForBadConcreteSendingMessage()+"\n"+prepareTextForBeginningMessage();
     }
 
     @Override
@@ -63,7 +64,7 @@ public class SendCurrentMailCommandTest extends AbstractCommandTest {
         var id = 12L; // id from abstractTest
         int messageId = 12;
         var message = Mockito.mock(Message.class);
-        var text = "отправлено✔" + "\nВыберите необходимый пункт👇🏿";
+        var text = prepareTextForSuccessConcreteSendingMessage()+"\n"+prepareTextForBeginningMessage();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var countMessages = message.getRecipients().size() * message.getCountForRecipient();
         var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();
@@ -81,7 +82,7 @@ public class SendCurrentMailCommandTest extends AbstractCommandTest {
 
         command.execute(update);
 
-        Mockito.verify(sendBotMessageService).executeEditMessage(id, messageId, "Производится отправка...🛫", Collections.emptyList(), false);
+        Mockito.verify(sendBotMessageService).executeEditMessage(id, messageId, prepareTextForWaitingForConcreteSendingMessage(), Collections.emptyList(), false);
         Mockito.verify(sendBotMessageService).executeEditMessage(id, messageId, text, newCallbackData, false);
         Mockito.verify(messageRepository).removeMessage(id);
         Mockito.verify(modifyDataBaseService).addMessageSentRecord(id, messageSentRecord);

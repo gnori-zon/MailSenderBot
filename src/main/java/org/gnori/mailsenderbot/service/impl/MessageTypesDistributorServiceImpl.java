@@ -57,7 +57,6 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processTextMessage(Update update) {
-        //TODO implements invoke RegistrationCommand if account not found in db
         var account = modifyDataBaseService.findAccountById(update.getMessage().getChatId());
         if(account!=null){
             if(State.KEY_FOR_MAIL_PENDING.equals(account.getState())){
@@ -106,6 +105,6 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processUnsupportedMessageTypeView(Update update) {
-        //TODO implements this
+        commandContainer.retrieveCommand("unknownCommand").execute(update);
     }
 }

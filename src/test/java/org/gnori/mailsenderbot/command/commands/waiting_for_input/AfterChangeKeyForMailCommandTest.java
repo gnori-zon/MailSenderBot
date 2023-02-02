@@ -14,8 +14,8 @@ import org.mockito.Mockito;
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.command.commands.waiting_for_input.AfterChangeMailCommandTest.prepareUpdateWithMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForProfileMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class AfterChangeKeyForMailCommandTest {
     private final ModifyDataBaseService modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
@@ -25,7 +25,7 @@ public class AfterChangeKeyForMailCommandTest {
     @Test
     public void positiveTest(){
         var key = "aksjdasikjd123";
-        var textForOldMessage = "✔Успешно";
+        var textForOldMessage = prepareSuccessTextForChangingLastMessage();
         var chatId = 12L;
         var lastMessageId = 12;
         test(chatId,textForOldMessage,lastMessageId,key);
@@ -33,7 +33,7 @@ public class AfterChangeKeyForMailCommandTest {
     }
     @Test
     public void emptyKeyTest(){
-        var textForOldMessage = "❌Необходимо ввести ключ, попробуйте снова";
+        var textForOldMessage = prepareTextForAfterEmptyKeyChangeKeyForMailMessage();
         var chatId = 12L;
         var lastMessageId = 12;
         test(chatId,textForOldMessage,lastMessageId,null);

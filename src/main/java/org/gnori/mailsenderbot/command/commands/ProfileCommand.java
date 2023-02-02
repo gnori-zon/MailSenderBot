@@ -6,8 +6,8 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForProfileMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForProfileMessage;
 
 public class ProfileCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;

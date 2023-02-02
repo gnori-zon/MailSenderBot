@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeCountForRecipientsMessage;
+
 public class BeforeChangeCountForRecipientCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -20,7 +22,7 @@ public class BeforeChangeCountForRecipientCommand implements Command {
     @Override
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
-        var text ="*Введите новое количество сообщений каждому получателю: *";
+        var text = prepareTextForBeforeChangeCountForRecipientsMessage();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         modifyDataBaseService.updateStateById(chatId, State.COUNT_FOR_RECIPIENT_PENDING);
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);

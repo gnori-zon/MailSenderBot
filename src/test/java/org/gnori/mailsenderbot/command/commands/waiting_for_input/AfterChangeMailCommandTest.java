@@ -9,15 +9,14 @@ import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
 import org.gnori.mailsenderbot.service.impl.SendBotMessageServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForProfileMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class AfterChangeMailCommandTest {
     private final ModifyDataBaseService modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
@@ -25,7 +24,7 @@ public class AfterChangeMailCommandTest {
     @Test
     public void positiveTest(){
         var incomingMessage = "asdf@gmail.com";
-        var textForOldMessage = "✔Успешно";
+        var textForOldMessage = prepareSuccessTextForChangingLastMessage();
         var chatId = 12L;
         var lastMessageId = 12;
         var newCallbackData = prepareCallbackDataForProfileMessage();
@@ -37,7 +36,7 @@ public class AfterChangeMailCommandTest {
     @Test
     public void invalidMailTest(){
         var incomingMessage = "fal[skfa";
-        var textForOldMessage = "❌Некорректный mail, попробуйте снова";
+        var textForOldMessage = prepareTextForAfterInvalidMailChangeMailMessage();
         var chatId = 12L;
         var lastMessageId = 12;
         var newCallbackData = prepareCallbackDataForProfileMessage();

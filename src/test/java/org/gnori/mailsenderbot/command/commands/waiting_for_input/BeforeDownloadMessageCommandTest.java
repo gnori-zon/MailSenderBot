@@ -4,15 +4,12 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.DOWNLOAD_MESSAGE_PENDING;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeDownloadMessage;
 
 public class BeforeDownloadMessageCommandTest extends AbstractBeforeCommandTest{
     @Override
     public String getCommandMessage() {
-        return "*Загрузите письмо в формате .txt\nШаблон: *"+
-                "\n\n ###Заголовок###"+
-                "\n ///Текст письма///"+
-                "\n ===Количество писем каждому==="+
-                "\n :::Получатели через \",\":::";
+        return prepareTextForBeforeDownloadMessage();
     }
 
     @Override

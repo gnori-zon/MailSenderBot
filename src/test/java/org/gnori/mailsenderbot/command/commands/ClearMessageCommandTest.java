@@ -10,11 +10,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
 
 public class ClearMessageCommandTest extends AbstractCommandTest {
-    private MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
 
     @Override
     public String getCommandMessage() {
@@ -51,7 +52,7 @@ public class ClearMessageCommandTest extends AbstractCommandTest {
 
         //then
         Mockito.verify(messageRepository).putMessage(chatId,message);
-        Mockito.verify(sendBotMessageService).executeEditMessage(chatId,messageId,"✔Успешно", Collections.emptyList(),false);
+        Mockito.verify(sendBotMessageService).executeEditMessage(chatId,messageId,prepareSuccessTextForChangingLastMessage(), Collections.emptyList(),false);
         Mockito.verify(sendBotMessageService).createChangeableMessage(chatId,text,newCallbackData,withButton);
     }
 }

@@ -1,6 +1,5 @@
 package org.gnori.mailsenderbot.controller;
 
-import org.gnori.mailsenderbot.command.CommandContainer;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

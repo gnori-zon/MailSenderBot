@@ -11,8 +11,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
 
 public class AfterChangeRecipientsCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
@@ -32,6 +33,7 @@ public class AfterChangeRecipientsCommand implements Command {
 
         var newRecipientsRaw = update.getMessage().getText().split(",");
         var chatId = update.getMessage().getChatId();
+        var textForOld = prepareSuccessTextForChangingLastMessage();
 
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
 
@@ -44,7 +46,7 @@ public class AfterChangeRecipientsCommand implements Command {
         var text = prepareTextForMessage(chatId);
         var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
-        sendBotMessageService.executeEditMessage(chatId,lastMessageId,"✔Успешно", Collections.emptyList(),false);
+        sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
     }
 

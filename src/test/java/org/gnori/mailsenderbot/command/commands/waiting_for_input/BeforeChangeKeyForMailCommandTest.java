@@ -4,11 +4,12 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.KEY_FOR_MAIL_PENDING;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeKeyForMailMessage;
 
 public class BeforeChangeKeyForMailCommandTest extends AbstractBeforeCommandTest{
     @Override
     public String getCommandMessage() {
-        return "*Введите новый ключ для mail: *";
+        return prepareTextForBeforeChangeKeyForMailMessage();
     }
 
     @Override

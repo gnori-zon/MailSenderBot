@@ -9,8 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForProfileMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 
 public class AfterChangeKeyForMailCommand implements Command {
 
@@ -31,12 +31,12 @@ public class AfterChangeKeyForMailCommand implements Command {
     public void execute(Update update) {
         var newKey = update.getMessage().getText();
         var chatId = update.getMessage().getChatId();
-        var textForOld = "✔Успешно";
+        var textForOld = prepareSuccessTextForChangingLastMessage();
         if(newKey!=null) {
             newKey = cryptoTool.encrypt(newKey);
             modifyDataBaseService.updateKeyForMailById(chatId, newKey);
         }else{
-            textForOld = "❌Необходимо ввести ключ, попробуйте снова";
+            textForOld = prepareTextForAfterEmptyKeyChangeKeyForMailMessage();
         }
 
         var lastMessageId = update.getMessage().getMessageId() - 1;

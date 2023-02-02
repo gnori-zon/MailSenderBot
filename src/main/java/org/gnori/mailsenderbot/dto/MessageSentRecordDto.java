@@ -1,9 +1,7 @@
 package org.gnori.mailsenderbot.dto;
 
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class MessageSentRecordDto {

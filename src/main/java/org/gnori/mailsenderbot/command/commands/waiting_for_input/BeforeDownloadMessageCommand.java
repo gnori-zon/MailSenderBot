@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeDownloadMessage;
+
 public class BeforeDownloadMessageCommand implements Command{
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -20,12 +22,9 @@ public class BeforeDownloadMessageCommand implements Command{
     @Override
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
-        var text ="*Загрузите письмо в формате .txt\nШаблон: *"+
-                "\n\n ###Заголовок###"+
-                "\n ///Текст письма///"+
-                "\n ===Количество писем каждому==="+
-                "\n :::Получатели через \",\":::";
+        var text = prepareTextForBeforeDownloadMessage();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
+
         modifyDataBaseService.updateStateById(chatId, State.DOWNLOAD_MESSAGE_PENDING);
         sendBotMessageService.executeEditMessage(chatId,messageId,text, Collections.emptyList(),true);
     }

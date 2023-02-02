@@ -7,11 +7,11 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
 
 public class CreateMailingCommandTest extends AbstractCommandTest {
-    private MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
 
     @Override
     public String getCommandMessage() {

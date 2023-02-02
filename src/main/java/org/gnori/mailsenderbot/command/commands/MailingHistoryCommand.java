@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareTextForMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForMessage;
 
 public class MailingHistoryCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;

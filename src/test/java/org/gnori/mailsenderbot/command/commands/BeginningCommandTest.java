@@ -9,15 +9,16 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
 
 @DisplayName("Unit-level testing for BeginningCommandTest")
 public class BeginningCommandTest extends AbstractCommandTest {
-    private ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
+    private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
 
     @Override
     public String getCommandMessage() {
-        return "Выберите необходимый пункт👇🏿";
+        return prepareTextForBeginningMessage();
     }
 
     @Override

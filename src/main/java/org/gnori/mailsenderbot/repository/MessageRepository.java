@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Repository
 public class MessageRepository{
-    private Map<Long, Message> messages= new HashMap<>();
+    private final Map<Long, Message> messages= new HashMap<>();
 
     public Message getMessage(Long id){
         return messages.get(id);

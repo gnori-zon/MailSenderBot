@@ -1,6 +1,5 @@
 package org.gnori.mailsenderbot.dto;
 
-import lombok.*;
 import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.enums.State;
 

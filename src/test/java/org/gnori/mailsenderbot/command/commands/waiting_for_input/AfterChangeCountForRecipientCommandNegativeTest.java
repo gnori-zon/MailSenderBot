@@ -2,6 +2,8 @@ package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 
+import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForAfterNotNumberChangeCountForRecipientsMessage;
+
 public class AfterChangeCountForRecipientCommandNegativeTest extends AbstractAfterChangeItemMessageCommandTest{
     @Override
     public Command getCommand() {
@@ -20,7 +22,7 @@ public class AfterChangeCountForRecipientCommandNegativeTest extends AbstractAft
 
     @Override
     public String getTextForOldMessage() {
-        return "❌Необходимо ввести число, попробуйте снова";
+        return prepareTextForAfterNotNumberChangeCountForRecipientsMessage();
     }
 }
 
