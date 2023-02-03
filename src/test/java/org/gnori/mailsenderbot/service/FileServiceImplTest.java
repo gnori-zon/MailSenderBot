@@ -15,11 +15,13 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 public class FileServiceImplTest {
     FileServiceImpl fileServiceImpl;
     private MessageRepository messageRepository;
+    private FileDownloaderByUrl fileDownloaderByUrl;
 
     @BeforeEach
     public void init(){
         messageRepository = Mockito.mock(MessageRepository.class);
-        fileServiceImpl = new FileServiceImpl(messageRepository);
+        fileDownloaderByUrl = Mockito.mock(FileDownloaderByUrl.class);
+        fileServiceImpl = new FileServiceImpl(messageRepository, fileDownloaderByUrl);
     }
 
     @Test

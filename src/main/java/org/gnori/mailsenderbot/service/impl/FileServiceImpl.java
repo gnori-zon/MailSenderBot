@@ -3,6 +3,7 @@ package org.gnori.mailsenderbot.service.impl;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 import org.gnori.mailsenderbot.repository.MessageRepository;
+import org.gnori.mailsenderbot.service.FileDownloaderByUrl;
 import org.gnori.mailsenderbot.service.FileService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,11 +17,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 @Log4j
 @Service
 public class FileServiceImpl implements FileService {
+    static final String ERROR_TEXT = "Bad response: ";
+
     @Value("${bot.token}")
     private String token;
     @Value("${service.file_info.uri}")
@@ -29,9 +33,11 @@ public class FileServiceImpl implements FileService {
     private String fileStorageUri;
 
     private final MessageRepository messageRepository;
+    private final FileDownloaderByUrl fileDownloaderByUrl;
 
-    public FileServiceImpl(MessageRepository messageRepository) {
+    public FileServiceImpl(MessageRepository messageRepository, FileDownloaderByUrl fileDownloaderByUrl) {
         this.messageRepository = messageRepository;
+        this.fileDownloaderByUrl = fileDownloaderByUrl;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class FileServiceImpl implements FileService {
                 return null;
             }
         } else {
-            log.error("Bad response: " + response);
+            log.error(ERROR_TEXT + response);
             return null;
         }
     }
@@ -69,7 +75,7 @@ public class FileServiceImpl implements FileService {
                 messageRepository.putMessage(id, message);
                 return 1;
             }else {
-                log.error("Bad response: "+ response);
+                log.error(ERROR_TEXT + response);
                 return 0;
             }
     }
@@ -87,7 +93,7 @@ public class FileServiceImpl implements FileService {
             messageRepository.putMessage(id, message);
             return 1;
         }else {
-            log.error("Bad response: "+ response);
+            log.error(ERROR_TEXT + response);
             return 0;
         }
     }
@@ -143,14 +149,11 @@ public class FileServiceImpl implements FileService {
         }catch (MalformedURLException e){
             log.error(e);
         }
-
-        //TODO подумать над оптимизацией
-        if(urlObj!=null) {
-            try (InputStream is = urlObj.openStream()) {
-                return is.readAllBytes();
-            } catch (IOException e) {
-                log.error(e);
-            }
+        var defaultChunkSize = 262144;
+        try {
+            return fileDownloaderByUrl.download(fullUri, defaultChunkSize);
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            log.error(e);
         }
         return null;
     }
