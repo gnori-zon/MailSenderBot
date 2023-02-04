@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 @RequiredArgsConstructor
 @ToString
@@ -18,6 +19,17 @@ public class Message {
 
     private List<String> recipients;
     private Integer countForRecipient = 1;
+    private Date sentDate;
+
+    public Date getSentDate() {
+        return sentDate;
+    }
+    public boolean hasSentDate(){
+        return sentDate!=null;
+    }
+    public void setSentDate(Date sentDate) {
+        this.sentDate = sentDate;
+    }
 
     public String getTitle() {
         return title!=null? title : "";

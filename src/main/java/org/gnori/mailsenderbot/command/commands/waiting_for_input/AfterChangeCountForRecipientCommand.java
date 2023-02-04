@@ -32,8 +32,6 @@ public class AfterChangeCountForRecipientCommand implements Command {
             var chatId = update.getMessage().getChatId();
             var textForOld = "";
 
-            modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
-
             var message = messageRepository.getMessage(chatId);
             try {
                 message.setCountForRecipient(Integer.parseInt(newCount));
@@ -47,6 +45,7 @@ public class AfterChangeCountForRecipientCommand implements Command {
             var text = prepareTextForMessage(chatId);
             var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
+            modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
             sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
             sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
         }

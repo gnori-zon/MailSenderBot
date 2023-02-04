@@ -33,8 +33,6 @@ public class AfterChangeTitleCommand implements Command {
         var chatId = update.getMessage().getChatId();
         var textForOld = prepareSuccessTextForChangingLastMessage();
 
-        modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
-
         var message = messageRepository.getMessage(chatId);
         message.setTitle(newTitle);
         messageRepository.putMessage(chatId,message);
@@ -43,6 +41,7 @@ public class AfterChangeTitleCommand implements Command {
         var text = prepareTextForMessage(chatId);
         var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
+        modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
         sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
     }

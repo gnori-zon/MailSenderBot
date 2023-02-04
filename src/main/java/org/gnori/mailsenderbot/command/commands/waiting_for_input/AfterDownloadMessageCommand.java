@@ -13,11 +13,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.Date;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.FileDataParser.*;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.UtilsCommand.getSimpleDateFormat;
 
 @Log4j
 public class AfterDownloadMessageCommand implements Command {
@@ -48,10 +51,18 @@ public class AfterDownloadMessageCommand implements Command {
             var textForMessage =  getTextFromContent(content);
             var recipients = getRecipientsFromContent(content);
             var countForRecipient = getCountForRecipientFromContent(content);
+            var sentDateRaw = getSentDateFromContent(content);
             message.setCountForRecipient(countForRecipient);
             message.setRecipients(recipients);
             message.setTitle(titleForMessage);
             message.setText(textForMessage);
+            try {
+                var dateFormat = getSimpleDateFormat();
+                var newSentDate = dateFormat.parse(sentDateRaw);
+                if(new Date().compareTo(newSentDate) < 0) {
+                    message.setSentDate(newSentDate);
+                }
+            }catch (ParseException ignored){}
             messageRepository.putMessage(chatId,message);
             textForOld = prepareTextForAfterSuccessDownloadMessage();
         }

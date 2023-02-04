@@ -40,4 +40,13 @@ public class FileDataParser {
         }
         return null;
     }
+
+    public static String getSentDateFromContent(String content){
+        var regexPatternForTitle = Pattern.compile("---(.*)---");
+        Matcher matcherTitle = regexPatternForTitle.matcher(content);
+        if(matcherTitle.find()){
+            return matcherTitle.group(1);
+        }
+        return null;
+    }
 }

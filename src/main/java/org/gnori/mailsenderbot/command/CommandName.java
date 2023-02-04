@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.command;
 
 public enum CommandName {
     REGISTRATION("/start"),
+    HELP("HELP"),
     BEGINNING("BEGINNING"),
     BACK("BACK"),
     MAILING_HISTORY("MAILING_HISTORY"),
@@ -27,6 +28,8 @@ public enum CommandName {
     SEND_ANONYMOUSLY("SEND_ANONYMOUSLY"),
     SEND_CURRENT_MAIL("SEND_CURRENT_MAIL"),
     SEND("SEND"),
+    SENT_DATE_PENDING("SENT_DATE_PENDING"),
+    CHANGE_ITEM_SENT_DATE("CHANGE_ITEM_SENT_DATE"),
     PROFILE("PROFILE");
 
     private final String commandName;

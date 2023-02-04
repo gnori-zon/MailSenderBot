@@ -49,6 +49,9 @@ public class CommandContainer {
                 .put(CLEAR_MESSAGE.getCommandName(), new ClearMessageCommand(sendBotMessageService,messageRepository))
                 .put(DOWNLOAD_MESSAGE.getCommandName(), new BeforeDownloadMessageCommand(sendBotMessageService,modifyDataBaseService))
                 .put(DOWNLOAD_MESSAGE_PENDING.getCommandName(), new AfterDownloadMessageCommand(sendBotMessageService,modifyDataBaseService, messageRepository, fileService ))
+                .put(CHANGE_ITEM_SENT_DATE.getCommandName(), new BeforeChangeSentDateCommand(sendBotMessageService,modifyDataBaseService))
+                .put(SENT_DATE_PENDING.getCommandName(), new AfterChangeSentDateCommand(modifyDataBaseService,sendBotMessageService,messageRepository))
+                .put(HELP.getCommandName(), new HelpCommand(sendBotMessageService))
                 .build();
         unknownCommand = new UnknownCommand(sendBotMessageService);
     }

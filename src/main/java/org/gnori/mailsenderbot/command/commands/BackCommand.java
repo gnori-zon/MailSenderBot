@@ -7,6 +7,7 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.command.CommandName.*;
+import static org.gnori.mailsenderbot.utils.UrlDatePreparer.prepareUrlsForHelpMessage;
 
 public class BackCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
@@ -23,6 +24,7 @@ public class BackCommand implements Command {
         var originalMessage = update.getCallbackQuery().getMessage();
         var firstCallBackDataFromOriginal = originalMessage.getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData();
         var chatId = originalMessage.getChatId();
+        var firstUrlText =originalMessage.getReplyMarkup().getKeyboard().get(0).get(0).getText();
 
         if (CHANGE_MAIL.getCommandName().equals(firstCallBackDataFromOriginal)){
             update.getCallbackQuery().setData(BEGINNING.getCommandName());
@@ -41,6 +43,7 @@ public class BackCommand implements Command {
             }
             if(account!=null && (State.TITLE_PENDING.equals(account.getState()) ||
                                  State.CONTENT_PENDING.equals(account.getState()) ||
+                                 State.SENT_DATE_PENDING.equals(account.getState()) ||
                                  State.ANNEX_PENDING.equals(account.getState()) ||
                                  State.RECIPIENTS_PENDING.equals(account.getState()) ||
                                  State.DOWNLOAD_MESSAGE_PENDING.equals(account.getState()) ||
@@ -55,6 +58,10 @@ public class BackCommand implements Command {
         }else if (CHANGE_ITEM_TITLE.getCommandName().equals(firstCallBackDataFromOriginal) ||
                 SEND_ANONYMOUSLY.getCommandName().equals(firstCallBackDataFromOriginal)) {
             update.getCallbackQuery().setData(CREATE_MAILING.getCommandName());
+            messageTypesDistributorService.distributeMessageByType(update);
+        }else if (prepareUrlsForHelpMessage().get(1).get(0).equals(firstUrlText)){
+            update.getCallbackQuery().setData(PROFILE.getCommandName());
+            modifyDataBaseService.updateStateById(chatId,State.NOTHING_PENDING);
             messageTypesDistributorService.distributeMessageByType(update);
         }
     }

@@ -7,16 +7,16 @@ import java.util.List;
 public class CallbackDataPreparer {
     public static List<List<String>> prepareCallbackDataForSendMessage(AccountDto account){
         List<String> callbackData = List.of("SEND_ANONYMOUSLY", "SEND_CURRENT_MAIL");
-        List<String> callbackDataText = List.of("Отправить анонимно👽", "Отпрвить почтой аккаунта👁");
+        List<String> callbackDataText = List.of("👽Отправить анонимно", "👁Отпрвить почтой аккаунта");
         if(!(account.getEmail()!=null && account.hasKey())){
             callbackData = List.of("SEND_ANONYMOUSLY");
-            callbackDataText = List.of("Отправить анонимно👽");
+            callbackDataText = List.of("👽Отправить анонимно");
         }
         return List.of(callbackData, callbackDataText);
     }
     public static List<List<String>> prepareCallbackDataForProfileMessage(){
-        List<String> callbackData = List.of("CHANGE_MAIL", "CHANGE_KEY");
-        List<String> callbackDataText = List.of("Изменить почту📮", "Изменить ключ🔑");
+        List<String> callbackData = List.of("CHANGE_MAIL", "CHANGE_KEY", "HELP");
+        List<String> callbackDataText = List.of("📮Изменить почту", "🔑Изменить ключ","❔Помощь");
         return List.of(callbackData, callbackDataText);
     }
     public static List<List<String>> prepareCallbackDataForRegistrationMessage() {
@@ -29,18 +29,20 @@ public class CallbackDataPreparer {
                 "CHANGE_ITEM_TEXT",
                 "CHANGE_ITEM_ANNEX",
                 "CHANGE_ITEM_RECIPIENTS",
-                "CHANGE_ITEM_COUNT_FOR_RECIPIENTS");
+                "CHANGE_ITEM_COUNT_FOR_RECIPIENTS",
+                "CHANGE_ITEM_SENT_DATE");
         List<String> callbackDataText = List.of(
                 "Заголовок",
                 "Текст",
                 "Приложение",
                 "Получатели",
-                "Количество шт. каждому");
+                "Количество шт. каждому",
+                "Дата отправки");
         return List.of(callbackData, callbackDataText);
     }
     public static List<List<String>> prepareCallbackDataForCreateMailingMessage(){
         List<String> callbackData = List.of("CLEAR_MESSAGE","DOWNLOAD_MESSAGE","CHANGE_ITEM","SEND");
-        List<String> callbackDataText = List.of("Очистить письмо🧼","Загрузить письмо📩","Изменить пункт📝","Отправить✈");
+        List<String> callbackDataText = List.of("🧼Очистить письмо","📩Загрузить письмо","📝Изменить пункт","✈Отправить");
         return List.of(callbackData, callbackDataText);
     }
     public static List<List<String>> prepareCallbackDataForBeginningMessage(){

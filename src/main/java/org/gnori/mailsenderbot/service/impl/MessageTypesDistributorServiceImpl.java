@@ -52,6 +52,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processCallbackQuery(Update update) {
+        //TODO may be add findAccountById and check register
         var command = update.getCallbackQuery().getData();
         commandContainer.retrieveCommand(command).execute(update);
     }
@@ -71,6 +72,8 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 commandContainer.retrieveCommand(RECIPIENTS_PENDING.getCommandName()).execute(update);
             }else if(State.COUNT_FOR_RECIPIENT_PENDING.equals(account.getState())){
                 commandContainer.retrieveCommand(COUNT_FOR_RECIPIENT_PENDING.getCommandName()).execute(update);
+            }else if(State.SENT_DATE_PENDING.equals(account.getState())){
+                commandContainer.retrieveCommand(SENT_DATE_PENDING.getCommandName()).execute(update);
             }else{
                 var message = update.getMessage();
                         if(message!=null){
@@ -79,8 +82,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                         }
             }
         }else {
-            var command = update.getMessage().getText();
-            commandContainer.retrieveCommand(command).execute(update);
+            commandContainer.retrieveCommand(REGISTRATION.getCommandName()).execute(update);
         }
     }
 
@@ -91,7 +93,11 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);
             }else if(State.DOWNLOAD_MESSAGE_PENDING.equals(account.getState())){
                 commandContainer.retrieveCommand(DOWNLOAD_MESSAGE_PENDING.getCommandName()).execute(update);
+            }else{
+                commandContainer.retrieveCommand("unknownCommand").execute(update);
             }
+        }else{
+            commandContainer.retrieveCommand(REGISTRATION.getCommandName()).execute(update);
         }
     }
 
@@ -100,7 +106,11 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
         if(account!=null) {
             if (State.ANNEX_PENDING.equals(account.getState())) {
                 commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);
+            }else{
+                commandContainer.retrieveCommand("unknownCommand").execute(update);
             }
+        }else{
+            commandContainer.retrieveCommand(REGISTRATION.getCommandName()).execute(update);
         }
     }
 

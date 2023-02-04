@@ -8,6 +8,7 @@ import org.gnori.mailsenderbot.service.MailSenderService;
 import org.gnori.mailsenderbot.service.impl.enums.MailDomain;
 import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.gnori.mailsenderbot.utils.LoginAuthenticator;
+import org.gnori.mailsenderbot.utils.UtilsCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import static org.gnori.mailsenderbot.utils.UtilsCommand.validateMail;
 import static org.gnori.mailsenderbot.utils.UtilsMail.*;
 
 @Log4j
@@ -108,8 +108,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     private InternetAddress[] prepareRecipients(Message message) throws AddressException{
-        //var recipientsStr = message.getRecipients().toString();
-        var recipientsStr = message.getRecipients().stream().filter(address->validateMail(address)).collect(Collectors.toList()).toString();
+        var recipientsStr = message.getRecipients().stream().filter(UtilsCommand::validateMail).collect(Collectors.toList()).toString();
         if (recipientsStr.length()<3){
             throw new AddressException("Отсутсвуют валидные адреса получаетелей");
         }
@@ -128,6 +127,11 @@ public class MailSenderServiceImpl implements MailSenderService {
         helper.setTo(recipients);
         helper.setSubject(message.getTitle());
         helper.setText(message.getText());
+
+        if(message.hasSentDate()){
+            helper.setSentDate(message.getSentDate());
+        }
+
         if(message.hasAnnex()) {
             int processStatus;
             if(message.getDocAnnex()!=null){

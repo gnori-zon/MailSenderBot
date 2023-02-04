@@ -34,10 +34,12 @@ public class TextPreparer {
     }
     public static String prepareTextForBeforeDownloadMessage() {
         return "*Загрузите письмо в формате .txt\nШаблон: *"+
-                "\n\n ###Заголовок###"+
-                "\n ///Текст письма///"+
-                "\n ===Количество писем каждому==="+
-                "\n :::Получатели через \",\":::";
+              "\n\n ###                  Заголовок                  ###"+
+                "\n ///                 Текст письма                ///"+
+                "\n ===          Количество писем каждому           ==="+
+                "\n :::            Получатели через \",\"           :::"+
+                "\n ---Дата отправки (в формате yyyy-MM-dd HH:mm:ss)---"+
+              "\n\n❕ При некорректном вводе данные будт пропущены";
     }
     public static String prepareTextForAfterSuccessDownloadMessage() {
         return prepareSuccessTextForChangingLastMessage();
@@ -48,6 +50,12 @@ public class TextPreparer {
     }
     public static String prepareTextForBeforeChangeTitleMessage() {
         return "*Введите новый заголовок: *";
+    }
+    public static String prepareTextForBeforeChangeSentDateMessage() {
+        return "*Введите новую дату отправки по МСК (в формате yyyy-MM-dd HH:mm:ss)*";
+    }
+    public static String prepareTextInvalidDateForAfterChangeSentDateMessage(){
+        return "❌Вы ввели дату в неверном формате, попробуйте снова";
     }
     public static String prepareTextForBeforeChangeRecipientsMessage() {
         return "*Введите новых получателей : *";
@@ -111,7 +119,8 @@ public class TextPreparer {
                 "\n "+textForResult+suffixResultText +
                 "\n Приложение: "+(message.hasAnnex()? "✔" : "❌")+
                 "\n Получатели: "+ recipientsToString(message.getRecipients())+
-                "\n Шт. каждому: "+ message.getCountForRecipient();
+                "\n Шт. каждому: "+ message.getCountForRecipient()+
+                "\n Дата отправки: "+(message.hasSentDate()? message.getSentDate():"текущая");
     }
 
     public static String prepareTextForMessage(MailingHistoryDto mailingHistory) {
@@ -127,13 +136,16 @@ public class TextPreparer {
             return text + "\nВы не создавали рассылок!";
         }
     }
+    public static String prepareTextForHelpMessage(){
+        return "*Выберите свою почту*";
+    }
 
     private static String recipientsToString(List<String> recipients) {
         var resultText = " ";
         var count = 3;
         if(!recipients.isEmpty()) {
             StringBuilder rawText = new StringBuilder();
-            recipients.stream().limit(count).forEach(recipient->{rawText.append(recipient).append(", ");});
+            recipients.stream().limit(count).forEach(recipient->rawText.append(recipient).append(", "));
 
             var countRemain = recipients.size() - count;
             var tailForText = countRemain > 0 ? "... и еще "+countRemain : "";
@@ -144,7 +156,7 @@ public class TextPreparer {
     }
     private static String convertDate(String date){
         var pointIndex = date.indexOf(".");
-        return date.replace("T"," ").substring(0,pointIndex-3) + " UTC+3";
+        return date.replace("T"," ").substring(0,pointIndex-3).toLowerCase() + " UTC+3";
     }
 
 }
