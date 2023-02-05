@@ -73,6 +73,9 @@ public abstract class AbstractAfterChangeItemMessageCommandTest extends Abstract
         Mockito.verify(modifyDataBaseService).updateStateById(chatId,newState);
         if(isPositive()) {
             Mockito.verify(messageRepository).putMessage(chatId, messageFromRepo);
+        }else{
+            Mockito.verify(messageRepository, Mockito.times(1)).getMessage(chatId);
+            Mockito.verifyNoMoreInteractions(messageRepository);
         }
         Mockito.verify(sendBotMessageService).executeEditMessage(chatId,lastMessageId,textForOldMessage, Collections.emptyList(),false);
         Mockito.verify(sendBotMessageService).createChangeableMessage(chatId,text,newCallbackData,withButton());

@@ -42,17 +42,11 @@ public class AfterChangeCountForRecipientCommand implements Command {
             }
 
             var lastMessageId = update.getMessage().getMessageId() - 1;
-            var text = prepareTextForMessage(chatId);
+            var text = prepareTextForPreviewMessage(message);
             var newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
             modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
             sendBotMessageService.executeEditMessage(chatId,lastMessageId,textForOld, Collections.emptyList(),false);
             sendBotMessageService.createChangeableMessage(chatId,text,newCallbackData,true);
-        }
-
-        private String prepareTextForMessage(Long id) {
-            var message = messageRepository.getMessage(id);
-
-            return prepareTextForPreviewMessage(message);
         }
 }

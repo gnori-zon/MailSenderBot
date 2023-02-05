@@ -1,7 +1,7 @@
 package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
-import org.gnori.mailsenderbot.service.FileDownloaderByUrl;
+import org.gnori.mailsenderbot.service.FileDownloaderByUrlService;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
@@ -20,7 +20,7 @@ import static java.lang.String.format;
 
 @Log4j
 @Service
-public class FileDownloaderByUrlImpl implements FileDownloaderByUrl {
+public class FileDownloaderByUrlServiceImpl implements FileDownloaderByUrlService {
     private static final String HEADER_RANGE = "Range";
     private static final String RANGE_FORMAT = "bytes=%d-%d";
     private static final String HEADER_CONTENT_LENGTH = "content-length";
@@ -32,7 +32,7 @@ public class FileDownloaderByUrlImpl implements FileDownloaderByUrl {
     private final HttpClient httpClient;
     private int maxAttempts;
 
-    public FileDownloaderByUrlImpl() {
+    public FileDownloaderByUrlServiceImpl() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();

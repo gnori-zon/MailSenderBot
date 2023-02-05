@@ -46,9 +46,9 @@ public class AfterDownloadMessageCommand implements Command {
 
         if (update.getMessage().hasDocument()) {
             var newDocument = update.getMessage().getDocument();
-            var content = getContent(chatId,newDocument);
+            var content = getContent(chatId, newDocument);
             var titleForMessage = getTitleFromContent(content);
-            var textForMessage =  getTextFromContent(content);
+            var textForMessage = getTextFromContent(content);
             var recipients = getRecipientsFromContent(content);
             var countForRecipient = getCountForRecipientFromContent(content);
             var sentDateRaw = getSentDateFromContent(content);
@@ -56,15 +56,17 @@ public class AfterDownloadMessageCommand implements Command {
             message.setRecipients(recipients);
             message.setTitle(titleForMessage);
             message.setText(textForMessage);
-            try {
-                var dateFormat = getSimpleDateFormat();
-                var newSentDate = dateFormat.parse(sentDateRaw);
-                if(new Date().compareTo(newSentDate) < 0) {
-                    message.setSentDate(newSentDate);
-                }
-            }catch (ParseException ignored){}
-            messageRepository.putMessage(chatId,message);
-            textForOld = prepareTextForAfterSuccessDownloadMessage();
+            if (sentDateRaw != null) {
+                try {
+                    var dateFormat = getSimpleDateFormat();
+                    var newSentDate = dateFormat.parse(sentDateRaw);
+                    if (new Date().compareTo(newSentDate) < 0) {
+                        message.setSentDate(newSentDate);
+                    }
+                } catch (ParseException ignored) {}
+            }
+                messageRepository.putMessage(chatId, message);
+                textForOld = prepareTextForAfterSuccessDownloadMessage();
         }
         var text = prepareTextForPreviewMessage(message);
 

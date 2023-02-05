@@ -3,7 +3,7 @@ package org.gnori.mailsenderbot.service.impl;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 import org.gnori.mailsenderbot.repository.MessageRepository;
-import org.gnori.mailsenderbot.service.FileDownloaderByUrl;
+import org.gnori.mailsenderbot.service.FileDownloaderByUrlService;
 import org.gnori.mailsenderbot.service.FileService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.Document;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,11 +32,11 @@ public class FileServiceImpl implements FileService {
     private String fileStorageUri;
 
     private final MessageRepository messageRepository;
-    private final FileDownloaderByUrl fileDownloaderByUrl;
+    private final FileDownloaderByUrlService fileDownloaderByUrlService;
 
-    public FileServiceImpl(MessageRepository messageRepository, FileDownloaderByUrl fileDownloaderByUrl) {
+    public FileServiceImpl(MessageRepository messageRepository, FileDownloaderByUrlService fileDownloaderByUrlService) {
         this.messageRepository = messageRepository;
-        this.fileDownloaderByUrl = fileDownloaderByUrl;
+        this.fileDownloaderByUrlService = fileDownloaderByUrlService;
     }
 
     @Override
@@ -143,15 +142,9 @@ public class FileServiceImpl implements FileService {
 
     private byte[] downloadFile(String filePath) {
         String fullUri = fileStorageUri.replace("{token}", token).replace("{filePath}",filePath);
-        URL urlObj = null;
-        try {
-            urlObj = new URL(fullUri);
-        }catch (MalformedURLException e){
-            log.error(e);
-        }
         var defaultChunkSize = 262144;
         try {
-            return fileDownloaderByUrl.download(fullUri, defaultChunkSize);
+            return fileDownloaderByUrlService.download(fullUri, defaultChunkSize);
         } catch (URISyntaxException | IOException | InterruptedException e) {
             log.error(e);
         }
