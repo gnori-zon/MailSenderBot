@@ -14,7 +14,9 @@ import java.util.stream.Collectors;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
-
+/**
+ * Validates and sets the recipients in the model and sets the state  {@link Command,State}.
+ */
 public class AfterChangeRecipientsCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;

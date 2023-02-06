@@ -9,7 +9,9 @@ import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.gnori.mailsenderbot.command.CommandName.*;
-
+/**
+ * Container of the {@link Command}s, which are using for handling telegram commands.
+ */
 public class CommandContainer {
     private final ImmutableMap<String, Command> commandMap;
     private final Command unknownCommand;

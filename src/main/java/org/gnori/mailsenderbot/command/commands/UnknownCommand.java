@@ -9,7 +9,9 @@ import java.util.Collections;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForLastForUnknownMessage;
-
+/**
+ * Notifies that the command is unknown {@link Command}.
+ */
 public class UnknownCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
 

@@ -1,9 +1,12 @@
 package org.gnori.mailsenderbot.dto;
 
+import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 
 import java.util.Objects;
-
+/**
+ * dto for {@link MessageSentRecord} entity.
+ */
 public class MessageSentRecordDto {
     private final Integer countMessages;
     private final String sendDate;

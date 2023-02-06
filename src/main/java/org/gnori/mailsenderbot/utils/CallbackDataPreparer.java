@@ -3,7 +3,9 @@ package org.gnori.mailsenderbot.utils;
 import org.gnori.mailsenderbot.dto.AccountDto;
 
 import java.util.List;
-
+/**
+ * Utils for preparing callback data
+ */
 public class CallbackDataPreparer {
     public static List<List<String>> prepareCallbackDataForSendMessage(AccountDto account){
         List<String> callbackData = List.of("SEND_ANONYMOUSLY", "SEND_CURRENT_MAIL");

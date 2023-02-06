@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForRegistrationMessage;
-
+/**
+ * Utils for validating data in commands
+ */
 public class UtilsCommand {
     public static boolean validateMail(String emailAddress) {
         var regexPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";

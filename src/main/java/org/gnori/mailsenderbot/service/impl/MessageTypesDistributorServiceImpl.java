@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.command.CommandName.*;
-
+/**
+ * Implementation service {@link MessageTypesDistributorService}
+ */
 @Log4j
 @Service
 public class MessageTypesDistributorServiceImpl implements MessageTypesDistributorService {

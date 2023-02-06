@@ -11,7 +11,9 @@ import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
-
+/**
+ * Validates and sets the count of recipient in the model and sets the state {@link Command,State}.
+ */
 public class AfterChangeCountForRecipientCommand implements Command {
         private final ModifyDataBaseService modifyDataBaseService;
         private final SendBotMessageService sendBotMessageService;

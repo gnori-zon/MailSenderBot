@@ -8,7 +8,9 @@ import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForHelpMessage;
 import static org.gnori.mailsenderbot.utils.UrlDatePreparer.prepareUrlsForHelpMessage;
-
+/**
+ * Provides help information for using the user's mail {@link Command}.
+ */
 public class HelpCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
 

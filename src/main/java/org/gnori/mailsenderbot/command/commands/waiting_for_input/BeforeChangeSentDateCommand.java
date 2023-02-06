@@ -9,8 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeSentDateMessage;
-
-
+/**
+ * Displays a pending message and sets the state {@link Command,State}.
+ */
 public class BeforeChangeSentDateCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;

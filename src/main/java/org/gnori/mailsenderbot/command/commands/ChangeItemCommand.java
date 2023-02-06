@@ -6,7 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForChangeItemMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForChangeItemMessage;
-
+/**
+ * Provides a selection of item to change {@link Command}.
+ */
 public class ChangeItemCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
 

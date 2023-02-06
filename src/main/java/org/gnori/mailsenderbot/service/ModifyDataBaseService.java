@@ -6,7 +6,9 @@ import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.springframework.dao.DataIntegrityViolationException;
-
+/**
+ * Service for changing account data
+ */
 public interface ModifyDataBaseService {
     AccountDto findAccountById(Long id);
 

@@ -5,7 +5,9 @@ import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.model.Message;
 
 import java.util.List;
-
+/**
+ * Utils for preparing text
+ */
 public class TextPreparer {
     public static String prepareTextForBeginningMessage() {
         return "Выберите необходимый пункт👇🏿";

@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForProfileMessage;
-
+/**
+ * Displays user data {@link Command}.
+ */
 public class ProfileCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;

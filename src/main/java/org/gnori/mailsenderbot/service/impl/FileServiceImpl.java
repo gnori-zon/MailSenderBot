@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-
+/**
+ * Implementation service {@link FileService}
+ */
 @Log4j
 @Service
 public class FileServiceImpl implements FileService {

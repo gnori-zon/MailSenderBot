@@ -11,7 +11,9 @@ import java.util.Collections;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
-
+/**
+ * Clears a mailing in the model {@link Command}.
+ */
 public class ClearMessageCommand implements Command {
     private final MessageRepository messageRepository;
     private final SendBotMessageService sendBotMessageService;

@@ -1,11 +1,14 @@
 package org.gnori.mailsenderbot.repository;
 
+import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.model.Message;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * {@link Repository} for {@link Message} model.
+ */
 @Repository
 public class MessageRepository{
     private final Map<Long, Message> messages= new HashMap<>();

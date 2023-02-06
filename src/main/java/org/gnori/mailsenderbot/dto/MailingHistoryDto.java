@@ -1,12 +1,15 @@
 package org.gnori.mailsenderbot.dto;
 
+import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * dto for {@link MailingHistory} entity.
+ */
 public class MailingHistoryDto {
     private final List<MessageSentRecordDto> mailingList;
 

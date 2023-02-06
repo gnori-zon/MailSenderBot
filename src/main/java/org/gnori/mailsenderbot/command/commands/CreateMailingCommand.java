@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
-
+/**
+ * Creates a mailing in the model {@link Command}.
+ */
 public class CreateMailingCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final MessageRepository messageRepository;

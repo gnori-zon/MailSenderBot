@@ -10,7 +10,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.checkedRegistrationCommand;
-
+/**
+ * Provides command selection at the start (initial command) {@link Command}.
+ */
 public class BeginningCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;

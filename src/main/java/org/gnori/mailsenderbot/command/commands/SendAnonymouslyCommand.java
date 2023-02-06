@@ -14,7 +14,9 @@ import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
-
+/**
+ * Sends a mailing with the bot's mail {@link Command}.
+ */
 public class SendAnonymouslyCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;

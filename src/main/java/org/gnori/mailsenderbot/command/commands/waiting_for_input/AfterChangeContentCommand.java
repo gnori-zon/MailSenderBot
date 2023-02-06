@@ -12,7 +12,9 @@ import java.util.Collections;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
-
+/**
+ * Validates and sets the content in the model and sets the state {@link Command,State}.
+ */
 public class AfterChangeContentCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;

@@ -1,7 +1,9 @@
 package org.gnori.mailsenderbot.utils;
 
 import java.util.List;
-
+/**
+ * Utils for preparing url data
+ */
 public class UrlDatePreparer {
     public static List<List<String>> prepareUrlsForHelpMessage(){
         List<String> urls = List.of(

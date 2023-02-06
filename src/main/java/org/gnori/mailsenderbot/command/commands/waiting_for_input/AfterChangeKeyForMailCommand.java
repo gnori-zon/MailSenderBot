@@ -11,7 +11,9 @@ import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
-
+/**
+ * Validates and sets the key for mail in the Database and sets the state {@link Command,State}.
+ */
 public class AfterChangeKeyForMailCommand implements Command {
 
     private final ModifyDataBaseService modifyDataBaseService;

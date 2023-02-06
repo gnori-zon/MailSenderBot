@@ -4,7 +4,9 @@ import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
+/**
+ * Controller to call distributor
+ */
 @Log4j
 @Component
 public class UpdateController {

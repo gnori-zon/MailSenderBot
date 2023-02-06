@@ -24,7 +24,9 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.gnori.mailsenderbot.utils.UtilsMail.*;
-
+/**
+ * Implementation service {@link MailSenderService}
+ */
 @Log4j
 @Service
 public class MailSenderServiceImpl implements MailSenderService {

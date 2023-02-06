@@ -12,7 +12,9 @@ import java.util.Collections;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.*;
-
+/**
+ * Validates and sets the mail in the Database and sets the state {@link Command,State}.
+ */
 public class AfterChangeMailCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;

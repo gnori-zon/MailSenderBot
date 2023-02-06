@@ -21,7 +21,9 @@ import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallback
 import static org.gnori.mailsenderbot.utils.FileDataParser.*;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.getSimpleDateFormat;
-
+/**
+ * Validates and sets the params in the model and sets the state  {@link Command,State}.
+ */
 @Log4j
 public class AfterDownloadMessageCommand implements Command {
     private final SendBotMessageService sendBotMessageService;

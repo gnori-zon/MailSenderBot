@@ -6,7 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForRegistrationMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForRegistrationMessage;
-
+/**
+ * Registers a user in the database {@link Command}.
+ */
 public class RegistrationCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
 

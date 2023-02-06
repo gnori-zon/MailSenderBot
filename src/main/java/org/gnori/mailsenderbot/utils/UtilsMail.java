@@ -1,7 +1,9 @@
 package org.gnori.mailsenderbot.utils;
 
 import java.util.Properties;
-
+/**
+ * Utils for configuration mail properties
+ */
 public class UtilsMail {
     public static Properties getBaseProperties(){
         return getGmailProperties();

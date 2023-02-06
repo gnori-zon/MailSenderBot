@@ -2,7 +2,9 @@ package org.gnori.mailsenderbot.utils;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
-
+/**
+ * Authenticator to connect to mail
+ */
 public class LoginAuthenticator extends Authenticator {
     PasswordAuthentication authentication = null;
 

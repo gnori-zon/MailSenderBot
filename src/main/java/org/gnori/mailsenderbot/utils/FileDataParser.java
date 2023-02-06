@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+/**
+ * Utils for parsing data from file
+ */
 public class FileDataParser {
     public static String getTitleFromContent(String content){
         var regexPatternForTitle = Pattern.compile("###(.*)###");

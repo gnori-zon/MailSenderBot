@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.controller.TelegramBot;
+import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,7 +14,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+/**
+ * Implementation service {@link SendBotMessageService}
+ */
 @Log4j
 @Service
 public class SendBotMessageServiceImpl implements SendBotMessageService {

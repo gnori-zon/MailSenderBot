@@ -11,13 +11,16 @@ import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
+import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+/**
+ * Implementation service {@link ModifyDataBaseService}
+ */
 @Log4j
 @Service
 public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {

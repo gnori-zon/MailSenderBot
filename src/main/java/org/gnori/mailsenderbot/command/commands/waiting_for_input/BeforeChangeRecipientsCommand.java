@@ -9,7 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeRecipientsMessage;
-
+/**
+ * Displays a pending message and sets the state {@link Command,State}.
+ */
 public class BeforeChangeRecipientsCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;

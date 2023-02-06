@@ -6,7 +6,9 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
+/**
+ * Key Encryption Tools
+ */
 @Component
 public class CryptoTool {
     @Value("${cipher.key}")

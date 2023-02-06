@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForMessage;
-
+/**
+ * Displays the mailing history of the user {@link Command}.
+ */
 public class MailingHistoryCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;

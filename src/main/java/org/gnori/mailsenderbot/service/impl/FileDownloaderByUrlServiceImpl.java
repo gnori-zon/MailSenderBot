@@ -17,7 +17,9 @@ import java.time.Duration;
 import java.util.OptionalLong;
 
 import static java.lang.String.format;
-
+/**
+ * Implementation service {@link FileDownloaderByUrlService}
+ */
 @Log4j
 @Service
 public class FileDownloaderByUrlServiceImpl implements FileDownloaderByUrlService {

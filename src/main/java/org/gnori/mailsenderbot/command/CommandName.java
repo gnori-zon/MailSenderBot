@@ -1,5 +1,7 @@
 package org.gnori.mailsenderbot.command;
-
+/**
+ * Enumeration for {@link Command}'s.
+ */
 public enum CommandName {
     REGISTRATION("/start"),
     HELP("HELP"),

@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import static org.gnori.mailsenderbot.command.CommandName.*;
 import static org.gnori.mailsenderbot.utils.UrlDatePreparer.prepareUrlsForHelpMessage;
-
+/**
+ * Calls the previous command (implementation BACK) {@link Command}.
+ */
 public class BackCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final MessageTypesDistributorService messageTypesDistributorService;

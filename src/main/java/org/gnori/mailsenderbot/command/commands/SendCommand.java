@@ -10,7 +10,9 @@ import java.util.List;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForSendMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForSendMessage;
-
+/**
+ * Provides a choice of sending method {@link Command}.
+ */
 public class SendCommand implements Command {
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;

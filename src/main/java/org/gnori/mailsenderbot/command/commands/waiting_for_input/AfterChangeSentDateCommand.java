@@ -14,7 +14,9 @@ import java.util.Date;
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.getSimpleDateFormat;
-
+/**
+ * Validates and sets the sent date in the model and sets the state  {@link Command,State}.
+ */
 public class AfterChangeSentDateCommand implements Command {
     private final ModifyDataBaseService modifyDataBaseService;
     private final SendBotMessageService sendBotMessageService;

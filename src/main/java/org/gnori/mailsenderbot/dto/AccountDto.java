@@ -4,8 +4,9 @@ import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import java.util.Objects;
-
-
+/**
+ * dto for {@link Account} entity.
+ */
 public class AccountDto {
     private final String email;
     private final Boolean keyPresent;
