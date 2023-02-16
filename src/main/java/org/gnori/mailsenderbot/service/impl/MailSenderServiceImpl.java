@@ -1,6 +1,7 @@
 package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
+import org.gnori.mailsenderbot.aop.LogExecutionTime;
 import org.gnori.mailsenderbot.dao.AccountDao;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.service.FileService;
@@ -10,6 +11,7 @@ import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.gnori.mailsenderbot.utils.LoginAuthenticator;
 import org.gnori.mailsenderbot.utils.UtilsCommand;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     }
 
+    @LogExecutionTime
     @Override
     public int sendAnonymously(Long id, Message message) throws AddressException {
         var props = getBaseProperties();
@@ -61,6 +64,7 @@ public class MailSenderServiceImpl implements MailSenderService {
         }
     }
 
+    @LogExecutionTime
     @Override
     public int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException, AddressException {
         var optionalAccount = accountDao.findById(id);
@@ -133,16 +137,16 @@ public class MailSenderServiceImpl implements MailSenderService {
         if(message.hasSentDate()){
             helper.setSentDate(message.getSentDate());
         }
-
+        FileSystemResource file = null;
+        int processStatus = 0;
         if(message.hasAnnex()) {
-            int processStatus;
             if(message.getDocAnnex()!=null){
                 processStatus = fileService.processDoc(id);
             }else {
                 processStatus = fileService.processPhoto(id);
             }
             if(processStatus==1) {
-                var file = fileService.getFileSystemResource(id);
+                file = fileService.getFileSystemResource(id);
                 helper.addAttachment(file.getFilename(), file);
             }
         }
@@ -150,6 +154,12 @@ public class MailSenderServiceImpl implements MailSenderService {
         while (countMessage > 0) {
             Transport.send(mailMessage);
             countMessage--;
+        }
+        if(processStatus==1) {
+            var isDeleted = file.getFile().delete();
+            if(!isDeleted){
+                log.error("File:"+file.getFilename()+" not removed");
+            }
         }
     }
 

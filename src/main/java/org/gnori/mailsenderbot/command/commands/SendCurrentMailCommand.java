@@ -44,10 +44,9 @@ public class SendCurrentMailCommand implements Command {
 
         sendBotMessageService.executeEditMessage(chatId, messageId, textForWaiting, Collections.emptyList(), false);
 
-        int sendResult = 0;
         var text = prepareTextForBadConcreteSendingMessage();
         try {
-            sendResult = mailSenderService.sendWithUserMail(chatId, messageToSend);
+            var sendResult = mailSenderService.sendWithUserMail(chatId, messageToSend);
             if (sendResult == 1) {
                 text = prepareTextForSuccessConcreteSendingMessage();
                 createAndAddMessageSentRecord(chatId, messageToSend);

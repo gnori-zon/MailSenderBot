@@ -83,6 +83,10 @@ public class AfterDownloadMessageCommand implements Command {
             var document = fileService.processMail(id, doc);
                 try {
                     content.append(Files.readString(document.getFile().toPath(), StandardCharsets.UTF_8));
+                    var isDeleted = document.getFile().delete();
+                    if(!isDeleted){
+                        log.error("File:"+document.getFilename()+" not removed");
+                    }
             } catch (IOException | NullPointerException e) {
                 log.error(e);
             }

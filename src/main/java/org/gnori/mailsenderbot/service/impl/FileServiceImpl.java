@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
+import org.gnori.mailsenderbot.aop.LogExecutionTime;
 import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.FileDownloaderByUrlService;
 import org.gnori.mailsenderbot.service.FileService;
@@ -15,16 +16,14 @@ import org.telegram.telegrambots.meta.api.objects.Document;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 /**
  * Implementation service {@link FileService}
  */
 @Log4j
 @Service
 public class FileServiceImpl implements FileService {
-    static final String ERROR_TEXT = "Bad response: ";
+    static final String BAD_RESPONSE_ERROR_TEXT = "Bad response: ";
 
     @Value("${bot.token}")
     private String token;
@@ -41,6 +40,7 @@ public class FileServiceImpl implements FileService {
         this.fileDownloaderByUrlService = fileDownloaderByUrlService;
     }
 
+    @LogExecutionTime
     @Override
     public FileSystemResource processMail(Long id, Document mailDoc) {
         var fileId = mailDoc.getFileId();
@@ -59,11 +59,12 @@ public class FileServiceImpl implements FileService {
                 return null;
             }
         } else {
-            log.error(ERROR_TEXT + response);
+            log.error(BAD_RESPONSE_ERROR_TEXT + response);
             return null;
         }
     }
 
+    @LogExecutionTime
     @Override
     public int processDoc(Long id) {
             var message = messageRepository.getMessage(id);
@@ -76,11 +77,12 @@ public class FileServiceImpl implements FileService {
                 messageRepository.putMessage(id, message);
                 return 1;
             }else {
-                log.error(ERROR_TEXT + response);
+                log.error(BAD_RESPONSE_ERROR_TEXT + response);
                 return 0;
             }
     }
 
+    @LogExecutionTime
     @Override
     public int processPhoto(Long id) {
         var message = messageRepository.getMessage(id);
@@ -94,11 +96,12 @@ public class FileServiceImpl implements FileService {
             messageRepository.putMessage(id, message);
             return 1;
         }else {
-            log.error(ERROR_TEXT + response);
+            log.error(BAD_RESPONSE_ERROR_TEXT + response);
             return 0;
         }
     }
 
+    @LogExecutionTime
     @Override
     public FileSystemResource getFileSystemResource(Long id) {
         var message = messageRepository.getMessage(id);
@@ -142,19 +145,19 @@ public class FileServiceImpl implements FileService {
         );
     }
 
-    private byte[] downloadFile(String filePath) {
+    private byte[] downloadFile(String filePath) throws  URISyntaxException,IOException,InterruptedException{
         String fullUri = fileStorageUri.replace("{token}", token).replace("{filePath}",filePath);
         var defaultChunkSize = 262144;
-        try {
             return fileDownloaderByUrlService.download(fullUri, defaultChunkSize);
-        } catch (URISyntaxException | IOException | InterruptedException e) {
-            log.error(e);
-        }
-        return null;
     }
     private byte[] getBinaryContent(ResponseEntity<String> response){
         var filePath = getFilePath(response);
-        return downloadFile(filePath);
+        try {
+            return downloadFile(filePath);
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            return null;
+        }
+
     }
     private String getFilePath(ResponseEntity<String> response){
         JSONObject jsonObject = new JSONObject(response.getBody());

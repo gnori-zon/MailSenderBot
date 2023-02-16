@@ -1,6 +1,7 @@
 package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
+import org.gnori.mailsenderbot.aop.LogExecutionTime;
 import org.gnori.mailsenderbot.service.FileDownloaderByUrlService;
 import org.springframework.stereotype.Service;
 
@@ -41,39 +42,7 @@ public class FileDownloaderByUrlServiceImpl implements FileDownloaderByUrlServic
         this.maxAttempts = DEFAULT_MAX_ATTEMPTS;
     }
 
-    private long contentLength(final String uri)
-            throws URISyntaxException, IOException, InterruptedException {
-
-        HttpRequest headRequest = HttpRequest
-                .newBuilder(new URI(uri))
-                .method(HTTP_METHOD_HEAD, HttpRequest.BodyPublishers.noBody())
-                .version(HttpClient.Version.HTTP_2)
-                .build();
-
-        HttpResponse<String> httpResponse = httpClient.send(headRequest, HttpResponse.BodyHandlers.ofString());
-
-        OptionalLong contentLength = httpResponse
-                .headers().firstValueAsLong(HEADER_CONTENT_LENGTH);
-
-        return contentLength.orElse(0L);
-    }
-
-    @Override
-    public Response download(final String uri, int firstBytePos, int lastBytePos)
-            throws URISyntaxException, IOException, InterruptedException {
-
-        HttpRequest request = HttpRequest
-                .newBuilder(new URI(uri))
-                .header(HEADER_RANGE, format(RANGE_FORMAT, firstBytePos, lastBytePos))
-                .GET()
-                .version(HttpClient.Version.HTTP_2)
-                .build();
-
-        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-
-        return new Response(new BufferedInputStream(response.body()), response.statusCode(), response.headers());
-    }
-
+    @LogExecutionTime
     @Override
     public byte[] download(final String uri, int chunkSize) throws URISyntaxException, IOException, InterruptedException {
 
@@ -116,6 +85,39 @@ public class FileDownloaderByUrlServiceImpl implements FileDownloaderByUrlServic
             log.error("A file could not be downloaded. Number of attempts are exceeded.");
         }
         return downloadedBytes;
+    }
+
+    private long contentLength(final String uri)
+            throws URISyntaxException, IOException, InterruptedException {
+
+        HttpRequest headRequest = HttpRequest
+                .newBuilder(new URI(uri))
+                .method(HTTP_METHOD_HEAD, HttpRequest.BodyPublishers.noBody())
+                .version(HttpClient.Version.HTTP_2)
+                .build();
+
+        HttpResponse<String> httpResponse = httpClient.send(headRequest, HttpResponse.BodyHandlers.ofString());
+
+        OptionalLong contentLength = httpResponse
+                .headers().firstValueAsLong(HEADER_CONTENT_LENGTH);
+
+        return contentLength.orElse(0L);
+    }
+
+    @Override
+    public Response download(final String uri, int firstBytePos, int lastBytePos)
+            throws URISyntaxException, IOException, InterruptedException {
+
+        HttpRequest request = HttpRequest
+                .newBuilder(new URI(uri))
+                .header(HEADER_RANGE, format(RANGE_FORMAT, firstBytePos, lastBytePos))
+                .GET()
+                .version(HttpClient.Version.HTTP_2)
+                .build();
+
+        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+        return new Response(new BufferedInputStream(response.body()), response.statusCode(), response.headers());
     }
 
     private boolean isPartial(Response response) {
