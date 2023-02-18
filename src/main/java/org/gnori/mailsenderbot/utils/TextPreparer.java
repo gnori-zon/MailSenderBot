@@ -130,7 +130,7 @@ public class TextPreparer {
         if(mailingHistory!=null) {
             var countLine = 0;
             for(var record : mailingHistory.getMailingList()){
-                var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " шт. каждому получателю ";
+                var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " шт.";
                 text.append("\n").append(line);
             }
             return text.toString();

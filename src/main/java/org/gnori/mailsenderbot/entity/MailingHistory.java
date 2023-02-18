@@ -21,7 +21,7 @@ public class MailingHistory {
             mappedBy = "mailingHistory")
     private Account account;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "mailing_history_id")
+    @JoinColumn(name = "mailing_history_id", foreignKey = @ForeignKey(name = "FK_mailing_history_id_from_message_sent_records"))
     private List<MessageSentRecord> mailingList;
 
     @Override

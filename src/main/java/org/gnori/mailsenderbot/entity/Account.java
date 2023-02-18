@@ -2,6 +2,8 @@ package org.gnori.mailsenderbot.entity;
 
 import lombok.*;
 import org.gnori.mailsenderbot.entity.enums.State;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
@@ -19,8 +21,8 @@ public class Account {
     @Column(unique = true)
     private String email;
     private String keyForMail;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mailing_history_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "mailing_history_id", foreignKey = @ForeignKey(name = "FK_mailing_history_id_from_account" ))
     private MailingHistory mailingHistory;
 
     private State state;

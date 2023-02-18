@@ -7,10 +7,12 @@ import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.MailSenderService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
+import org.gnori.mailsenderbot.utils.UtilsCommand;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.mail.internet.AddressException;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.*;
@@ -61,7 +63,7 @@ public class SendAnonymouslyCommand implements Command {
     }
 
     private void createAndAddMessageSentRecord(Long id, Message message){
-        var countMessages = message.getRecipients().size() * message.getCountForRecipient();
+        var countMessages = (int) message.getRecipients().stream().filter(UtilsCommand::validateMail).count() * message.getCountForRecipient();
         var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();
         modifyDataBaseService.addMessageSentRecord(id, messageSentRecord);
     };

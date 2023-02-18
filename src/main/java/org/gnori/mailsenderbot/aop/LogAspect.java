@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j
 public class LogAspect {
-    static final String ERROR_TEXT_FILE_DOWNLOAD_BY_URL_SERVICE = "::ASPECT:: FileDownloaderByUrlServiceImpl exception: ";
-    static final String ERROR_TEXT_FILE_SERVICE = "::ASPECT:: FileServiceImpl exception: ";
-    static final String ERROR_TEXT_MAIL_SENDER_SERVICE = "::ASPECT:: MailSenderServiceImpl exception: ";
+    private static final String ERROR_TEXT_FILE_DOWNLOAD_BY_URL_SERVICE = "::ASPECT:: FileDownloaderByUrlServiceImpl exception: ";
+    private static final String ERROR_TEXT_FILE_SERVICE = "::ASPECT:: FileServiceImpl exception: ";
+    private static final String ERROR_TEXT_MAIL_SENDER_SERVICE = "::ASPECT:: MailSenderServiceImpl exception: ";
 
 
     @Around("@annotation(LogExecutionTime)")
@@ -47,7 +47,7 @@ public class LogAspect {
 
     @AfterReturning(pointcut = "execution(* org.gnori.mailsenderbot.service.impl.FileServiceImpl.*(..))", returning = "file")
     public void afterThrowingFileDownloaderByUrlServiceImplMethods(JoinPoint joinPoint, FileSystemResource file) {
-        log.info("::ASPECT:: "+joinPoint.getSignature().getName()+"-> Size file:"+file.getFile().length()+"B");
+        log.info("::ASPECT:: "+joinPoint.getSignature().getName()+"-> file size:"+file.getFile().length()+"B");
     }
 
 

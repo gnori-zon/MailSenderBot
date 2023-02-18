@@ -1,18 +1,16 @@
 package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
-import org.gnori.mailsenderbot.command.commands.MailingHistoryCommand;
 import org.gnori.mailsenderbot.dao.AccountDao;
 import org.gnori.mailsenderbot.dao.MailingHistoryDao;
-import org.gnori.mailsenderbot.dao.MessageSentRecordDao;
 import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.dto.MailingHistoryDto;
 import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
-import org.gnori.mailsenderbot.service.MessageTypesDistributorService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
+import org.hibernate.Hibernate;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +22,6 @@ import java.util.stream.Collectors;
 @Log4j
 @Service
 public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
-    static final String ERROR_TEXT = "Error occurred: ";
     private final AccountDao accountDao;
     private final MailingHistoryDao mailingHistoryDao;
 
