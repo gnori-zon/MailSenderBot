@@ -1,6 +1,5 @@
 package org.gnori.mailsenderbot.repository;
 
-import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.model.Message;
 import org.springframework.stereotype.Repository;
 

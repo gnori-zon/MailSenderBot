@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import java.util.List;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForSendMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForProfileMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForSendMessage;
 
 public class SendCommandTest extends AbstractCommandTest {

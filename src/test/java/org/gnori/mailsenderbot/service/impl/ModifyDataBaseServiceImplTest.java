@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.service;
+package org.gnori.mailsenderbot.service.impl;
 
 import org.gnori.mailsenderbot.dao.AccountDao;
 import org.gnori.mailsenderbot.dao.MailingHistoryDao;

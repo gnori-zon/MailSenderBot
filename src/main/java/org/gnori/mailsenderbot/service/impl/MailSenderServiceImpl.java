@@ -122,11 +122,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
     private void sendMessage(Long id, String mail, Session session, Message message) throws MessagingException {
         InternetAddress[] recipients;
-        try {
-            recipients = prepareRecipients(message);
-        } catch (AddressException e) {
-            throw e;
-        }
+        recipients = prepareRecipients(message);
         var mailMessage = new MimeMessage(session);
         var helper = new MimeMessageHelper(mailMessage,true);
         helper.setFrom(mail);

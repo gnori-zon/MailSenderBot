@@ -1,12 +1,9 @@
 package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
-import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.List;
 
 import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForSendMessage;
 import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForSendMessage;

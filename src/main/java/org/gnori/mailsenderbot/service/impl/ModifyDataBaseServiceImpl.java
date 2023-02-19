@@ -10,7 +10,6 @@ import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
-import org.hibernate.Hibernate;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 

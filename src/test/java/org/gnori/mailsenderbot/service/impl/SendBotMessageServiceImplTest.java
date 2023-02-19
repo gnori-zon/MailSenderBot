@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.service;
+package org.gnori.mailsenderbot.service.impl;
 
 import org.gnori.mailsenderbot.controller.TelegramBot;
 import org.gnori.mailsenderbot.service.impl.SendBotMessageServiceImpl;

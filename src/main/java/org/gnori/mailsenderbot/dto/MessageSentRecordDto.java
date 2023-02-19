@@ -1,6 +1,5 @@
 package org.gnori.mailsenderbot.dto;
 
-import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 
 import java.util.Objects;

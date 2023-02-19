@@ -1,7 +1,8 @@
-package org.gnori.mailsenderbot.service;
+package org.gnori.mailsenderbot.service.impl;
 
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.repository.MessageRepository;
+import org.gnori.mailsenderbot.service.FileDownloaderByUrlService;
 import org.gnori.mailsenderbot.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

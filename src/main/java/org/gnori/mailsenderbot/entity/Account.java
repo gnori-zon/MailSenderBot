@@ -2,8 +2,6 @@ package org.gnori.mailsenderbot.entity;
 
 import lombok.*;
 import org.gnori.mailsenderbot.entity.enums.State;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 
