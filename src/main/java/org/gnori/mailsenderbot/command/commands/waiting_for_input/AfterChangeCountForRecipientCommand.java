@@ -9,8 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 /**
  * Validates and sets the count of recipient in the model and sets the state {@link Command,State}.
  */

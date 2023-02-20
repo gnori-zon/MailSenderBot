@@ -2,7 +2,7 @@ package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareSuccessTextForChangingLastMessage;
 
 public class AfterChangeTitleCommandTest extends AbstractAfterChangeItemMessageCommandTest{
 

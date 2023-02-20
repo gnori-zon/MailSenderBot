@@ -10,7 +10,9 @@ import org.gnori.mailsenderbot.service.impl.enums.MailDomain;
 import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.gnori.mailsenderbot.utils.LoginAuthenticator;
 import org.gnori.mailsenderbot.utils.UtilsCommand;
-import org.springframework.beans.factory.annotation.Value;
+import org.gnori.mailsenderbot.utils.forMail.BasicEmails;
+import org.gnori.mailsenderbot.utils.forMail.NoFreeMailingAddressesException;
+import org.gnori.mailsenderbot.utils.forMail.StateEmail;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -25,22 +27,21 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import static org.gnori.mailsenderbot.utils.UtilsMail.*;
+import static org.gnori.mailsenderbot.utils.forMail.UtilsMail.*;
 /**
  * Implementation service {@link MailSenderService}
  */
 @Log4j
 @Service
 public class MailSenderServiceImpl implements MailSenderService {
-    @Value("${base.mail}")
-    private String BASE_MAIL;
-    @Value("${base.key}")
-    private String BASE_KEY;
+    private final BasicEmails basicEmails;
     private final AccountDao accountDao;
     private final FileService fileService;
     private final CryptoTool cryptoTool;
 
-    public MailSenderServiceImpl(AccountDao accountDao, FileService fileService, CryptoTool cryptoTool) {
+    public MailSenderServiceImpl(BasicEmails basicEmails, AccountDao accountDao, FileService fileService,
+                                 CryptoTool cryptoTool) {
+        this.basicEmails = basicEmails;
 
         this.accountDao = accountDao;
         this.fileService = fileService;
@@ -50,17 +51,26 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     @LogExecutionTime
     @Override
-    public int sendAnonymously(Long id, Message message) throws AddressException {
+    public int sendAnonymously(Long id, Message message) throws AddressException, NoFreeMailingAddressesException {
         var props = getBaseProperties();
-        var session = Session.getDefaultInstance(props, new LoginAuthenticator(BASE_MAIL, BASE_KEY));
-        try {
-            sendMessage(id, BASE_MAIL,session,message);
-            return 1;
-        } catch (AddressException e) {
-            throw e;
-        } catch (Exception e) {
-            log.error(e);
-            return 0;
+        var optionalMail = basicEmails.getBasicEmailAddresses().stream().filter(el -> el.getState().equals(StateEmail.FREE)).findFirst();
+        if (optionalMail.isPresent()) {
+            var mail = optionalMail.get();
+            mail.setState(StateEmail.USED);
+            var session = Session.getDefaultInstance(props, new LoginAuthenticator(mail.getLogin(), mail.getPassword()));
+            try {
+                sendMessage(id, mail.getLogin(), session, message);
+                return 1;
+            } catch (AddressException e) {
+                throw e;
+            } catch (Exception e) {
+                log.error(e);
+                return 0;
+            }finally {
+                mail.setState(StateEmail.FREE);
+            }
+        }else{
+            throw new NoFreeMailingAddressesException("Пока все почтовые ящики заняты, попробуйте позже");
         }
     }
 

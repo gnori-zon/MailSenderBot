@@ -4,8 +4,8 @@ import org.gnori.mailsenderbot.command.Command;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForChangeItemMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForChangeItemMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForChangeItemMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForChangeItemMessage;
 
 public class ChangeItemCommandTest extends AbstractCommandTest {
     @Override

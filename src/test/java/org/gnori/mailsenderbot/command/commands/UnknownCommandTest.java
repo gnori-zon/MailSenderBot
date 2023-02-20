@@ -9,9 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForLastForUnknownMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForLastForUnknownMessage;
 
 public class UnknownCommandTest extends AbstractCommandTest{
     @Override

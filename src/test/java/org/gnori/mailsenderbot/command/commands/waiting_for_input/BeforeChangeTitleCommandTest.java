@@ -4,7 +4,7 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.TITLE_PENDING;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeTitleMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeChangeTitleMessage;
 
 public class BeforeChangeTitleCommandTest extends AbstractBeforeCommandTest{
     @Override

@@ -9,8 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 /**
  * Validates and sets the key for mail in the Database and sets the state {@link Command,State}.
  */

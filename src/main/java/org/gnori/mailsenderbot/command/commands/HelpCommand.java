@@ -6,8 +6,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForHelpMessage;
-import static org.gnori.mailsenderbot.utils.UrlDatePreparer.prepareUrlsForHelpMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForHelpMessage;
+import static org.gnori.mailsenderbot.utils.preparers.UrlDatePreparer.prepareUrlsForHelpMessage;
 /**
  * Provides help information for using the user's mail {@link Command}.
  */

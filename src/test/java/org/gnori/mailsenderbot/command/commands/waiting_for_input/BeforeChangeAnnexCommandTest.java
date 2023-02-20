@@ -4,7 +4,7 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.ANNEX_PENDING;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeAnnexMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeChangeAnnexMessage;
 
 public class BeforeChangeAnnexCommandTest extends AbstractBeforeCommandTest {
     @Override

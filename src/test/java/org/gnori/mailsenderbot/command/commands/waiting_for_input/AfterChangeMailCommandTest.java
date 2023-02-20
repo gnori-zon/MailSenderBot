@@ -15,8 +15,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 
 public class AfterChangeMailCommandTest {
     private final ModifyDataBaseService modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);

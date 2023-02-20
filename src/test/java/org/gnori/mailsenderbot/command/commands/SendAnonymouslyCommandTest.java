@@ -16,8 +16,8 @@ import javax.mail.AuthenticationFailedException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 
 public class SendAnonymouslyCommandTest extends AbstractCommandTest {
     private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);

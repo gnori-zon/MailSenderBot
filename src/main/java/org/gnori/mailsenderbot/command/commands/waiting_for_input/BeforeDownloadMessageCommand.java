@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeDownloadMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeDownloadMessage;
 /**
  * Displays a pending message and sets the state {@link Command,State}.
  */

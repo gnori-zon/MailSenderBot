@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForMessage;
 
 public class MailingHistoryCommandTest extends AbstractCommandTest {
     private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);

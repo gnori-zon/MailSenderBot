@@ -7,8 +7,8 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForSendMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForSendMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForSendMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForSendMessage;
 
 public class SendCommandTest extends AbstractCommandTest {
     private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);

@@ -8,13 +8,14 @@ import org.gnori.mailsenderbot.service.MailSenderService;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.gnori.mailsenderbot.utils.UtilsCommand;
+import org.gnori.mailsenderbot.utils.forMail.NoFreeMailingAddressesException;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.mail.internet.AddressException;
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 /**
  * Sends a mailing with the bot's mail {@link Command}.
  */
@@ -52,7 +53,7 @@ public class SendAnonymouslyCommand implements Command {
                 createAndAddMessageSentRecord(chatId, messageToSend);
                 messageRepository.removeMessage(chatId);
             }
-        } catch (AddressException e) {
+        } catch (AddressException | NoFreeMailingAddressesException e) {
             text += e.getMessage();
         } finally {
             text += "\n"+prepareTextForBeginningMessage();

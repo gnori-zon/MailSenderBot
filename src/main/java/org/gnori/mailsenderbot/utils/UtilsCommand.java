@@ -3,7 +3,7 @@ package org.gnori.mailsenderbot.utils;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForRegistrationMessage;
 /**
  * Utils for validating data in commands
  */

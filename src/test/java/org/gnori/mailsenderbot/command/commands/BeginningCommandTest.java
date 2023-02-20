@@ -9,8 +9,8 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeginningMessage;
 
 @DisplayName("Unit-level testing for BeginningCommandTest")
 public class BeginningCommandTest extends AbstractCommandTest {

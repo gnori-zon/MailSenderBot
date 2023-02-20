@@ -9,8 +9,8 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForProfileMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForProfileMessage;
 
 public class ProfileCommandTest extends AbstractCommandTest {
     private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);

@@ -12,8 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareSuccessTextForChangingLastMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareSuccessTextForChangingLastMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForPreviewMessage;
 
 public class AfterChangeAnnexCommandTest extends AbstractAfterChangeItemMessageCommandTest{
     @Override

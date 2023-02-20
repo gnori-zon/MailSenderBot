@@ -4,7 +4,7 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.RECIPIENTS_PENDING;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeRecipientsMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeChangeRecipientsMessage;
 
 public class BeforeChangeRecipientsCommandTest extends AbstractBeforeCommandTest{
     @Override

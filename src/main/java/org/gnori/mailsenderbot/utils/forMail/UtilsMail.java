@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.utils;
+package org.gnori.mailsenderbot.utils.forMail;
 
 import java.util.Properties;
 /**

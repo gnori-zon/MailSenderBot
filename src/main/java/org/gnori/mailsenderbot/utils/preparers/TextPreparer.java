@@ -1,4 +1,4 @@
-package org.gnori.mailsenderbot.utils;
+package org.gnori.mailsenderbot.utils.preparers;
 
 import org.gnori.mailsenderbot.dto.AccountDto;
 import org.gnori.mailsenderbot.dto.MailingHistoryDto;

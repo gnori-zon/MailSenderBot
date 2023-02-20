@@ -5,8 +5,8 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForSendMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForSendMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForSendMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForSendMessage;
 /**
  * Provides a choice of sending method {@link Command}.
  */

@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForMessage;
 /**
  * Displays the mailing history of the user {@link Command}.
  */

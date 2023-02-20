@@ -4,7 +4,7 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.KEY_FOR_MAIL_PENDING;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeKeyForMailMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeChangeKeyForMailMessage;
 
 public class BeforeChangeKeyForMailCommandTest extends AbstractBeforeCommandTest{
     @Override

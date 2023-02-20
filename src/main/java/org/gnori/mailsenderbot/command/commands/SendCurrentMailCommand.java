@@ -14,8 +14,8 @@ import javax.mail.AuthenticationFailedException;
 import javax.mail.internet.AddressException;
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 /**
  * Sends a mailing with the user's mail {@link Command}.
  */

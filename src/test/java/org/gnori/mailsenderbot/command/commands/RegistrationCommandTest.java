@@ -8,8 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForRegistrationMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForRegistrationMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForRegistrationMessage;
 
 public class RegistrationCommandTest extends AbstractCommandTest {
     @Override

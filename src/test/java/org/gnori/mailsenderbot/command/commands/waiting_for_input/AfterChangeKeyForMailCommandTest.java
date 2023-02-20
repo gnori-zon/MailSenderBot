@@ -14,8 +14,8 @@ import org.mockito.Mockito;
 import java.util.Collections;
 
 import static org.gnori.mailsenderbot.command.commands.waiting_for_input.AfterChangeMailCommandTest.prepareUpdateWithMessage;
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 
 public class AfterChangeKeyForMailCommandTest {
     private final ModifyDataBaseService modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);

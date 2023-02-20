@@ -7,8 +7,8 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForPreviewMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForPreviewMessage;
 
 public class CreateMailingCommandTest extends AbstractCommandTest {
     private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);

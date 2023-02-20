@@ -7,8 +7,8 @@ import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeginningMessage;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.checkedRegistrationCommand;
 /**
  * Provides command selection at the start (initial command) {@link Command}.

@@ -4,7 +4,7 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
 import static org.gnori.mailsenderbot.entity.enums.State.DOWNLOAD_MESSAGE_PENDING;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeDownloadMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeDownloadMessage;
 
 public class BeforeDownloadMessageCommandTest extends AbstractBeforeCommandTest{
     @Override

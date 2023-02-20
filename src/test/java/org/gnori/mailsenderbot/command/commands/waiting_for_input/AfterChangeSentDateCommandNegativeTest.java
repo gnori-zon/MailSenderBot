@@ -2,7 +2,7 @@ package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 
 import org.gnori.mailsenderbot.command.Command;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextInvalidDateForAfterChangeSentDateMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextInvalidDateForAfterChangeSentDateMessage;
 
 public class AfterChangeSentDateCommandNegativeTest extends AbstractAfterChangeItemMessageCommandTest{
     @Override

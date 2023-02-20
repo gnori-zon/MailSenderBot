@@ -17,9 +17,9 @@ import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.mailsenderbot.utils.FileDataParser.*;
-import static org.gnori.mailsenderbot.utils.TextPreparer.*;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
 import static org.gnori.mailsenderbot.utils.UtilsCommand.getSimpleDateFormat;
 /**
  * Validates and sets the params in the model and sets the state  {@link Command,State}.

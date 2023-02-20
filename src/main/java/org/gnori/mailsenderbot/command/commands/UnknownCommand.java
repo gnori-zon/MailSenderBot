@@ -6,9 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Collections;
 
-import static org.gnori.mailsenderbot.utils.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForLastForUnknownMessage;
+import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeginningMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForLastForUnknownMessage;
 /**
  * Notifies that the command is unknown {@link Command}.
  */

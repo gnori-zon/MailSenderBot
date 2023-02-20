@@ -3,7 +3,7 @@ package org.gnori.mailsenderbot.command.commands.waiting_for_input;
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.enums.State;
 
-import static org.gnori.mailsenderbot.utils.TextPreparer.prepareTextForBeforeChangeSentDateMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForBeforeChangeSentDateMessage;
 
 public class BeforeChangeSentDateCommandTest extends AbstractBeforeCommandTest{
     @Override
