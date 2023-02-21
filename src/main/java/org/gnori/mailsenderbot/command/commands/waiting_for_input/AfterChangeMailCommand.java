@@ -44,7 +44,7 @@ public class AfterChangeMailCommand implements Command {
         }
         modifyDataBaseService.updateStateById(chatId, State.NOTHING_PENDING);
         var lastMessageId = update.getMessage().getMessageId() - 1;
-        var account = modifyDataBaseService.findAccountById(chatId);
+        var account = modifyDataBaseService.findAccountDTOById(chatId);
         var text = prepareTextForProfileMessage(account);
         var newCallbackData = prepareCallbackDataForProfileMessage();
 

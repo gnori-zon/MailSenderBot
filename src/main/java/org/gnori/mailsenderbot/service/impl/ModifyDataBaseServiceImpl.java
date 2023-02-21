@@ -9,11 +9,13 @@ import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
+import org.gnori.mailsenderbot.entity.enums.StateMessage;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 /**
  * Implementation service {@link ModifyDataBaseService}
@@ -31,8 +33,7 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
 
     }
 
-    @Override
-    public AccountDto findAccountById(Long id) {
+    public AccountDto findAccountDTOById(Long id) {
         var optionalAccount = accountDao.findById(id);
         if(optionalAccount.isPresent()) {
             return new AccountDto(optionalAccount.get());
@@ -44,7 +45,7 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
         var optionalMailingHistory = accountDao.findById(id).get().getMailingHistory();
         if(optionalMailingHistory!=null) {
             var mailingList = optionalMailingHistory.getMailingList();
-            if (mailingList != null && mailingList.size() > 0) {
+            if (mailingList != null) {
                 return new MailingHistoryDto(optionalMailingHistory);
             }
         }
@@ -54,6 +55,11 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     @Override
     public void updateStateById(Long id, State state) {
         accountDao.updateStateById(id, state);
+    }
+    @Override
+    public void updateStateMessageById(Long id, StateMessage stateMessage) {
+        var account = accountDao.findById(id).get();
+        mailingHistoryDao.updateStateLastMessage(account.getMailingHistory().getId(), stateMessage);
     }
 
     @Override
@@ -89,6 +95,10 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
             accountDao.save(account);
         }
 
+    }
+    @Override
+    public Optional<Account> findAccountById(Long id){
+        return accountDao.findById(id);
     }
 
     @Override

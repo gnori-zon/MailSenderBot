@@ -12,6 +12,9 @@ public class TextPreparer {
     public static String prepareTextForBeginningMessage() {
         return "Выберите необходимый пункт👇🏿";
     }
+    public static String prepareTextForSendCurrentAndAnonymouslyMessage() {
+        return "✔Добавлено в очередь\n"+prepareTextForBeginningMessage();
+    }
     public static String prepareTextForChangeItemMessage() {
         return "*Выберите пункт, для изменения:*";
     }
@@ -25,14 +28,8 @@ public class TextPreparer {
     public static String prepareTextForRegistrationMessage() {
         return "*Кликните по кнопке, для начала работы*";
     }
-    public static String prepareTextForSuccessConcreteSendingMessage() {
-        return "отправлено✔";
-    }
-    public static String prepareTextForBadConcreteSendingMessage() {
-        return "неотправлено:❌";
-    }
     public static String prepareTextForWaitingForConcreteSendingMessage() {
-        return "Производится отправка...🛫";
+        return "Производится отправка в очередь...🛫";
     }
     public static String prepareTextForBeforeDownloadMessage() {
         return "*Загрузите письмо в формате .txt\nШаблон: *"+
@@ -128,6 +125,9 @@ public class TextPreparer {
     public static String prepareTextForMessage(MailingHistoryDto mailingHistory) {
         StringBuilder text = new StringBuilder("*История рассылок: *");
         if(mailingHistory!=null) {
+            if(mailingHistory.getStateLastMessage()!=null){
+                text.append("\nСтатус последней рассылки: ").append(mailingHistory.getStateLastMessage().toString());
+            }
             var countLine = 0;
             for(var record : mailingHistory.getMailingList()){
                 var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " шт.";

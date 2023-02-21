@@ -22,14 +22,14 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     public MessageTypesDistributorServiceImpl(SendBotMessageService sendBotMessageService,
                                               ModifyDataBaseService modifyDataBaseService,
                                               MessageRepository messageRepository,
-                                              MailSenderService mailSenderService,
+                                              QueueManager queueManager,
                                               FileService fileService,
                                               CryptoTool cryptoTool) {
         this.modifyDataBaseService = modifyDataBaseService;
         this.commandContainer = new CommandContainer(sendBotMessageService,
                 modifyDataBaseService,
                 messageRepository,
-                mailSenderService,
+                queueManager,
                 cryptoTool,
                 fileService,
                 this);
@@ -54,13 +54,13 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processCallbackQuery(Update update) {
-        //TODO may be add findAccountById and check register
+        //TODO may be add findAccountDTOById and check register
         var command = update.getCallbackQuery().getData();
         commandContainer.retrieveCommand(command).execute(update);
     }
 
     private void processTextMessage(Update update) {
-        var account = modifyDataBaseService.findAccountById(update.getMessage().getChatId());
+        var account = modifyDataBaseService.findAccountDTOById(update.getMessage().getChatId());
         if(account!=null){
             if(State.KEY_FOR_MAIL_PENDING.equals(account.getState())){
                 commandContainer.retrieveCommand(KEY_FOR_MAIL_PENDING.getCommandName()).execute(update);
@@ -89,7 +89,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processDocMessage(Update update) {
-        var account = modifyDataBaseService.findAccountById(update.getMessage().getChatId());
+        var account = modifyDataBaseService.findAccountDTOById(update.getMessage().getChatId());
         if(account!=null) {
             if (State.ANNEX_PENDING.equals(account.getState())) {
                 commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);
@@ -104,7 +104,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     }
 
     private void processPhotoMessage(Update update) {
-        var account = modifyDataBaseService.findAccountById(update.getMessage().getChatId());
+        var account = modifyDataBaseService.findAccountDTOById(update.getMessage().getChatId());
         if(account!=null) {
             if (State.ANNEX_PENDING.equals(account.getState())) {
                 commandContainer.retrieveCommand(ANNEX_PENDING.getCommandName()).execute(update);

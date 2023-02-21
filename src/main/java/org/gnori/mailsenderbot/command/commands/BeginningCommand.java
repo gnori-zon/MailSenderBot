@@ -2,6 +2,7 @@ package org.gnori.mailsenderbot.command.commands;
 
 import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.Account;
+import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.enums.State;
 import org.gnori.mailsenderbot.service.ModifyDataBaseService;
 import org.gnori.mailsenderbot.service.SendBotMessageService;
@@ -30,7 +31,7 @@ public class BeginningCommand implements Command {
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var isRegistrationCommand = checkedRegistrationCommand(update.getCallbackQuery().getMessage());
         if(isRegistrationCommand) {
-            if (modifyDataBaseService.findAccountById(chatId) == null) {
+            if (modifyDataBaseService.findAccountDTOById(chatId) == null) {
                 var account = createAccount(chatId);
                 modifyDataBaseService.saveAccount(account);
             }
@@ -45,6 +46,7 @@ public class BeginningCommand implements Command {
         return Account.builder()
                 .id(chatId)
                 .state(State.NOTHING_PENDING)
+                .mailingHistory(new MailingHistory())
                 .build();
     }
 }

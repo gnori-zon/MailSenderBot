@@ -2,10 +2,13 @@ package org.gnori.mailsenderbot.service.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.gnori.mailsenderbot.aop.LogExecutionTime;
-import org.gnori.mailsenderbot.dao.AccountDao;
+import org.gnori.mailsenderbot.entity.MessageSentRecord;
+import org.gnori.mailsenderbot.entity.enums.StateMessage;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.service.FileService;
 import org.gnori.mailsenderbot.service.MailSenderService;
+import org.gnori.mailsenderbot.service.ModifyDataBaseService;
+import org.gnori.mailsenderbot.service.QueueManager;
 import org.gnori.mailsenderbot.service.impl.enums.MailDomain;
 import org.gnori.mailsenderbot.utils.CryptoTool;
 import org.gnori.mailsenderbot.utils.LoginAuthenticator;
@@ -15,7 +18,6 @@ import org.gnori.mailsenderbot.utils.forMail.NoFreeMailingAddressesException;
 import org.gnori.mailsenderbot.utils.forMail.StateEmail;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 
 import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
@@ -32,26 +34,60 @@ import static org.gnori.mailsenderbot.utils.forMail.UtilsMail.*;
  * Implementation service {@link MailSenderService}
  */
 @Log4j
-@Service
-public class MailSenderServiceImpl implements MailSenderService {
+public class MailSenderServiceImpl implements MailSenderService, Runnable {
+    private final int WAIT_FOR_NEW_MESSAGE_DELAY = 1000;
+
     private final BasicEmails basicEmails;
-    private final AccountDao accountDao;
+    private final ModifyDataBaseService modifyDataBaseService;
     private final FileService fileService;
     private final CryptoTool cryptoTool;
+    private final QueueManager queueManager;
 
-    public MailSenderServiceImpl(BasicEmails basicEmails, AccountDao accountDao, FileService fileService,
-                                 CryptoTool cryptoTool) {
+    public MailSenderServiceImpl(BasicEmails basicEmails, ModifyDataBaseService modifyDataBaseService, FileService fileService,
+                                 CryptoTool cryptoTool,QueueManager queueManager) {
         this.basicEmails = basicEmails;
-
-        this.accountDao = accountDao;
+        this.modifyDataBaseService = modifyDataBaseService;
         this.fileService = fileService;
         this.cryptoTool = cryptoTool;
+        this.queueManager = queueManager;
 
     }
-
-    @LogExecutionTime
     @Override
-    public int sendAnonymously(Long id, Message message) throws AddressException, NoFreeMailingAddressesException {
+    public void run() {
+        log.info("[STARTED] MailSenderService: " + this);
+        while (true) {
+            for (Message message = queueManager.pollFromQueue(); message != null; message = queueManager.pollFromQueue()) {
+                var sendMode = message.getSendMode();
+                try {
+                    switch (sendMode) {
+                        case ANONYMOUSLY: {
+                            sendAnonymously(message);
+                            break;
+                        }
+                        case CURRENT_MAIL: {
+                            sendWithUserMail(message);
+                            break;
+                        }
+                    }
+                    createAndAddMessageSentRecord(message);
+                    modifyDataBaseService.updateStateMessageById(message.getChatId(), StateMessage.SUCCESS);
+                    }catch (AddressException | AuthenticationFailedException | NoFreeMailingAddressesException e) {
+                        log.error("MailSenderService:", e);
+                        modifyDataBaseService.updateStateMessageById(message.getChatId(), StateMessage.FAIL);
+                    return;
+                    }
+                }
+            try {
+                Thread.sleep(WAIT_FOR_NEW_MESSAGE_DELAY);
+            } catch (InterruptedException e) {
+                log.error("Catch interrupt. Exit", e);
+                return;
+            }
+        }
+
+    }
+    @LogExecutionTime
+    private void sendAnonymously(Message message) throws AddressException, NoFreeMailingAddressesException {
         var props = getBaseProperties();
         var optionalMail = basicEmails.getBasicEmailAddresses().stream().filter(el -> el.getState().equals(StateEmail.FREE)).findFirst();
         if (optionalMail.isPresent()) {
@@ -59,13 +95,11 @@ public class MailSenderServiceImpl implements MailSenderService {
             mail.setState(StateEmail.USED);
             var session = Session.getDefaultInstance(props, new LoginAuthenticator(mail.getLogin(), mail.getPassword()));
             try {
-                sendMessage(id, mail.getLogin(), session, message);
-                return 1;
+                sendMessage(message.getChatId(), mail.getLogin(), session, message);
             } catch (AddressException e) {
                 throw e;
             } catch (Exception e) {
                 log.error(e);
-                return 0;
             }finally {
                 mail.setState(StateEmail.FREE);
             }
@@ -75,10 +109,9 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @LogExecutionTime
-    @Override
-    public int sendWithUserMail(Long id, Message message) throws AuthenticationFailedException, AddressException {
-        var optionalAccount = accountDao.findById(id);
-        if(optionalAccount.isEmpty()){return 0;}
+    private void sendWithUserMail(Message message) throws AuthenticationFailedException, AddressException {
+        var optionalAccount = modifyDataBaseService.findAccountById(message.getChatId());
+        if(optionalAccount.isEmpty()){return;}
 
         var account = optionalAccount.get();
         var username = account.getEmail();
@@ -88,15 +121,13 @@ public class MailSenderServiceImpl implements MailSenderService {
 
         var session = Session.getInstance(props, new LoginAuthenticator(username,keyForMail));
         try {
-            sendMessage(id, username, session, message);
-            return 1;
+            sendMessage(message.getChatId(), username, session, message);
         } catch (AddressException e) {
             throw e;
         }catch (AuthenticationFailedException e) {
             throw new AuthenticationFailedException("Неверный ключ доступа");
         }catch (Exception e){
             log.error(e);
-            return 0;
         }
     }
 
@@ -144,14 +175,14 @@ public class MailSenderServiceImpl implements MailSenderService {
             helper.setSentDate(message.getSentDate());
         }
         FileSystemResource file = null;
-        int processStatus = 0;
+        int processFileStatus = 0;
         if(message.hasAnnex()) {
             if(message.getDocAnnex()!=null){
-                processStatus = fileService.processDoc(id);
+                processFileStatus = fileService.processDoc(id);
             }else {
-                processStatus = fileService.processPhoto(id);
+                processFileStatus = fileService.processPhoto(id);
             }
-            if(processStatus==1) {
+            if(processFileStatus==1) {
                 file = fileService.getFileSystemResource(id);
                 helper.addAttachment(file.getFilename(), file);
             }
@@ -161,12 +192,16 @@ public class MailSenderServiceImpl implements MailSenderService {
             Transport.send(mailMessage);
             countMessage--;
         }
-        if(processStatus==1) {
+        if(processFileStatus==1) {
             var isDeleted = file.getFile().delete();
             if(!isDeleted){
                 log.error("File:"+file.getFilename()+" not removed");
             }
         }
     }
-
+    private void createAndAddMessageSentRecord(Message message){
+        var countMessages = (int) message.getRecipients().stream().filter(UtilsCommand::validateMail).count() * message.getCountForRecipient();
+        var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();
+        modifyDataBaseService.addMessageSentRecord(message.getChatId(), messageSentRecord);
+    }
 }

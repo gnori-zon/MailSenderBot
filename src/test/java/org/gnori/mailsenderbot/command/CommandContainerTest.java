@@ -3,7 +3,7 @@ package org.gnori.mailsenderbot.command;
 import org.gnori.mailsenderbot.command.commands.UnknownCommand;
 import org.gnori.mailsenderbot.repository.MessageRepository;
 import org.gnori.mailsenderbot.service.FileService;
-import org.gnori.mailsenderbot.service.impl.MailSenderServiceImpl;
+import org.gnori.mailsenderbot.service.QueueManager;
 import org.gnori.mailsenderbot.service.impl.MessageTypesDistributorServiceImpl;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
 import org.gnori.mailsenderbot.service.impl.SendBotMessageServiceImpl;
@@ -22,18 +22,18 @@ public class CommandContainerTest {
 
     @BeforeEach
     public void init() {
-        SendBotMessageServiceImpl sendBotMessageService = Mockito.mock(SendBotMessageServiceImpl.class);
-        ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
-        MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
-        FileService fileService = Mockito.mock(FileService.class);
-        MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
-        CryptoTool cryptoTool = Mockito.mock(CryptoTool.class);
-        MessageTypesDistributorServiceImpl messageTypesDistributorService = Mockito.mock(MessageTypesDistributorServiceImpl.class);
+        var sendBotMessageService = Mockito.mock(SendBotMessageServiceImpl.class);
+        var modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
+        var messageRepository = Mockito.mock(MessageRepository.class);
+        var fileService = Mockito.mock(FileService.class);
+        var queueManager = Mockito.mock(QueueManager.class);
+        var cryptoTool = Mockito.mock(CryptoTool.class);
+        var messageTypesDistributorService = Mockito.mock(MessageTypesDistributorServiceImpl.class);
 
         commandContainer = new CommandContainer(sendBotMessageService,
                                                 modifyDataBaseService,
                                                 messageRepository,
-                                                mailSenderService,
+                                                queueManager,
                                                 cryptoTool,
                                                 fileService,
                                                 messageTypesDistributorService);

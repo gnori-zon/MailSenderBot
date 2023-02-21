@@ -8,7 +8,7 @@ import org.gnori.mailsenderbot.entity.Account;
 import org.gnori.mailsenderbot.entity.MailingHistory;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.entity.enums.State;
-import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
+import org.gnori.mailsenderbot.entity.enums.StateMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +46,7 @@ public class ModifyDataBaseServiceImplTest {
         var expectedAccount = new AccountDto(accountData);
         Mockito.when(accountDao.findById(id)).thenReturn(Optional.of(accountData));
 
-        var account = modifyDataBaseService.findAccountById(id);
+        var account = modifyDataBaseService.findAccountDTOById(id);
 
         Assertions.assertEquals(expectedAccount, account);
     }
@@ -57,7 +57,7 @@ public class ModifyDataBaseServiceImplTest {
 
         Mockito.when(accountDao.findById(id)).thenReturn(Optional.empty());
 
-        var account = modifyDataBaseService.findAccountById(id);
+        var account = modifyDataBaseService.findAccountDTOById(id);
 
         Assertions.assertNull(account);
     }
@@ -67,6 +67,7 @@ public class ModifyDataBaseServiceImplTest {
         var id = 12L;
         var accountData = new Account();
         var mailingHistory = new MailingHistory(id,
+                StateMessage.SUCCESS,
                 accountData,
                 List.of(MessageSentRecord.builder().countMessages(15).sendDate(LocalDateTime.MIN).build(),
                 MessageSentRecord.builder().countMessages(4).sendDate(LocalDateTime.MIN).build()));
@@ -97,7 +98,7 @@ public class ModifyDataBaseServiceImplTest {
     public void getMailingHistoryByIdSecondNegative(){
         var id = 12L;
         var accountData = new Account();
-        var mailingHistory = new MailingHistory(id, accountData, null);
+        var mailingHistory = new MailingHistory(id,StateMessage.QUEUE,accountData, null);
         accountData.setMailingHistory(mailingHistory);
 
         Mockito.when(accountDao.findById(id)).thenReturn(Optional.of(accountData));

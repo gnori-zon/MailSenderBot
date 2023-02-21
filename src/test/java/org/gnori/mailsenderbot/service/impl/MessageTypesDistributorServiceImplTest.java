@@ -1,38 +1,36 @@
 package org.gnori.mailsenderbot.service.impl;
 
 import org.gnori.mailsenderbot.repository.MessageRepository;
+import org.gnori.mailsenderbot.service.QueueManager;
 import org.gnori.mailsenderbot.utils.CryptoTool;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
 @DisplayName("Unit-level testing for MessageTypesDistributorServiceImpl")
 class MessageTypesDistributorServiceImplTest {
     SendBotMessageServiceImpl  sendBotMessageService = Mockito.mock(SendBotMessageServiceImpl.class);
     ModifyDataBaseServiceImpl  modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
     MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
-    MailSenderServiceImpl  mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
+    QueueManager queueManager = Mockito.mock(QueueManager.class);
     FileServiceImpl  fileService = Mockito.mock(FileServiceImpl.class);
     CryptoTool cryptoTool = Mockito.mock(CryptoTool.class);
 
     MessageTypesDistributorServiceImpl messageTypesDistributorService = new MessageTypesDistributorServiceImpl(sendBotMessageService,
             modifyDataBaseService,
             messageRepository,
-            mailSenderService,
+            queueManager,
             fileService,
             cryptoTool);
     static Update update;
     static Message message;
-
-    @BeforeAll
-    static void init(){
+    @BeforeEach
+    public void clearData(){
         message = Mockito.mock(Message.class);
         update = Mockito.mock(Update.class);
-
     }
     @Test
     void distributeMessageByType() {
@@ -66,7 +64,7 @@ class MessageTypesDistributorServiceImplTest {
 
     @Test
     void distributeMessageByTypeHasDocument() {
-        var chatId = 12l;
+        var chatId = 12L;
         Mockito.when(update.getMessage()).thenReturn(message);
         Mockito.when(message.hasDocument()).thenReturn(true);
         Mockito.when(message.getChatId()).thenReturn(chatId);
@@ -78,12 +76,12 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.verify(message).hasDocument();
         Mockito.verify(message,Mockito.never()).hasPhoto();
         Mockito.verify(message,Mockito.never()).hasText();
-        Mockito.verify(modifyDataBaseService).findAccountById(chatId);
+        Mockito.verify(modifyDataBaseService).findAccountDTOById(chatId);
     }
 
     @Test
     void distributeMessageByTypeHasPhoto() {
-        var chatId = 12l;
+        var chatId = 12L;
         Mockito.when(update.getMessage()).thenReturn(message);
         Mockito.when(message.hasPhoto()).thenReturn(true);
         Mockito.when(message.getChatId()).thenReturn(chatId);
@@ -95,12 +93,12 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.verify(message).hasDocument();
         Mockito.verify(message).hasPhoto();
         Mockito.verify(message,Mockito.never()).hasText();
-        Mockito.verify(modifyDataBaseService).findAccountById(chatId);
+        Mockito.verify(modifyDataBaseService).findAccountDTOById(chatId);
     }
 
     @Test
     void distributeMessageByTypeHasText() {
-        var chatId = 12l;
+        var chatId = 12L;
         Mockito.when(update.getMessage()).thenReturn(message);
         Mockito.when(message.hasText()).thenReturn(true);
         Mockito.when(message.getChatId()).thenReturn(chatId);
@@ -112,7 +110,7 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.verify(message).hasDocument();
         Mockito.verify(message).hasPhoto();
         Mockito.verify(message).hasText();
-        Mockito.verify(modifyDataBaseService).findAccountById(chatId);
+        Mockito.verify(modifyDataBaseService).findAccountDTOById(chatId);
     }
 
 }

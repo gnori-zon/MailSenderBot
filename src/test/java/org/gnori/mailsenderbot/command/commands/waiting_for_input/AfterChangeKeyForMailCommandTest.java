@@ -48,7 +48,7 @@ public class AfterChangeKeyForMailCommandTest {
         if(key!=null) {
             Mockito.when(cryptoTool.encrypt(key)).thenReturn(key);
         }
-        Mockito.when(modifyDataBaseService.findAccountById(chatId)).thenReturn(account);
+        Mockito.when(modifyDataBaseService.findAccountDTOById(chatId)).thenReturn(account);
         var text = prepareTextForProfileMessage(account);
 
         new AfterChangeKeyForMailCommand(modifyDataBaseService,sendBotMessageService,cryptoTool).execute(update);

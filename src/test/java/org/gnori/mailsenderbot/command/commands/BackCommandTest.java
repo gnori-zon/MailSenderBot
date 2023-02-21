@@ -59,7 +59,7 @@ public class BackCommandTest {
     private void shouldProperlyExecuteCommand(String firstCallBack,String expectedChangedCallBack,State state ) {
         var chatId = 12L;
         var update = prepareUpdate(chatId, firstCallBack);
-        Mockito.when(modifyDataBaseService.findAccountById(chatId)).thenReturn(new AccountDto(Account.builder().state(state).build()));
+        Mockito.when(modifyDataBaseService.findAccountDTOById(chatId)).thenReturn(new AccountDto(Account.builder().state(state).build()));
 
         getCommand().execute(update);
 

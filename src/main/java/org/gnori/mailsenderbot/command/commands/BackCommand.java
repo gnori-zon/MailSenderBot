@@ -32,7 +32,7 @@ public class BackCommand implements Command {
             update.getCallbackQuery().setData(BEGINNING.getCommandName());
             messageTypesDistributorService.distributeMessageByType(update);
         }else if (BACK.getCommandName().equals(firstCallBackDataFromOriginal)){
-            var account = modifyDataBaseService.findAccountById(originalMessage.getChatId());
+            var account = modifyDataBaseService.findAccountDTOById(originalMessage.getChatId());
                 if(account!=null && State.NOTHING_PENDING.equals(account.getState())){
                     update.getCallbackQuery().setData(BEGINNING.getCommandName());
                     messageTypesDistributorService.distributeMessageByType(update);

@@ -23,7 +23,7 @@ public class SendCommand implements Command {
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
-        var account = modifyDataBaseService.findAccountById(chatId);
+        var account = modifyDataBaseService.findAccountDTOById(chatId);
         var text = prepareTextForSendMessage(account);
         var newCallbackData = prepareCallbackDataForSendMessage(account);
 

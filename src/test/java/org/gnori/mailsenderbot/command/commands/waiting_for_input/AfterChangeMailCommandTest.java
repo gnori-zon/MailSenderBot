@@ -48,7 +48,7 @@ public class AfterChangeMailCommandTest {
     private void test(Long chatId, Integer lastMessageId, String incomingMessage, State newState, String textForOldMessage, List<List<String>> newCallbackData, boolean positive){
         var update = prepareUpdateWithMessage(chatId,lastMessageId,incomingMessage);
         var accountDTO = new AccountDto(new Account());
-        Mockito.when(modifyDataBaseService.findAccountById(chatId)).thenReturn(accountDTO);
+        Mockito.when(modifyDataBaseService.findAccountDTOById(chatId)).thenReturn(accountDTO);
 
         new AfterChangeMailCommand(modifyDataBaseService,sendBotMessageService).execute(update);
 

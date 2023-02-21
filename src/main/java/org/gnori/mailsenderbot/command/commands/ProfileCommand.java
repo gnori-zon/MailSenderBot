@@ -23,7 +23,7 @@ public class ProfileCommand implements Command {
     @Override
     public void execute(Update update) {
         var chatId = update.getCallbackQuery().getMessage().getChatId();
-        var account = modifyDataBaseService.findAccountById(chatId);
+        var account = modifyDataBaseService.findAccountDTOById(chatId);
         var text = prepareTextForProfileMessage(account);
         var messageId = update.getCallbackQuery().getMessage().getMessageId();
         var newCallbackData = prepareCallbackDataForProfileMessage();

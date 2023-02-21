@@ -1,6 +1,7 @@
 package org.gnori.mailsenderbot.entity;
 
 import lombok.*;
+import org.gnori.mailsenderbot.entity.enums.StateMessage;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +17,8 @@ public class MailingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private StateMessage stateLastMessage;
 
     @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},
             mappedBy = "mailingHistory")

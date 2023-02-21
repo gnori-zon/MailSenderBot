@@ -5,7 +5,7 @@ import org.gnori.mailsenderbot.command.Command;
 import org.gnori.mailsenderbot.entity.MessageSentRecord;
 import org.gnori.mailsenderbot.model.Message;
 import org.gnori.mailsenderbot.repository.MessageRepository;
-import org.gnori.mailsenderbot.service.impl.MailSenderServiceImpl;
+import org.gnori.mailsenderbot.service.QueueManager;
 import org.gnori.mailsenderbot.service.impl.ModifyDataBaseServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,11 +17,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.gnori.mailsenderbot.utils.preparers.CallbackDataPreparer.prepareCallbackDataForBeginningMessage;
-import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.*;
-
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForSendCurrentAndAnonymouslyMessage;
+import static org.gnori.mailsenderbot.utils.preparers.TextPreparer.prepareTextForWaitingForConcreteSendingMessage;
 public class SendAnonymouslyCommandTest extends AbstractCommandTest {
     private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
-    private final MailSenderServiceImpl mailSenderService = Mockito.mock(MailSenderServiceImpl.class);
+    private final QueueManager queueManager = Mockito.mock(QueueManager.class);
     private final ModifyDataBaseServiceImpl modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
     @SneakyThrows
     @Override
@@ -30,9 +30,7 @@ public class SendAnonymouslyCommandTest extends AbstractCommandTest {
 
     var message = Mockito.mock(Message.class);
         Mockito.when(messageRepository.getMessage(id)).thenReturn(message);
-        Mockito.when(mailSenderService.sendAnonymously(id, message)).thenReturn(0);
-
-        return prepareTextForBadConcreteSendingMessage()+"\n"+prepareTextForBeginningMessage();
+        return prepareTextForSendCurrentAndAnonymouslyMessage();
 }
 
     @Override
@@ -50,21 +48,19 @@ public class SendAnonymouslyCommandTest extends AbstractCommandTest {
         return new SendAnonymouslyCommand(getSendBotMessageService(),
                                           modifyDataBaseService,
                                           messageRepository,
-                                          mailSenderService);
+                                          queueManager);
     }
 
     @SneakyThrows
     @Test
-    public void SuccessSend() throws AuthenticationFailedException {
+    public void SuccessSend(){
         var id = 12L; // id from abstractTest
         int messageId = 12;
         var message = Mockito.mock(Message.class);
-        var text = prepareTextForSuccessConcreteSendingMessage()+"\n"+prepareTextForBeginningMessage();
+        var text = prepareTextForSendCurrentAndAnonymouslyMessage();
         var newCallbackData = prepareCallbackDataForBeginningMessage();
         var countMessages = message.getRecipients().size() * message.getCountForRecipient();
-        var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();
         Mockito.when(messageRepository.getMessage(id)).thenReturn(message);
-        Mockito.when(mailSenderService.sendAnonymously(id, message)).thenReturn(1);
         Update update = new Update();
         CallbackQuery callbackQuery = new CallbackQuery();
         org.telegram.telegrambots.meta.api.objects.Message messageTelegram = Mockito.mock(org.telegram.telegrambots.meta.api.objects.Message.class);
@@ -73,14 +69,13 @@ public class SendAnonymouslyCommandTest extends AbstractCommandTest {
 
         callbackQuery.setMessage(messageTelegram);
         update.setCallbackQuery(callbackQuery);
-        var command = new SendAnonymouslyCommand(getSendBotMessageService(),modifyDataBaseService,messageRepository,mailSenderService);
+        var command = new SendAnonymouslyCommand(getSendBotMessageService(),modifyDataBaseService,messageRepository,queueManager);
 
         command.execute(update);
 
         Mockito.verify(sendBotMessageService).executeEditMessage(id, messageId, prepareTextForWaitingForConcreteSendingMessage(), Collections.emptyList(), false);
         Mockito.verify(sendBotMessageService).executeEditMessage(id, messageId, text, newCallbackData, false);
         Mockito.verify(messageRepository).removeMessage(id);
-        Mockito.verify(modifyDataBaseService).addMessageSentRecord(id, messageSentRecord);
-
+        Mockito.verify(queueManager).addInQueue(message);
     }
 }

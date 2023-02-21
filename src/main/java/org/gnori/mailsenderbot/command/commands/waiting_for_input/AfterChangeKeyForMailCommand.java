@@ -42,7 +42,7 @@ public class AfterChangeKeyForMailCommand implements Command {
         }
 
         var lastMessageId = update.getMessage().getMessageId() - 1;
-        var account = modifyDataBaseService.findAccountById(chatId);
+        var account = modifyDataBaseService.findAccountDTOById(chatId);
         var text = prepareTextForProfileMessage(account);
         var newCallbackData = prepareCallbackDataForProfileMessage();
 

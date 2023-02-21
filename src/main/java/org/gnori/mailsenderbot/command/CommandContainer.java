@@ -19,7 +19,7 @@ public class CommandContainer {
     public CommandContainer(SendBotMessageService sendBotMessageService,
                             ModifyDataBaseService modifyDataBaseService,
                             MessageRepository messageRepository,
-                            MailSenderService mailSenderService,
+                            QueueManager queueManager,
                             CryptoTool cryptoTool,
                             FileService fileService,
                             MessageTypesDistributorService messageTypesDistributorService) {
@@ -46,8 +46,8 @@ public class CommandContainer {
                 .put(CHANGE_ITEM_COUNT_FOR_RECIPIENTS.getCommandName(), new BeforeChangeCountForRecipientCommand(sendBotMessageService, modifyDataBaseService))
                 .put(COUNT_FOR_RECIPIENT_PENDING.getCommandName(), new AfterChangeCountForRecipientCommand(modifyDataBaseService, sendBotMessageService, messageRepository))
                 .put(SEND.getCommandName(), new SendCommand(sendBotMessageService, modifyDataBaseService))
-                .put(SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, mailSenderService))
-                .put(SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,mailSenderService))
+                .put(SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, queueManager))
+                .put(SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,queueManager))
                 .put(CLEAR_MESSAGE.getCommandName(), new ClearMessageCommand(sendBotMessageService,messageRepository))
                 .put(DOWNLOAD_MESSAGE.getCommandName(), new BeforeDownloadMessageCommand(sendBotMessageService,modifyDataBaseService))
                 .put(DOWNLOAD_MESSAGE_PENDING.getCommandName(), new AfterDownloadMessageCommand(sendBotMessageService,modifyDataBaseService, messageRepository, fileService ))

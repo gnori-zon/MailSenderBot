@@ -17,7 +17,7 @@ public class SendCommandTest extends AbstractCommandTest {
     @Override
     public String getCommandMessage() {
         var id = 12L; // id from abstractTest
-        Mockito.when(modifyDataBaseService.findAccountById(id)).thenReturn(account);
+        Mockito.when(modifyDataBaseService.findAccountDTOById(id)).thenReturn(account);
         Mockito.when(account.getEmail()).thenReturn("email@mail.ru");
         Mockito.when(account.hasKey()).thenReturn(true);
         return prepareTextForSendMessage(account);
