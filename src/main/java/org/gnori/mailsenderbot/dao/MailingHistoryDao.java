@@ -13,7 +13,7 @@ import java.util.Optional;
  * dao for {@link MailingHistory} entity.
  */
 public interface MailingHistoryDao extends JpaRepository<MailingHistory,Long> {
-
+     @Transactional
      Optional<MailingHistory> findByAccount_Id(Long id);
      @Transactional
      @Modifying

@@ -42,11 +42,11 @@ public class ModifyDataBaseServiceImpl implements ModifyDataBaseService {
     }
     @Override
     public MailingHistoryDto getMailingHistoryById(Long id){
-        var optionalMailingHistory = accountDao.findById(id).get().getMailingHistory();
-        if(optionalMailingHistory!=null) {
-            var mailingList = optionalMailingHistory.getMailingList();
+        var optionalMailingHistory = mailingHistoryDao.findByAccount_Id(id);
+        if(optionalMailingHistory.isPresent()) {
+            var mailingList = optionalMailingHistory.get().getMailingList();
             if (mailingList != null) {
-                return new MailingHistoryDto(optionalMailingHistory);
+                return new MailingHistoryDto(optionalMailingHistory.get());
             }
         }
         return null;
