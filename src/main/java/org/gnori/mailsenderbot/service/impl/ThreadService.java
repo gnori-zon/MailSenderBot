@@ -22,7 +22,13 @@ public class ThreadService {
         mailSender.start();
     }
 
-    public ThreadService(BasicEmails basicEmails, ModifyDataBaseService modifyDataBaseService, FileService fileService, CryptoTool cryptoTool, QueueManager queueManager) {
-        mailSenderService = new MailSenderServiceImpl(basicEmails,modifyDataBaseService,fileService,cryptoTool,queueManager);
+    public ThreadService(
+        BasicEmails basicEmails,
+        ModifyDataBaseService modifyDataBaseService,
+        FileService fileService, CryptoTool cryptoTool,
+        QueueManager queueManager) {
+
+        mailSenderService = new MailSenderServiceImpl(basicEmails, modifyDataBaseService,
+            fileService, cryptoTool, queueManager);
     }
 }
