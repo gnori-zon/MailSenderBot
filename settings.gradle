@@ -1,0 +1,8 @@
+rootProject.name = 'send-mail-microservices'
+
+include 'store'
+include 'client-telegram'
+include 'data'
+include 'rabbitmq'
+include 'send-mail-worker'
+include 'shared'

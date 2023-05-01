@@ -8,12 +8,30 @@ version 'unspecified'
 repositories {
     mavenCentral()
 }
-
+/**
+ * Submodules import sample
+ */
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation project(':store')
+    implementation project(':data')
+    implementation project(':shared')
 }
 
-test {
-    useJUnitPlatform()
+/**
+ * Spring
+ */
+dependencies {
+    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+}
+
+/**
+ * Other
+ */
+dependencies {
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+    implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.1.0'
 }

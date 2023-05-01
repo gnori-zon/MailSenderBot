@@ -1,3 +1,6 @@
+/**
+ * Submodules import sample
+ */
 dependencies {
-    implementation project(':store')
+    provided project(':store')
 }

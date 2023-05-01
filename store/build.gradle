@@ -1,7 +1,12 @@
-
 /**
  * Spring
  */
 dependencies {
     provided group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+}
+/**
+ * Telegram Docs
+ */
+dependencies {
+    provided group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.1.0'
 }
