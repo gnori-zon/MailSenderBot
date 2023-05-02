@@ -3,7 +3,7 @@ package org.gnori.client.telegram.utils.preparers;
 import java.util.List;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.data.dto.MailingHistoryDto;
-import org.gnori.store.model.Message;
+import org.gnori.data.model.Message;
 
 /**
  * Utils for preparing text

@@ -1,7 +1,16 @@
 package org.gnori.client.telegram.service.impl;
 
 
-import static org.gnori.client.telegram.command.CommandName.*;
+import static org.gnori.client.telegram.command.CommandName.ANNEX_PENDING;
+import static org.gnori.client.telegram.command.CommandName.CONTENT_PENDING;
+import static org.gnori.client.telegram.command.CommandName.COUNT_FOR_RECIPIENT_PENDING;
+import static org.gnori.client.telegram.command.CommandName.DOWNLOAD_MESSAGE_PENDING;
+import static org.gnori.client.telegram.command.CommandName.KEY_FOR_MAIL_PENDING;
+import static org.gnori.client.telegram.command.CommandName.MAIL_PENDING;
+import static org.gnori.client.telegram.command.CommandName.RECIPIENTS_PENDING;
+import static org.gnori.client.telegram.command.CommandName.REGISTRATION;
+import static org.gnori.client.telegram.command.CommandName.SENT_DATE_PENDING;
+import static org.gnori.client.telegram.command.CommandName.TITLE_PENDING;
 
 import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.command.CommandContainer;
@@ -9,9 +18,9 @@ import org.gnori.client.telegram.service.FileService;
 import org.gnori.client.telegram.service.MessageTypesDistributorService;
 import org.gnori.client.telegram.service.SendBotMessageService;
 import org.gnori.shared.utils.CryptoTool;
-import org.gnori.store.dao.MessageRepositoryService;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.enums.State;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -27,14 +36,14 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     public MessageTypesDistributorServiceImpl(SendBotMessageService sendBotMessageService,
                                               ModifyDataBaseService modifyDataBaseService,
                                               MessageRepositoryService messageRepository,
-                                              QueueManager queueManager,
+                                              RabbitTemplate rabbitTemplate,
                                               FileService fileService,
                                               CryptoTool cryptoTool) {
         this.modifyDataBaseService = modifyDataBaseService;
         this.commandContainer = new CommandContainer(sendBotMessageService,
                 modifyDataBaseService,
                 messageRepository,
-                queueManager,
+                rabbitTemplate,
                 cryptoTool,
                 fileService,
                 this);

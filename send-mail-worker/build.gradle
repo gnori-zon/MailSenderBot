@@ -28,6 +28,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp'
 }
 
 /**
@@ -35,6 +36,5 @@ dependencies {
  */
 dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
-    implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.1.0'
     implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.1.0'
 }

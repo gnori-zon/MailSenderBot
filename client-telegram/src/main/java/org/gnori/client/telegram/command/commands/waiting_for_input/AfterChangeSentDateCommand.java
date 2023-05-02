@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import org.gnori.client.telegram.command.Command;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.store.dao.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.MessageRepositoryService;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.enums.State;
 import org.telegram.telegrambots.meta.api.objects.Update;

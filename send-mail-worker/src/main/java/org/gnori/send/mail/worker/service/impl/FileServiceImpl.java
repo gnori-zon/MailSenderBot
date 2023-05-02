@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.gnori.send.mail.worker.aop.LogExecutionTime;
 import org.gnori.send.mail.worker.service.FileService;
 import org.gnori.shared.service.FileDownloaderByUrlService;
-import org.gnori.store.dao.MessageRepositoryService;
+import org.gnori.data.model.Message;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -35,25 +35,21 @@ public class FileServiceImpl implements FileService {
     @Value("${service.file_storage.uri}")
     private String fileStorageUri;
 
-    private final MessageRepositoryService messageRepository;
     private final FileDownloaderByUrlService fileDownloaderByUrlService;
 
-    public FileServiceImpl(MessageRepositoryService messageRepository, FileDownloaderByUrlService fileDownloaderByUrlService) {
-        this.messageRepository = messageRepository;
+    public FileServiceImpl(FileDownloaderByUrlService fileDownloaderByUrlService) {
         this.fileDownloaderByUrlService = fileDownloaderByUrlService;
     }
 
     @LogExecutionTime
     @Override
-    public int processDoc(Long id) {
-            var message = messageRepository.getMessage(id);
+    public int processDoc(Message message) {
             var fileId = message.getDocAnnex().getFileId();
             ResponseEntity<String> response = getFilePath(fileId);
             if (response.getStatusCode() == HttpStatus.OK) {
                 var fileInByte = getBinaryContent(response);
 
                 message.setBinaryContentForAnnex(fileInByte);
-                messageRepository.putMessage(id, message);
                 return 1;
             }else {
                 log.error(BAD_RESPONSE_ERROR_TEXT + response);
@@ -63,8 +59,7 @@ public class FileServiceImpl implements FileService {
 
     @LogExecutionTime
     @Override
-    public int processPhoto(Long id) {
-        var message = messageRepository.getMessage(id);
+    public int processPhoto(Message message) {
         var telegramPhoto = message.getPhotoAnnex();
         var fileId = telegramPhoto.getFileId();
         ResponseEntity<String> response = getFilePath(fileId);
@@ -72,7 +67,6 @@ public class FileServiceImpl implements FileService {
             var fileInByte = getBinaryContent(response);
 
             message.setBinaryContentForAnnex(fileInByte);
-            messageRepository.putMessage(id, message);
             return 1;
         }else {
             log.error(BAD_RESPONSE_ERROR_TEXT + response);
@@ -82,17 +76,16 @@ public class FileServiceImpl implements FileService {
 
     @LogExecutionTime
     @Override
-    public FileSystemResource getFileSystemResource(Long id) {
-        var message = messageRepository.getMessage(id);
+    public FileSystemResource getFileSystemResource(Message message) {
         var binaryContent = message.getBinaryContentForAnnex();
         var prefix = "";
         var suffix = "";
         if(message.getDocAnnex()!=null) {
             suffix = getSuffix(message.getDocAnnex().getFileName());
-            prefix = "file_"+id;
+            prefix = "file_"+message.getChatId();
         } else if (message.getPhotoAnnex()!=null) {
             suffix = ".jpeg";
-            prefix = "photo_"+id;
+            prefix = "photo_"+message.getChatId();
         }
         try{
             File temp = File.createTempFile(prefix, suffix);

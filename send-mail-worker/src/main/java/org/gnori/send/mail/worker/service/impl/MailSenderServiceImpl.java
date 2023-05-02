@@ -7,7 +7,6 @@ import static org.gnori.send.mail.worker.utils.UtilsMail.getMailProperties;
 import static org.gnori.send.mail.worker.utils.UtilsMail.getYandexProperties;
 
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -16,6 +15,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import lombok.extern.log4j.Log4j2;
+import org.gnori.data.model.Message;
 import org.gnori.send.mail.worker.aop.LogExecutionTime;
 import org.gnori.send.mail.worker.service.FileService;
 import org.gnori.send.mail.worker.service.MailSenderService;
@@ -29,7 +29,7 @@ import org.gnori.shared.utils.CryptoTool;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.MessageSentRecord;
 import org.gnori.store.entity.enums.StateMessage;
-import org.gnori.store.model.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -37,59 +37,40 @@ import org.springframework.mail.javamail.MimeMessageHelper;
  * Implementation service {@link MailSenderService}
  */
 @Log4j2
-public class MailSenderServiceImpl implements MailSenderService, Runnable {
-    private final int WAIT_FOR_NEW_MESSAGE_DELAY = 1000;
+public class MailSenderServiceImpl implements MailSenderService {
+
+    private final static String QUEUE_NAME = "send.mail";
 
     private final BasicEmails basicEmails;
     private final ModifyDataBaseService modifyDataBaseService;
     private final FileService fileService;
     private final CryptoTool cryptoTool;
-    private final QueueManager queueManager;
 
     public MailSenderServiceImpl(BasicEmails basicEmails, ModifyDataBaseService modifyDataBaseService, FileService fileService,
-                                 CryptoTool cryptoTool,QueueManager queueManager) {
+                                 CryptoTool cryptoTool) {
         this.basicEmails = basicEmails;
         this.modifyDataBaseService = modifyDataBaseService;
         this.fileService = fileService;
         this.cryptoTool = cryptoTool;
-        this.queueManager = queueManager;
-
     }
-    @Override
-    public void run() {
-        log.info("[STARTED] MailSenderService: " + this);
-        while (true) {
-            for (Message message = queueManager.pollFromQueue(); message != null; message = queueManager.pollFromQueue()) {
-                var sendMode = message.getSendMode();
-                try {
-                    switch (sendMode) {
-                        case ANONYMOUSLY: {
-                            sendAnonymously(message);
-                            break;
-                        }
-                        case CURRENT_MAIL: {
-                            sendWithUserMail(message);
-                            break;
-                        }
-                    }
-                    createAndAddMessageSentRecord(message);
-                    modifyDataBaseService.updateStateMessageById(message.getChatId(), StateMessage.SUCCESS);
-                    }catch (AddressException | AuthenticationFailedException |
-                            NoFreeMailingAddressesException e) {
-                        log.error("MailSenderService:", e);
-                        modifyDataBaseService.updateStateMessageById(message.getChatId(), StateMessage.FAIL);
-                    return;
-                    }
-                }
-            try {
-                Thread.sleep(WAIT_FOR_NEW_MESSAGE_DELAY);
-            } catch (InterruptedException e) {
-                log.error("Catch interrupt. Exit", e);
-                return;
+    @RabbitListener(queues = QUEUE_NAME)
+    public void receivedMessage(Message message) {
+        var sendMode = message.getSendMode();
+        try {
+            switch (sendMode) {
+                case ANONYMOUSLY -> sendAnonymously(message);
+                case CURRENT_MAIL -> sendWithUserMail(message);
             }
-        }
+            createAndAddMessageSentRecord(message);
+            modifyDataBaseService.updateStateMessageById(message.getChatId(), StateMessage.SUCCESS);
 
+        } catch (AddressException | AuthenticationFailedException |
+                 NoFreeMailingAddressesException e) {
+            log.error("MailSenderService:", e);
+            modifyDataBaseService.updateStateMessageById(message.getChatId(), StateMessage.FAIL);
+        }
     }
+
     @LogExecutionTime
     private void sendAnonymously(Message message) throws AddressException, NoFreeMailingAddressesException {
         var props = getBaseProperties();
@@ -99,7 +80,7 @@ public class MailSenderServiceImpl implements MailSenderService, Runnable {
             mail.setState(StateEmail.USED);
             var session = Session.getDefaultInstance(props, new LoginAuthenticator(mail.getLogin(), mail.getPassword()));
             try {
-                sendMessage(message.getChatId(), mail.getLogin(), session, message);
+                sendMessage(mail.getLogin(), session, message);
             } catch (AddressException e) {
                 throw e;
             } catch (Exception e) {
@@ -125,7 +106,7 @@ public class MailSenderServiceImpl implements MailSenderService, Runnable {
 
         var session = Session.getInstance(props, new LoginAuthenticator(username,keyForMail));
         try {
-            sendMessage(message.getChatId(), username, session, message);
+            sendMessage(username, session, message);
         } catch (AddressException e) {
             throw e;
         }catch (AuthenticationFailedException e) {
@@ -159,13 +140,13 @@ public class MailSenderServiceImpl implements MailSenderService, Runnable {
     }
 
     private InternetAddress[] prepareRecipients(Message message) throws AddressException{
-        var recipientsStr = message.getRecipients().stream().filter(UtilsMail::validateMail).collect(Collectors.toList()).toString();
+        var recipientsStr = message.getRecipients().stream().filter(UtilsMail::validateMail).toList().toString();
         if (recipientsStr.length()<3){
             throw new AddressException("Отсутсвуют валидные адреса получаетелей");
         }
         return InternetAddress.parse(recipientsStr.substring(1, recipientsStr.length()-1));
     }
-    private void sendMessage(Long id, String mail, Session session, Message message) throws MessagingException {
+    private void sendMessage(String mail, Session session, Message message) throws MessagingException {
         InternetAddress[] recipients;
         recipients = prepareRecipients(message);
         var mailMessage = new MimeMessage(session);
@@ -182,12 +163,12 @@ public class MailSenderServiceImpl implements MailSenderService, Runnable {
         int processFileStatus = 0;
         if(message.hasAnnex()) {
             if(message.getDocAnnex()!=null){
-                processFileStatus = fileService.processDoc(id);
+                processFileStatus = fileService.processDoc(message);
             }else {
-                processFileStatus = fileService.processPhoto(id);
+                processFileStatus = fileService.processPhoto(message);
             }
             if(processFileStatus==1) {
-                file = fileService.getFileSystemResource(id);
+                file = fileService.getFileSystemResource(message);
                 helper.addAttachment(file.getFilename(), file);
             }
         }

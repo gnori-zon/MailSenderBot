@@ -7,29 +7,34 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 import java.util.Collections;
 import org.gnori.client.telegram.command.Command;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.mailsenderbot.service.QueueManager;
-import org.gnori.store.dao.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.MessageRepositoryService;
+import org.gnori.data.model.SendMode;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.enums.StateMessage;
-import org.gnori.store.model.SendMode;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.meta.api.objects.Update;
 /**
  * Sends a mailing with the bot's mail {@link Command}.
  */
 public class SendAnonymouslyCommand implements Command {
+
+    @Value("${spring.rabbitmq.exchange-name}")
+    private String exchangeName;
+
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
     private final MessageRepositoryService messageRepository;
-    private final QueueManager queueManager;
+    private final RabbitTemplate rabbitTemplate;
 
     public SendAnonymouslyCommand(SendBotMessageService sendBotMessageService,
                                   ModifyDataBaseService modifyDataBaseService,
                                   MessageRepositoryService messageRepository,
-                                  QueueManager queueManager) {
+                                  RabbitTemplate rabbitTemplate) {
         this.sendBotMessageService = sendBotMessageService;
         this.modifyDataBaseService = modifyDataBaseService;
         this.messageRepository = messageRepository;
-        this.queueManager = queueManager;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
@@ -46,7 +51,7 @@ public class SendAnonymouslyCommand implements Command {
         messageToSend.setSendMode(SendMode.ANONYMOUSLY);
         var text = prepareTextForSendCurrentAndAnonymouslyMessage();
 
-        queueManager.addInQueue(messageToSend);
+        rabbitTemplate.convertAndSend(exchangeName, null, messageToSend);
         messageRepository.removeMessage(chatId);
         modifyDataBaseService.updateStateMessageById(chatId, StateMessage.QUEUE);
 

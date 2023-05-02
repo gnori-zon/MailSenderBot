@@ -1,4 +1,4 @@
-package org.gnori.store.model;
+package org.gnori.data.model;
 
 public enum SendMode {
     ANONYMOUSLY,

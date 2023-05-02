@@ -1,8 +1,8 @@
-package org.gnori.store.dao;
+package org.gnori.client.telegram.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.gnori.store.model.Message;
+import org.gnori.data.model.Message;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 

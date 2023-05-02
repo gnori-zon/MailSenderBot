@@ -2,8 +2,6 @@ package org.gnori.client.telegram.command;
 
 
 import com.google.common.collect.ImmutableMap;
-import command.commands.*;
-import command.commands.waiting_for_input.*;
 import org.gnori.client.telegram.command.commands.BackCommand;
 import org.gnori.client.telegram.command.commands.BeginningCommand;
 import org.gnori.client.telegram.command.commands.ChangeItemCommand;
@@ -38,9 +36,10 @@ import org.gnori.client.telegram.command.commands.waiting_for_input.BeforeDownlo
 import org.gnori.client.telegram.service.FileService;
 import org.gnori.client.telegram.service.MessageTypesDistributorService;
 import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.impl.MessageRepositoryService;
 import org.gnori.shared.utils.CryptoTool;
-import org.gnori.store.dao.MessageRepositoryService;
 import org.gnori.store.dao.ModifyDataBaseService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -53,7 +52,7 @@ public class CommandContainer {
     public CommandContainer(SendBotMessageService sendBotMessageService,
                             ModifyDataBaseService modifyDataBaseService,
                             MessageRepositoryService messageRepository,
-                            QueueManager queueManager,
+                            RabbitTemplate rabbitTemplate,
                             CryptoTool cryptoTool,
                             FileService fileService,
                             MessageTypesDistributorService messageTypesDistributorService) {
@@ -85,8 +84,8 @@ public class CommandContainer {
                 .put(
                     CommandName.COUNT_FOR_RECIPIENT_PENDING.getCommandName(), new AfterChangeCountForRecipientCommand(modifyDataBaseService, sendBotMessageService, messageRepository))
                 .put(CommandName.SEND.getCommandName(), new SendCommand(sendBotMessageService, modifyDataBaseService))
-                .put(CommandName.SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, queueManager))
-                .put(CommandName.SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,queueManager))
+                .put(CommandName.SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, rabbitTemplate))
+                .put(CommandName.SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,rabbitTemplate))
                 .put(CommandName.CLEAR_MESSAGE.getCommandName(), new ClearMessageCommand(sendBotMessageService,messageRepository))
                 .put(
                     CommandName.DOWNLOAD_MESSAGE.getCommandName(), new BeforeDownloadMessageCommand(sendBotMessageService,modifyDataBaseService))

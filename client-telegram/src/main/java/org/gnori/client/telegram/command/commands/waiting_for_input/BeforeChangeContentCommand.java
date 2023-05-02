@@ -8,6 +8,7 @@ import org.gnori.client.telegram.service.SendBotMessageService;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.enums.State;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
 /**
  * Displays a pending message and sets the state {@link Command,State}.
  */

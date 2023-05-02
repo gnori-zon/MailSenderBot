@@ -4,3 +4,9 @@
 dependencies {
     provided project(':store')
 }
+/**
+ * Telegram Docs
+ */
+dependencies {
+    provided group: 'org.telegram', name: 'telegrambots-meta', version: '6.1.0'
+}

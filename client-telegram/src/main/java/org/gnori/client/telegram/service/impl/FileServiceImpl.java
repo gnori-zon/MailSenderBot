@@ -29,9 +29,9 @@ public class FileServiceImpl implements FileService {
 
     @Value("${bot.token}")
     private String token;
-    @Value("${service.file_info.uri}")
+    @Value("${service.file-info.uri}")
     private String fileInfoUri;
-    @Value("${service.file_storage.uri}")
+    @Value("${service.file-storage.uri}")
     private String fileStorageUri;
     private final FileDownloaderByUrlService fileDownloaderByUrlService;
 

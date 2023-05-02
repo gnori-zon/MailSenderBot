@@ -1,18 +1,23 @@
-package org.gnori.store.model;
+package org.gnori.data.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
-@RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Message {
+@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor
+public class Message implements Serializable {
     private Long chatId;
     private SendMode sendMode;
     private String title;

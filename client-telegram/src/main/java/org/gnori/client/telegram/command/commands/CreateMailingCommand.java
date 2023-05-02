@@ -5,8 +5,8 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 
 import org.gnori.client.telegram.command.Command;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.store.dao.MessageRepositoryService;
-import org.gnori.store.model.Message;
+import org.gnori.client.telegram.service.impl.MessageRepositoryService;
+import org.gnori.data.model.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 /**
  * Creates a mailing in the model {@link Command}.
