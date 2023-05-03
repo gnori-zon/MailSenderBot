@@ -12,16 +12,13 @@ import org.gnori.data.model.SendMode;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.enums.StateMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.meta.api.objects.Update;
 /**
  * Sends a mailing with the user's mail {@link Command}.
  */
 public class SendCurrentMailCommand implements Command {
 
-    @Value("${spring.rabbitmq.exchange-name}")
-    private String exchangeName;
-
+    private final String exchangeName;
     private final SendBotMessageService sendBotMessageService;
     private final ModifyDataBaseService modifyDataBaseService;
     private final MessageRepositoryService messageRepository;
@@ -30,11 +27,13 @@ public class SendCurrentMailCommand implements Command {
     public SendCurrentMailCommand(SendBotMessageService sendBotMessageService,
                                   ModifyDataBaseService modifyDataBaseService,
                                   MessageRepositoryService messageRepository,
-                                  RabbitTemplate rabbitTemplate) {
+                                  RabbitTemplate rabbitTemplate,
+                                  String exchangeName) {
         this.sendBotMessageService = sendBotMessageService;
         this.modifyDataBaseService = modifyDataBaseService;
         this.messageRepository = messageRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.exchangeName = exchangeName;
     }
 
     @Override

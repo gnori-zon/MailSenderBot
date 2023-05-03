@@ -1,3 +1,5 @@
+server:
+  port: 8080
 #telegram
 bot:
   name:
@@ -28,3 +30,7 @@ spring:
     password: guest
     queue-name: send.mail
     exchange-name: exchange
+#for Crypto
+cipher:
+  initVector: F-JaNdRgUjXn2r5u
+  key: hVmYp3s6v9y$B&E)

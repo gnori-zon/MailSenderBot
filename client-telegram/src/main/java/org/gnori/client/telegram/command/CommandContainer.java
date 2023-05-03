@@ -55,6 +55,7 @@ public class CommandContainer {
                             RabbitTemplate rabbitTemplate,
                             CryptoTool cryptoTool,
                             FileService fileService,
+                            String exchangeName,
                             MessageTypesDistributorService messageTypesDistributorService) {
         commandMap =  ImmutableMap.<String, Command>builder()
                 .put(CommandName.REGISTRATION.getCommandName(), new RegistrationCommand(sendBotMessageService))
@@ -84,8 +85,8 @@ public class CommandContainer {
                 .put(
                     CommandName.COUNT_FOR_RECIPIENT_PENDING.getCommandName(), new AfterChangeCountForRecipientCommand(modifyDataBaseService, sendBotMessageService, messageRepository))
                 .put(CommandName.SEND.getCommandName(), new SendCommand(sendBotMessageService, modifyDataBaseService))
-                .put(CommandName.SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, rabbitTemplate))
-                .put(CommandName.SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,rabbitTemplate))
+                .put(CommandName.SEND_ANONYMOUSLY.getCommandName(), new SendAnonymouslyCommand(sendBotMessageService,modifyDataBaseService,messageRepository, rabbitTemplate, exchangeName))
+                .put(CommandName.SEND_CURRENT_MAIL.getCommandName(), new SendCurrentMailCommand(sendBotMessageService,modifyDataBaseService,messageRepository,rabbitTemplate, exchangeName))
                 .put(CommandName.CLEAR_MESSAGE.getCommandName(), new ClearMessageCommand(sendBotMessageService,messageRepository))
                 .put(
                     CommandName.DOWNLOAD_MESSAGE.getCommandName(), new BeforeDownloadMessageCommand(sendBotMessageService,modifyDataBaseService))

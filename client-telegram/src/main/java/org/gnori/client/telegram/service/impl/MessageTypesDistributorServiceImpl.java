@@ -21,6 +21,7 @@ import org.gnori.shared.utils.CryptoTool;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.enums.State;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -38,7 +39,8 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                                               MessageRepositoryService messageRepository,
                                               RabbitTemplate rabbitTemplate,
                                               FileService fileService,
-                                              CryptoTool cryptoTool) {
+                                              CryptoTool cryptoTool,
+                                              @Value("${spring.rabbitmq.exchange-name}")String exchangeName) {
         this.modifyDataBaseService = modifyDataBaseService;
         this.commandContainer = new CommandContainer(sendBotMessageService,
                 modifyDataBaseService,
@@ -46,6 +48,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 rabbitTemplate,
                 cryptoTool,
                 fileService,
+                exchangeName,
                 this);
     }
 

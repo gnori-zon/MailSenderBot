@@ -32,14 +32,14 @@ import org.gnori.store.entity.enums.StateMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
 /**
  * Implementation service {@link MailSenderService}
  */
 @Log4j2
+@Service
 public class MailSenderServiceImpl implements MailSenderService {
-
-    private final static String QUEUE_NAME = "send.mail";
 
     private final BasicEmails basicEmails;
     private final ModifyDataBaseService modifyDataBaseService;
@@ -53,8 +53,9 @@ public class MailSenderServiceImpl implements MailSenderService {
         this.fileService = fileService;
         this.cryptoTool = cryptoTool;
     }
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener( queues = "${spring.rabbitmq.queue-name}")
     public void receivedMessage(Message message) {
+        log.info("MailSenderService: receivedMessage {}", message);
         var sendMode = message.getSendMode();
         try {
             switch (sendMode) {

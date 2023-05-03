@@ -1,3 +1,13 @@
+server:
+  port: 8081
+bot:
+  name:
+  token:
+service:
+  file-info:
+    uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
+  file-storage:
+    uri: https://api.telegram.org/file/bot{token}/{filePath}
 # database
 spring:
   datasource:
@@ -20,3 +30,8 @@ spring:
 base:
   mails: stepankonasenko@gmail.com
   keys: pkjjmwzhblochwaz
+#for Crypto
+cipher:
+  initVector: F-JaNdRgUjXn2r5u
+  key: hVmYp3s6v9y$B&E)
+
