@@ -49,7 +49,7 @@ public class SendCurrentMailCommand implements Command {
         messageToSend.setSendMode(SendMode.CURRENT_MAIL);
         var text = prepareTextForSendCurrentAndAnonymouslyMessage();
 
-        rabbitTemplate.convertSendAndReceive(exchangeName, null, messageToSend);
+        rabbitTemplate.convertAndSend(exchangeName, null, messageToSend);
         messageRepository.removeMessage(chatId);
         modifyDataBaseService.updateStateMessageById(chatId, StateMessage.QUEUE);
 
