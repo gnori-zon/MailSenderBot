@@ -1,0 +1,36 @@
+server:
+  port: 8080
+#telegram
+bot:
+  name:
+  token:
+service:
+  file-info:
+    uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
+  file-storage:
+    uri: https://api.telegram.org/file/bot{token}/{filePath}
+
+  # database
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mailsenderdb
+    username: postgres
+    password: martin12
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+# rabbitMQ
+  rabbitmq:
+    addresses: localhost
+    port: 15672
+    username: guest
+    password: guest
+    queue-name: send.mail
+    exchange-name: exchange
+#for Crypto
+cipher:
+  initVector: F-JaNdRgUjXn2r5u
+  key: hVmYp3s6v9y$B&E)

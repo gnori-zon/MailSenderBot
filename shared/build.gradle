@@ -1,0 +1,20 @@
+/**
+ * Submodules import sample
+ */
+dependencies {
+    provided project(':data')
+    provided project(':store')
+}
+/**
+ * Spring
+ */
+dependencies {
+    provided group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+}
+
+/**
+ * commons-io
+ */
+dependencies {
+    provided group: 'commons-codec', name: 'commons-codec'
+}
