@@ -1,9 +1,9 @@
 package org.gnori.store.entity.enums;
 
 public enum StateMessage {
-    QUEUE("⏳в очереди"),
-    SUCCESS("✔отправлено"),
-    FAIL("❌не отправлено");
+    QUEUE("⏳in the queue"),
+    SUCCESS("✔sent"),
+    FAIL("❌not sent");
     private final String text;
 
     StateMessage(String text) {
