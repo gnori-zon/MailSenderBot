@@ -179,7 +179,7 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var buttonIntermediate = new InlineKeyboardButton();
         buttonIntermediate.setCallbackData("BACK");
-        buttonIntermediate.setText("Назад");
+        buttonIntermediate.setText("Back");
         rowInline.add(buttonIntermediate);
         return rowInline;
     }

@@ -143,7 +143,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     private InternetAddress[] prepareRecipients(Message message) throws AddressException{
         var recipientsStr = message.getRecipients().stream().filter(UtilsMail::validateMail).toList().toString();
         if (recipientsStr.length()<3){
-            throw new AddressException("Отсутсвуют валидные адреса получаетелей");
+            throw new AddressException("No valid recipient addresses");
         }
         return InternetAddress.parse(recipientsStr.substring(1, recipientsStr.length()-1));
     }

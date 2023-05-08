@@ -10,89 +10,89 @@ import org.gnori.data.model.Message;
  */
 public class TextPreparer {
     public static String prepareTextForBeginningMessage() {
-        return "Выберите необходимый пункт👇🏿";
+        return "Select the item you need👇🏿";
     }
     public static String prepareTextForSendCurrentAndAnonymouslyMessage() {
-        return "✔Добавлено в очередь\n"+prepareTextForBeginningMessage();
+        return "✔Added to queue\n"+prepareTextForBeginningMessage();
     }
     public static String prepareTextForChangeItemMessage() {
-        return "*Выберите пункт, для изменения:*";
+        return "*Select the item for changing:*";
     }
     public static String prepareSuccessTextForChangingLastMessage() {
-        return "✔Успешно";
+        return "✔Success";
     }
     public static String prepareTextForLastForUnknownMessage() {
-        return "Данная команда не реализована👀\n" +
-                "Пожалуйста, используйте кнопки👌";
+        return "This command is not implemented👀\n" +
+                "Please use the buttons👌";
     }
     public static String prepareTextForRegistrationMessage() {
-        return "*Кликните по кнопке, для начала работы*";
+        return "*Click the button to get started*";
     }
     public static String prepareTextForWaitingForConcreteSendingMessage() {
-        return "Производится отправка в очередь...🛫";
+        return "Sending to the queue...🛫";
     }
     public static String prepareTextForBeforeDownloadMessage() {
-        return "*Загрузите письмо в формате .txt"
-            + "\n Шаблон: *"+
-              "\n\n ###                  Заголовок                  ###"+
-                "\n ///                 Текст письма                ///"+
-                "\n ===          Количество писем каждому           ==="+
-                "\n :::            Получатели через \",\"           :::"+
-                "\n ---Дата отправки (в формате yyyy-MM-dd HH:mm:ss)---"+
-              "\n\n❕ При некорректном вводе данные будт пропущены";
+        return "*Upload the letter in the format .txt" +
+            "\n Template: *"+
+              "\n\n ###                    Title                    ###"+
+                "\n ///                 Main content                ///"+
+                "\n ===          Number of emails to each           ==="+
+                "\n :::             Recipients via \",\"            :::"+
+                "\n ---Date of mailing (format: yyyy-MM-dd HH:mm:ss)---"+
+              "\n\n❕ Data will be skipped if entered incorrectly.";
     }
     public static String prepareTextForAfterSuccessDownloadMessage() {
         return prepareSuccessTextForChangingLastMessage();
     }
 
     public static String prepareTextForAfterBadDownloadMessage() {
-        return "❌Пришлите файл в формате .txt";
+        return "❌Submit a file in the format .txt";
     }
     public static String prepareTextForBeforeChangeTitleMessage() {
-        return "*Введите новый заголовок: *";
+        return "*Enter a new title: *";
     }
     public static String prepareTextForBeforeChangeSentDateMessage() {
-        return "*Введите новую дату отправки по МСК (в формате yyyy-MM-dd HH:mm:ss)*";
+        return "*Enter a new date of mailing in UTC+3:00 (format: yyyy-MM-dd HH:mm:ss)*";
     }
     public static String prepareTextInvalidDateForAfterChangeSentDateMessage(){
-        return "❌Вы ввели дату в неверном формате, попробуйте снова";
+        return "❌You entered the date in the wrong format, please try again";
     }
     public static String prepareTextForBeforeChangeRecipientsMessage() {
-        return "*Введите новых получателей : *";
+        return "*Enter new recipients : *";
     }
     public static String prepareTextForBeforeChangeMailMessage() {
-        return "*Введите новый mail: *";
+        return "*Enter new mail: *";
     }
     public static String prepareTextForAfterMailIsExistChangeMailMessage() {
-        return "❌Такой mail уже используется, попробуйте снова";
+        return "❌This mail is already in use, please try again";
     }
 
     public static String prepareTextForAfterInvalidMailChangeMailMessage() {
-        return "❌Некорректный mail, попробуйте снова";
+        return "❌Invalid mail, please try again";
     }
     public static String prepareTextForBeforeChangeKeyForMailMessage() {
-        return "*Введите новый ключ для mail: *";
+        return "*Enter new key for mail: *";
     }
     public static String prepareTextForAfterEmptyKeyChangeKeyForMailMessage() {
-        return "❌Необходимо ввести ключ, попробуйте снова";
+        return "❌Key required, please try again";
     }
     public static String prepareTextForBeforeChangeCountForRecipientsMessage() {
-        return  "*Введите новое количество сообщений каждому получателю: *";
+        return  "*Enter the new number of messages per recipient: *";
     }
     public static String prepareTextForAfterNotNumberChangeCountForRecipientsMessage() {
-        return  "❌Необходимо ввести число, попробуйте снова";
+        return  "❌Please enter a number, please try again";
     }
     public static String prepareTextForBeforeChangeContentMessage() {
-        return "*Введите новый основной текст: *";
+        return "*Enter new main content: *";
     }
     public static String prepareTextForBeforeChangeAnnexMessage() {
-        return "*Введите новое приложение (фото/файл): *";
+        return "*Enter a new attachment (photo/file): *";
     }
 
     public static String prepareTextForSendMessage(AccountDto account) {
-        var baseText = "*Выберите способ отправки:*";
+        var baseText = "*Choose a sending method:*";
         if(!(account.getEmail()!=null && account.hasKey())){
-            baseText += "\nВы можете добавить свою почту для отправки";
+            baseText += "\nYou can add your mail to send";
         }
         return baseText;
     }
@@ -101,9 +101,9 @@ public class TextPreparer {
         var email = account.getEmail()!=null ? account.getEmail() : "❌";
         var keyPresent = account.hasKey()? "✔" : "❌";
 
-        return String.format("*Аккаунт:*\n" +
-                "почта: %s\n" +
-                "ключ доступа к почте: %s",email,keyPresent);
+        return String.format("*Account:*\n" +
+                "mail: %s\n" +
+                "mail access key: %s", email, keyPresent);
     }
     public static String prepareTextForPreviewMessage(Message message){
 
@@ -112,35 +112,35 @@ public class TextPreparer {
         var textForResult = lengthTextConstraint ? messageText.substring(0,75) : messageText;
         var suffixResultText = (lengthTextConstraint || messageText.isEmpty())? "...": "";
         var messageTitle= message.getTitle().trim();
-        var titleForResult = messageTitle.equals("") ? "Без заголовка" : messageTitle;
+        var titleForResult = messageTitle.equals("") ? "Without title" : messageTitle;
         return "*Preview:*" +
                 "\n" +
                 "\n*"+titleForResult+"*" +
                 "\n "+textForResult+suffixResultText +
-                "\n Приложение: "+(message.hasAnnex()? "✔" : "❌")+
-                "\n Получатели: "+ recipientsToString(message.getRecipients())+
-                "\n Шт. каждому: "+ message.getCountForRecipient()+
-                "\n Дата отправки: "+(message.hasSentDate()? message.getSentDate():"текущая");
+                "\n Attachment: "+(message.hasAnnex()? "✔" : "❌")+
+                "\n Recipients: "+ recipientsToString(message.getRecipients())+
+                "\n Pieces for each: "+ message.getCountForRecipient()+
+                "\n Date of mailing: "+(message.hasSentDate()? message.getSentDate():"now");
     }
 
     public static String prepareTextForMessage(MailingHistoryDto mailingHistory) {
-        StringBuilder text = new StringBuilder("*История рассылок: *");
+        StringBuilder text = new StringBuilder("*Mailings history: *");
         if(mailingHistory!=null) {
             if(mailingHistory.getStateLastMessage()!=null){
-                text.append("\nСтатус последней рассылки: ").append(mailingHistory.getStateLastMessage().toString());
+                text.append("\nStatus last mailing: ").append(mailingHistory.getStateLastMessage().toString());
             }
             var countLine = 0;
             for(var record : mailingHistory.getMailingList()){
-                var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " шт.";
+                var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " pcs";
                 text.append("\n").append(line);
             }
             return text.toString();
         }else {
-            return text + "\nВы не создавали рассылок!";
+            return text + "\nYou didn't create mailings!";
         }
     }
     public static String prepareTextForHelpMessage(){
-        return "*Выберите свою почту*";
+        return "*Choose your mail*";
     }
 
     private static String recipientsToString(List<String> recipients) {
@@ -151,7 +151,7 @@ public class TextPreparer {
             recipients.stream().limit(count).forEach(recipient->rawText.append(recipient).append(", "));
 
             var countRemain = recipients.size() - count;
-            var tailForText = countRemain > 0 ? "... и еще "+countRemain : "";
+            var tailForText = countRemain > 0 ? "... and "+countRemain : "";
             resultText = (rawText.substring(0,rawText.length()-2))+tailForText;
 
         }
