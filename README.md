@@ -49,11 +49,107 @@ telegram bot for creating newsletters and their subsequent sending using the use
 
 <details>
    <summary> Config for client-telegram </summary>
+   
+   ```yaml
+   server:
+    port: 8080
+   #telegram
+   bot:
+      name: 
+      token:
+   service: 
+      # (addresses to the tg-api file system)
+      file-info:
+         uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
+      file-storage:
+         uri: https://api.telegram.org/file/bot{token}/{filePath} 
+
+   # database
+   spring:
+      datasource:
+         # (address of database)
+         url: jdbc:postgresql://localhost:5432/mailsenderdb 
+         username: postgres
+         password: martin12
+      jpa:
+         # (schema generation for database)
+         generate-ddl: true 
+         show-sql: true
+         hibernate:
+            # (ddl mode)
+            ddl-auto: create-drop 
+
+   # rabbitMQ
+      rabbitmq:
+         # (the host on which the rabbitMQ is located)
+         addresses: localhost 
+         # (the port on which the rabbitMQ is located)
+         port: 15672 
+         username: guest 
+         password: guest
+         # (specifying the name of the queue to be created)
+         queue-name: send.mail 
+         # (specifying the name of the exchange to be created)
+         exchange-name: exchange 
+   #for Crypto !keys specified in .yaml(client) and .yaml(worker) must will be equals
+   cipher:
+      # (fist 128-bit key)
+      initVector: F-JaNdRgUjXn2r5u 
+      # (second 128-bit key)
+      key: hVmYp3s6v9y$B&E) 
+   ```
 </details>
 
 <details>
    <summary> Config for send-mail-worker </summary>
+   
+```yaml   
+server:
+  port: 8081
+bot:
+  name:
+  token:
+service:
+  # (addresses to the tg-api file system)
+  file-info:
+    uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
+  file-storage:
+    uri: https://api.telegram.org/file/bot{token}/{filePath}
+# database
+spring:
+  datasource:
+    # (address of database)
+    url: jdbc:postgresql://localhost:5432/mailsenderdb
+    username: postgres
+    password: martin12
+  jpa:
+    # (schema generation for database)
+    generate-ddl: false
+    show-sql: true
+# rabbitMQ
+  rabbitmq:
+     # (the host on which the rabbitMQ is located)
+     addresses: localhost 
+     # (the port on which the rabbitMQ is located)
+     port: 15672 
+     username: guest 
+     password: guest
+     # (specifying the name of the queue to be listening)
+     queue-name: send.mail 
+#  for send-worker
+base:
+  # (specifying mails and keys to them through ' , ' which will be used by the bot  for anonymous mailing)
+  mails:
+  keys:
+#for Crypto !keys specified in .yaml(client) and .yaml(worker) must will be equals
+cipher:
+   # (fist 128-bit key)
+   initVector: F-JaNdRgUjXn2r5u 
+   # (second 128-bit key)
+   key: hVmYp3s6v9y$B&E) 
+```
 </details>
+   
 ## Developers
 
 - [gnori-zon](https://github.com/gnori-zon)
