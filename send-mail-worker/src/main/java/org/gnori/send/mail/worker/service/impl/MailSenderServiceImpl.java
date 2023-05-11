@@ -73,7 +73,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @LogExecutionTime
-    private void sendAnonymously(Message message) throws AddressException, NoFreeMailingAddressesException {
+    private void sendAnonymously(Message message) throws AddressException, AuthenticationFailedException, NoFreeMailingAddressesException {
         var props = getBaseProperties();
         var optionalMail = basicEmails.getBasicEmailAddresses().stream().filter(el -> el.getState().equals(StateEmail.FREE)).findFirst();
         if (optionalMail.isPresent()) {
@@ -86,11 +86,14 @@ public class MailSenderServiceImpl implements MailSenderService {
                 throw e;
             } catch (Exception e) {
                 log.error(e);
+                if (e instanceof AuthenticationFailedException) {
+                    throw new AuthenticationFailedException("Invalid authentication data");
+                }
             }finally {
                 mail.setState(StateEmail.FREE);
             }
         }else{
-            throw new NoFreeMailingAddressesException("Пока все почтовые ящики заняты, попробуйте позже");
+            throw new NoFreeMailingAddressesException("While all mailboxes are closed, you can later");
         }
     }
 
@@ -111,7 +114,7 @@ public class MailSenderServiceImpl implements MailSenderService {
         } catch (AddressException e) {
             throw e;
         }catch (AuthenticationFailedException e) {
-            throw new AuthenticationFailedException("Неверный ключ доступа");
+            throw new AuthenticationFailedException("Invalid authentication data");
         }catch (Exception e){
             log.error(e);
         }

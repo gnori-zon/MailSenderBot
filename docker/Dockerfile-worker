@@ -1,0 +1,6 @@
+FROM openjdk:19-alpine
+
+ARG JAR_FILE=send-mail-worker.jar
+COPY ${JAR_FILE} application.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "application.jar"]

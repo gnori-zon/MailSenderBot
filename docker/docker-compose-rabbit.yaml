@@ -1,0 +1,16 @@
+version: '2.1'
+
+services:
+  broker:
+    image: rabbitmq:3.10.7-management
+    container_name: broker
+    hostname: broker
+    restart: on-failure
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+volumes:
+  rabbit-data:
+    external: true

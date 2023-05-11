@@ -128,6 +128,8 @@ public class TextPreparer {
         if(mailingHistory!=null) {
             if(mailingHistory.getStateLastMessage()!=null){
                 text.append("\nStatus last mailing: ").append(mailingHistory.getStateLastMessage().toString());
+            } else {
+                return text + "\nYou didn't create mailings!";
             }
             var countLine = 0;
             for(var record : mailingHistory.getMailingList()){

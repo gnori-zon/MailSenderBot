@@ -52,7 +52,7 @@ public class SendBotMessageServiceImplTest {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var buttonIntermediate = new InlineKeyboardButton();
         buttonIntermediate.setCallbackData("BACK");
-        buttonIntermediate.setText("Назад");
+        buttonIntermediate.setText("Back");
         rowInline.add(buttonIntermediate);
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         rowsInline.add(rowInline);

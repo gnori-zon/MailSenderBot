@@ -1,0 +1,71 @@
+version: '2.1'
+
+services:
+  client:
+    image: 'client-telegram:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile-client
+    container_name: client
+    restart: on-failure
+    depends_on:
+      - broker
+      - db
+    environment:
+      - SPRING_RABBITMQ_HOST=broker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/send-mail-bot-db
+      - SPRING_DATASOURCE_USERNAME=user01
+      - SPRING_DATASOURCE_PASSWORD=password01
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - BOT_NAME=
+      - BOT_TOKEN=
+      - CIPHER_INITVECTOR=F-JaNdRgUjXn2r5u
+      - CIPHER_KEY=hVmYp3s6v9y$B&E)
+
+  worker:
+    image: 'send-mail-worker:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile-worker
+    container_name: worker
+    restart: on-failure
+    depends_on:
+      - client
+    environment:
+      - SPRING_RABBITMQ_ADDRESSES=broker:5672
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/send-mail-bot-db
+      - SPRING_DATASOURCE_USERNAME=user01
+      - SPRING_DATASOURCE_PASSWORD=password01
+      - BOT_NAME=
+      - BOT_TOKEN=
+      - CIPHER_INITVECTOR=F-JaNdRgUjXn2r5u
+      - CIPHER_KEY=hVmYp3s6v9y$B&E)
+      - BASE_MAILS=
+      - BASE_KEYS=
+
+  broker:
+    image: rabbitmq:3.10.7-management
+    container_name: broker
+    hostname: broker
+    restart: on-failure
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+
+  db:
+    image: 'postgres:14.5-alpine'
+    container_name: db
+    restart: on-failure
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=send-mail-bot-db
+      - POSTGRES_USER=user01
+      - POSTGRES_PASSWORD=password01
+volumes:
+  db-data:
+    external: true
+  rabbit-data:
+    external: true
