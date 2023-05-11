@@ -8,9 +8,21 @@ telegram bot for mailings (spammer)
 
 ## About
 
-telegram bot for creating newsletters and their subsequent sending using the user's mail or using the bot's mail. The bot has integration with a database that stores account data (mail and key, encrypted). The database also stores the mailing history of each user. The sample letter contains (header, body text, attachment, recipients and the number of pieces for each recipient).
+telegram bot for creating newsletters and their subsequent sending using the user's mail or using the bot's mail. The bot has integration with a database that stores account data (mail and key, encrypted). The database also stores the mailing history of each user. The sample letter contains (header, body text, attachment, recipients and the number of pieces for each recipient). 
 
 ## Documentation
+If you will not use docker, then you need to have a working **RabbitMQ** server with the necessary **queue ** and **exchange**. As well as the **postgreSQL** database. 
+Use gradlew to build. You need to configure 2 yaml files in module **[client-telegram]** and **[send-mail-worker]**. Then use for build two service:
+
+```
+./gradlew :send-mail-worker:build
+```
+
+And
+
+```
+./gradlew :client-telegram:build
+```
 
 <details>
    <summary> Subject area</summary>
@@ -35,7 +47,6 @@ telegram bot for creating newsletters and their subsequent sending using the use
     Document docAnnex;
     PhotoSize photoAnnex;
     byte[] binaryContentForAnnex;
-
     List<String> recipients;
     Integer countForRecipient = 1;
     Date sentDate;
@@ -68,9 +79,9 @@ telegram bot for creating newsletters and their subsequent sending using the use
    spring:
       datasource:
          # (address of database)
-         url: jdbc:postgresql://localhost:5432/mailsenderdb 
-         username: postgres
-         password: martin12
+         url: jdbc:postgresql://localhost:5432/ 
+         username: 
+         password: 
       jpa:
          # (schema generation for database)
          generate-ddl: true 
@@ -81,10 +92,7 @@ telegram bot for creating newsletters and their subsequent sending using the use
 
    # rabbitMQ
       rabbitmq:
-         # (the host on which the rabbitMQ is located)
-         addresses: localhost 
-         # (the port on which the rabbitMQ is located)
-         port: 15672 
+         # used default host and port
          username: guest 
          password: guest
          # (specifying the name of the queue to be created)
@@ -119,26 +127,23 @@ service:
 spring:
   datasource:
     # (address of database)
-    url: jdbc:postgresql://localhost:5432/mailsenderdb
-    username: postgres
-    password: martin12
+    url: jdbc:postgresql://localhost:5432/
+    username: 
+    password: 
   jpa:
     # (schema generation for database)
     generate-ddl: false
     show-sql: true
 # rabbitMQ
   rabbitmq:
-     # (the host on which the rabbitMQ is located)
-     addresses: localhost 
-     # (the port on which the rabbitMQ is located)
-     port: 15672 
+     addresses: localhost:5672
      username: guest 
      password: guest
      # (specifying the name of the queue to be listening)
      queue-name: send.mail 
 #  for send-worker
 base:
-  # (specifying mails and keys to them through ' , ' which will be used by the bot  for anonymous mailing)
+  # (specifying mails and keys(keys for app) to them through ' , ' which will be used by the bot for anonymous mailing (ONLY GMAIL))
   mails:
   keys:
 #for Crypto !keys specified in .yaml(client) and .yaml(worker) must will be equals
@@ -150,6 +155,9 @@ cipher:
 ```
 </details>
    
+
+<a href="https://github.com/gnori-zon/MailSenderBot/tree/master/docker">docker<a>
+
 ## Developers
 
 - [gnori-zon](https://github.com/gnori-zon)
