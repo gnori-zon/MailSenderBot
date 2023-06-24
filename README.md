@@ -11,7 +11,7 @@ telegram bot for mailings (spammer)
 telegram bot for creating newsletters and their subsequent sending using the user's mail or using the bot's mail. The bot has integration with a database that stores account data (mail and key, encrypted). The database also stores the mailing history of each user. The sample letter contains (header, body text, attachment, recipients and the number of pieces for each recipient). 
 
 ## Documentation
-If you will not use docker, then you need to have a working **RabbitMQ** server with the necessary **queue ** and **exchange**. As well as the **postgreSQL** database. 
+If you will not use docker, then you need to have a working **RabbitMQ** server with the necessary **queue** and **exchange**. As well as the **postgreSQL** database. 
 Use gradlew to build. You need to configure 2 yaml files in module **[client-telegram]** and **[send-mail-worker]**. Then use for build two service:
 
 ```
