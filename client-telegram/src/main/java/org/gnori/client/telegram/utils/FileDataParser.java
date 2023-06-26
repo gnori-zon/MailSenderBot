@@ -28,8 +28,12 @@ public class FileDataParser {
     public static List<String> getRecipientsFromContent(String content){
         var regexPatternForTitle = Pattern.compile(":::((.*|\\n|\\r)+):::");
         Matcher matcherTitle = regexPatternForTitle.matcher(content);
+
         if(matcherTitle.find()){
-            return Arrays.stream(matcherTitle.group(1).split(",")).map(String::trim).collect(Collectors.toList());
+            return Arrays.stream(matcherTitle.group(1).split(","))
+                .map(String::trim)
+                .distinct()
+                .collect(Collectors.toList());
         }
         return null;
     }

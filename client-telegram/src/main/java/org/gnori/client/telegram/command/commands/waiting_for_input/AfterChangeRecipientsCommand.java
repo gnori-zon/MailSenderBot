@@ -6,7 +6,6 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 import org.gnori.client.telegram.command.Command;
 import org.gnori.client.telegram.service.SendBotMessageService;
 import org.gnori.client.telegram.service.impl.MessageRepositoryService;
@@ -37,7 +36,10 @@ public class AfterChangeRecipientsCommand implements Command {
         var textForOld = prepareSuccessTextForChangingLastMessage();
 
         var message = messageRepository.getMessage(chatId);
-        var newRecipients = Arrays.stream(newRecipientsRaw).map(String::trim).collect(Collectors.toList());
+        var newRecipients = Arrays.stream(newRecipientsRaw)
+            .map(String::trim)
+            .distinct()
+            .toList();
         message.setRecipients(newRecipients);
         messageRepository.putMessage(chatId,message);
 

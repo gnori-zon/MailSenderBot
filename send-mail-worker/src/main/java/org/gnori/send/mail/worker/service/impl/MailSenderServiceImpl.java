@@ -41,6 +41,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailSenderServiceImpl implements MailSenderService {
 
+    private static final int MAX_RECIPIENTS = 499;
+
     private final BasicEmails basicEmails;
     private final ModifyDataBaseService modifyDataBaseService;
     private final FileService fileService;
@@ -144,12 +146,30 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     private InternetAddress[] prepareRecipients(Message message) throws AddressException{
-        var recipientsStr = message.getRecipients().stream().filter(UtilsMail::validateMail).toList().toString();
+
+        message.setRecipients(
+            message.getRecipients()
+                .stream()
+                .limit(MAX_RECIPIENTS)
+                .toList()
+        );
+
+        var recipientsStr = message.getRecipients()
+            .stream()
+            .filter(UtilsMail::validateMail)
+            .toList()
+            .toString();
+
         if (recipientsStr.length()<3){
             throw new AddressException("No valid recipient addresses");
         }
-        return InternetAddress.parse(recipientsStr.substring(1, recipientsStr.length()-1));
+        var addresses = InternetAddress.parse(
+            recipientsStr.substring(1, recipientsStr.length()-1)
+        );
+
+        return addresses;
     }
+
     private void sendMessage(String mail, Session session, Message message) throws MessagingException {
         InternetAddress[] recipients;
         recipients = prepareRecipients(message);
@@ -176,6 +196,7 @@ public class MailSenderServiceImpl implements MailSenderService {
                 helper.addAttachment(file.getFilename(), file);
             }
         }
+
         var countMessage = message.getCountForRecipient();
         while (countMessage > 0) {
             Transport.send(mailMessage);
@@ -193,4 +214,5 @@ public class MailSenderServiceImpl implements MailSenderService {
         var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();
         modifyDataBaseService.addMessageSentRecord(message.getChatId(), messageSentRecord);
     }
+
 }
