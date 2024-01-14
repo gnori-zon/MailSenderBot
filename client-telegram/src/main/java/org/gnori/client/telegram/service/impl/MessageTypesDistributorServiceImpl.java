@@ -14,7 +14,7 @@ import static org.gnori.client.telegram.command.CommandName.TITLE_PENDING;
 
 import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.command.CommandContainer;
-import org.gnori.client.telegram.service.FileService;
+import org.gnori.client.telegram.service.file.FileLoader;
 import org.gnori.client.telegram.service.MessageTypesDistributorService;
 import org.gnori.client.telegram.service.SendBotMessageService;
 import org.gnori.shared.utils.CryptoTool;
@@ -28,6 +28,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 /**
  * Implementation service {@link MessageTypesDistributorService}
  */
+
 @Log4j2
 @Service
 public class MessageTypesDistributorServiceImpl implements MessageTypesDistributorService {
@@ -38,7 +39,7 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                                               ModifyDataBaseService modifyDataBaseService,
                                               MessageRepositoryService messageRepository,
                                               RabbitTemplate rabbitTemplate,
-                                              FileService fileService,
+                                              FileLoader fileLoader,
                                               CryptoTool cryptoTool,
                                               @Value("${spring.rabbitmq.exchange-name}")String exchangeName) {
         this.modifyDataBaseService = modifyDataBaseService;
@@ -47,13 +48,13 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
                 messageRepository,
                 rabbitTemplate,
                 cryptoTool,
-                fileService,
+                fileLoader,
                 exchangeName,
                 this);
     }
 
     @Override
-    public void distributeMessageByType(Update update) {
+    public void distribute(Update update) {
             var message = update.getMessage();
 
             if (update.hasCallbackQuery()) {

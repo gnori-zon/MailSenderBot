@@ -1,6 +1,6 @@
 package org.gnori.client.telegram.impl;
 
-import org.gnori.client.telegram.service.impl.FileServiceImpl;
+import org.gnori.client.telegram.service.file.impl.FileLoaderImpl;
 import org.gnori.client.telegram.service.impl.MessageRepositoryService;
 import org.gnori.client.telegram.service.impl.MessageTypesDistributorServiceImpl;
 import org.gnori.client.telegram.service.impl.SendBotMessageServiceImpl;
@@ -20,7 +20,7 @@ class MessageTypesDistributorServiceImplTest {
     ModifyDataBaseServiceImpl  modifyDataBaseService = Mockito.mock(ModifyDataBaseServiceImpl.class);
     MessageRepositoryService messageRepository = Mockito.mock(MessageRepositoryService.class);
     RabbitTemplate rabbitTemplate = Mockito.mock(RabbitTemplate.class);
-    FileServiceImpl  fileService = Mockito.mock(FileServiceImpl.class);
+    FileLoaderImpl fileService = Mockito.mock(FileLoaderImpl.class);
     CryptoTool cryptoTool = Mockito.mock(CryptoTool.class);
 
     MessageTypesDistributorServiceImpl messageTypesDistributorService = new MessageTypesDistributorServiceImpl(sendBotMessageService,
@@ -41,7 +41,7 @@ class MessageTypesDistributorServiceImplTest {
     void distributeMessageByType() {
         Mockito.when(update.getMessage()).thenReturn(message);
 
-        messageTypesDistributorService.distributeMessageByType(update);
+        messageTypesDistributorService.distribute(update);
 
         Mockito.verify(update).hasCallbackQuery();
         Mockito.verify(message).hasDocument();
@@ -58,7 +58,7 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.when(callback.getData()).thenReturn(data);
         Mockito.when(update.hasCallbackQuery()).thenReturn(true);
 
-        messageTypesDistributorService.distributeMessageByType(update);
+        messageTypesDistributorService.distribute(update);
 
         Mockito.verify(update).hasCallbackQuery();
         Mockito.verify(message,Mockito.never()).hasDocument();
@@ -74,7 +74,7 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.when(message.hasDocument()).thenReturn(true);
         Mockito.when(message.getChatId()).thenReturn(chatId);
 
-        messageTypesDistributorService.distributeMessageByType(update);
+        messageTypesDistributorService.distribute(update);
 
         Mockito.verify(update).hasCallbackQuery();
         Mockito.verify(update).hasCallbackQuery();
@@ -91,7 +91,7 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.when(message.hasPhoto()).thenReturn(true);
         Mockito.when(message.getChatId()).thenReturn(chatId);
 
-        messageTypesDistributorService.distributeMessageByType(update);
+        messageTypesDistributorService.distribute(update);
 
         Mockito.verify(update).hasCallbackQuery();
         Mockito.verify(update).hasCallbackQuery();
@@ -108,7 +108,7 @@ class MessageTypesDistributorServiceImplTest {
         Mockito.when(message.hasText()).thenReturn(true);
         Mockito.when(message.getChatId()).thenReturn(chatId);
 
-        messageTypesDistributorService.distributeMessageByType(update);
+        messageTypesDistributorService.distribute(update);
 
         Mockito.verify(update).hasCallbackQuery();
         Mockito.verify(update).hasCallbackQuery();

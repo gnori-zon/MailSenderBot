@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.gnori.send.mail.worker.aop.LogExecutionTime;
 import org.gnori.send.mail.worker.service.FileService;
-import org.gnori.shared.service.FileDownloaderByUrlService;
+import org.gnori.shared.service.loader.url.URLLoader;
 import org.gnori.data.model.Message;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,10 +35,10 @@ public class FileServiceImpl implements FileService {
     @Value("${service.file-storage.uri}")
     private String fileStorageUri;
 
-    private final FileDownloaderByUrlService fileDownloaderByUrlService;
+    private final URLLoader URLLoader;
 
-    public FileServiceImpl(FileDownloaderByUrlService fileDownloaderByUrlService) {
-        this.fileDownloaderByUrlService = fileDownloaderByUrlService;
+    public FileServiceImpl(URLLoader URLLoader) {
+        this.URLLoader = URLLoader;
     }
 
     @LogExecutionTime
@@ -120,7 +120,7 @@ public class FileServiceImpl implements FileService {
     private byte[] downloadFile(String filePath) throws  URISyntaxException,IOException,InterruptedException{
         String fullUri = fileStorageUri.replace("{token}", token).replace("{filePath}",filePath);
         var defaultChunkSize = 262144;
-            return fileDownloaderByUrlService.download(fullUri, defaultChunkSize);
+            return URLLoader.loadBytes(fullUri, defaultChunkSize);
     }
     private byte[] getBinaryContent(ResponseEntity<String> response){
         var filePath = getFilePath(response);

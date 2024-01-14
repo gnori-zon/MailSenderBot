@@ -1,7 +1,7 @@
 package org.gnori.send.mail.worker.service.impl;
 
 import org.gnori.data.model.Message;
-import org.gnori.shared.service.FileDownloaderByUrlService;
+import org.gnori.shared.service.loader.url.URLLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,12 +13,12 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 @DisplayName("Unit-level testing for FileServiceImpl")
 public class FileServiceImplTest {
     FileServiceImpl fileServiceImpl;
-    private FileDownloaderByUrlService fileDownloaderByUrlService;
+    private URLLoader URLLoader;
 
     @BeforeEach
     public void init(){
-        fileDownloaderByUrlService = Mockito.mock(FileDownloaderByUrlService.class);
-        fileServiceImpl = new FileServiceImpl(fileDownloaderByUrlService);
+        URLLoader = Mockito.mock(URLLoader.class);
+        fileServiceImpl = new FileServiceImpl(URLLoader);
     }
 
     @Test
