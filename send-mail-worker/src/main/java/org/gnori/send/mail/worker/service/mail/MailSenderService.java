@@ -1,4 +1,4 @@
-package org.gnori.send.mail.worker.service;
+package org.gnori.send.mail.worker.service.mail;
 
 import org.gnori.data.model.Message;
 
