@@ -1,30 +1,16 @@
 package org.gnori.send.mail.worker.service.impl;
 
 
-import static org.gnori.send.mail.worker.utils.UtilsMail.getBaseProperties;
-import static org.gnori.send.mail.worker.utils.UtilsMail.getGmailProperties;
-import static org.gnori.send.mail.worker.utils.UtilsMail.getMailProperties;
-import static org.gnori.send.mail.worker.utils.UtilsMail.getYandexProperties;
-
-import java.util.Properties;
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.gnori.data.model.Message;
 import org.gnori.send.mail.worker.aop.LogExecutionTime;
-import org.gnori.send.mail.worker.service.FileService;
 import org.gnori.send.mail.worker.service.MailSenderService;
 import org.gnori.send.mail.worker.service.enums.MailDomain;
-import org.gnori.send.mail.worker.utils.BasicEmails;
-import org.gnori.send.mail.worker.utils.LoginAuthenticator;
-import org.gnori.send.mail.worker.utils.NoFreeMailingAddressesException;
-import org.gnori.send.mail.worker.utils.StateEmail;
-import org.gnori.send.mail.worker.utils.UtilsMail;
+import org.gnori.send.mail.worker.utils.*;
+import org.gnori.shared.service.loader.file.FileData;
+import org.gnori.shared.service.loader.file.FileLoader;
+import org.gnori.shared.service.loader.file.FileType;
 import org.gnori.shared.utils.CryptoTool;
 import org.gnori.store.dao.ModifyDataBaseService;
 import org.gnori.store.entity.MessageSentRecord;
@@ -33,28 +19,36 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.Document;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Optional;
+import java.util.Properties;
+
+import static org.gnori.send.mail.worker.utils.UtilsMail.*;
 
 /**
  * Implementation service {@link MailSenderService}
  */
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class MailSenderServiceImpl implements MailSenderService {
 
     private static final int MAX_RECIPIENTS = 499;
 
     private final BasicEmails basicEmails;
     private final ModifyDataBaseService modifyDataBaseService;
-    private final FileService fileService;
+    private final FileLoader fileLoader;
     private final CryptoTool cryptoTool;
 
-    public MailSenderServiceImpl(BasicEmails basicEmails, ModifyDataBaseService modifyDataBaseService, FileService fileService,
-                                 CryptoTool cryptoTool) {
-        this.basicEmails = basicEmails;
-        this.modifyDataBaseService = modifyDataBaseService;
-        this.fileService = fileService;
-        this.cryptoTool = cryptoTool;
-    }
     @RabbitListener( queues = "${spring.rabbitmq.queue-name}")
     public void receivedMessage(Message message) {
         log.info("MailSenderService: receivedMessage {}", message);
@@ -186,15 +180,13 @@ public class MailSenderServiceImpl implements MailSenderService {
         FileSystemResource file = null;
         int processFileStatus = 0;
         if(message.hasAnnex()) {
-            if(message.getDocAnnex()!=null){
-                processFileStatus = fileService.processDoc(message);
-            }else {
-                processFileStatus = fileService.processPhoto(message);
-            }
-            if(processFileStatus==1) {
-                file = fileService.getFileSystemResource(message);
-                helper.addAttachment(file.getFilename(), file);
-            }
+
+            final FileData fileData = message.getDocAnnex() != null
+                    ? fileDataOf(message.getDocAnnex())
+                    : fileDataOf(message.getPhotoAnnex());
+
+            fileLoader.loadFile(fileData)
+                    .doIfSuccess(fileSystemResource -> attach(helper, fileSystemResource));
         }
 
         var countMessage = message.getCountForRecipient();
@@ -209,6 +201,36 @@ public class MailSenderServiceImpl implements MailSenderService {
             }
         }
     }
+
+    private void attach(MimeMessageHelper helper, FileSystemResource fileSystemResource) {
+
+        try {
+
+            final String filename = Optional.ofNullable(fileSystemResource.getFilename())
+                    .orElse("file");
+
+            helper.addAttachment(filename, fileSystemResource);
+        } catch (MessagingException e) {
+            log.error("bad attaching file: {}", e.getLocalizedMessage());
+        }
+    }
+
+    private FileData fileDataOf(Document documentAnnex) {
+
+        final String fileId = documentAnnex.getFileId();
+        final String fileName = documentAnnex.getFileName();
+
+        return new FileData(fileId, fileName, FileType.DOCUMENT);
+    }
+
+    private FileData fileDataOf(PhotoSize photoAnnex) {
+
+        final String fileId = photoAnnex.getFileId();
+        final String fileName = "IMG";
+
+        return new FileData(fileId, fileName, FileType.PHOTO);
+    }
+
     private void createAndAddMessageSentRecord(Message message){
         var countMessages = (int) message.getRecipients().stream().filter(UtilsMail::validateMail).count() * message.getCountForRecipient();
         var messageSentRecord = MessageSentRecord.builder().countMessages(countMessages).build();

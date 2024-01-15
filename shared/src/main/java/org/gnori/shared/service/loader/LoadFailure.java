@@ -1,4 +1,4 @@
-package org.gnori.shared.service.loader.url;
+package org.gnori.shared.service.loader;
 
 public enum LoadFailure {
     NOT_SUCCESS_STATUS_CODE,

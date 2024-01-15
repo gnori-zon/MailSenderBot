@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.file;
+package org.gnori.shared.service.loader.file;
 
 import org.gnori.shared.flow.Result;
 import org.springframework.core.io.FileSystemResource;
@@ -9,5 +9,5 @@ import org.telegram.telegrambots.meta.api.objects.Document;
  */
 public interface FileLoader {
 
-    Result<FileSystemResource, FileFailure> loadFile(Long id, Document mailDoc);
+    Result<FileSystemResource, FileFailure> loadFile(FileData fileData);
 }

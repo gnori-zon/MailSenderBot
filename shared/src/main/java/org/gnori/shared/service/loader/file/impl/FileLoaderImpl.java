@@ -1,36 +1,35 @@
-package org.gnori.client.telegram.service.file.impl;
+package org.gnori.shared.service.loader.file.impl;
 
-import java.io.File;
-import java.io.IOException;
-
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
-import org.gnori.client.telegram.service.file.FileFailure;
-import org.gnori.client.telegram.service.file.FileLoader;
-import org.gnori.client.telegram.service.load.binary.BinaryLoader;
 import org.gnori.shared.flow.Result;
+import org.gnori.shared.service.loader.binary.BinaryLoader;
+import org.gnori.shared.service.loader.file.FileData;
+import org.gnori.shared.service.loader.file.FileFailure;
+import org.gnori.shared.service.loader.file.FileLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Document;
 
-import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class FileLoaderImpl implements FileLoader {
 
-    static final String PREFIX_PATTERN = "file_%s";
+    static final String FILENAME_PATTERN = "%s_%s";
 
     private final BinaryLoader binaryLoader;
 
     @Override
-    public Result<FileSystemResource, FileFailure> loadFile(Long id, Document mailDoc) {
+    public Result<FileSystemResource, FileFailure> loadFile(FileData fileData) {
 
-        final String fileId = mailDoc.getFileId();
-        final String suffix = getSuffix(mailDoc.getFileName());
-        final String prefix = PREFIX_PATTERN.formatted(id);
+        final String fileId = fileData.id();
+        final String suffix = fileData.suffix();
+        final String prefix = FILENAME_PATTERN.formatted(fileData.prefix(), fileData.name());
 
         return binaryLoader.loadBy(fileId)
                 .mapFailure(loadFailure -> FileFailure.LOAD_FAILURE)
@@ -40,7 +39,7 @@ public class FileLoaderImpl implements FileLoader {
     private Result<FileSystemResource, FileFailure> writeToTempFile(
             String prefix,
             String suffix,
-            @NotNull byte[] fileInByte
+            byte @NonNull [] fileInByte
     ) {
         try {
 
@@ -54,12 +53,5 @@ public class FileLoaderImpl implements FileLoader {
             log.error("bad write to file: {}", e.getLocalizedMessage());
             return Result.failure(FileFailure.IO_FAILURE);
         }
-    }
-
-
-    private String getSuffix(String fileName) {
-
-        final int indexPoint = fileName.indexOf(".");
-        return fileName.substring(indexPoint);
     }
 }

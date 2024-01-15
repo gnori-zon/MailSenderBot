@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.file;
+package org.gnori.shared.service.loader.file;
 
 public enum FileFailure {
     IO_FAILURE,

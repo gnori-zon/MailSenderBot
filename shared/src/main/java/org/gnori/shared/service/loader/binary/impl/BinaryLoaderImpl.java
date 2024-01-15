@@ -1,11 +1,11 @@
-package org.gnori.client.telegram.service.load.binary.impl;
+package org.gnori.shared.service.loader.binary.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.gnori.client.telegram.service.load.binary.BinaryLoader;
+import org.gnori.shared.service.loader.binary.BinaryLoader;
 import org.gnori.shared.flow.Result;
 import org.gnori.shared.service.loader.url.URLLoader;
-import org.gnori.shared.service.loader.url.LoadFailure;
+import org.gnori.shared.service.loader.LoadFailure;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
