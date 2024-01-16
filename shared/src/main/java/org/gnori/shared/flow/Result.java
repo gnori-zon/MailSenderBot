@@ -44,6 +44,7 @@ public interface Result<S, F> {
     <NF> Result<S, NF> flatMapFailure(Function<F, Result<S, NF>> mutation);
 
 
+    Result<S,F> doAnyway(Runnable action);
     Result<S,F> doIfSuccess(Consumer<S> action);
     Result<S,F> doIfFailure(Consumer<F> action);
 
@@ -51,6 +52,12 @@ public interface Result<S, F> {
 
         public static <S, F> Success<S, F> of(S value) {
             return new Success<>(value);
+        }
+
+        @Override
+        public Result<S, F> doAnyway(Runnable action) {
+            action.run();
+            return this;
         }
 
         @Override
@@ -120,6 +127,12 @@ public interface Result<S, F> {
 
         public static <S, F> Failure<S, F> of(F value) {
             return new Failure<>(value);
+        }
+
+        @Override
+        public Result<S, F> doAnyway(Runnable action) {
+            action.run();
+            return this;
         }
 
         @Override

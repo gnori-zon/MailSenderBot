@@ -8,11 +8,13 @@ dependencies {
 // Spring
 dependencies {
     provided group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    provided group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 }
 
 // Commons-io
 dependencies {
-    provided group: 'commons-codec', name: 'commons-codec'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 }
 
 // Lombok

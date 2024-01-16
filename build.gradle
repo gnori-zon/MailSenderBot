@@ -24,9 +24,7 @@ subprojects {
     }
 
     group 'org.gnori'
-
     version '1.0'
-
     sourceCompatibility = JavaVersion.VERSION_17
 
     jar {
