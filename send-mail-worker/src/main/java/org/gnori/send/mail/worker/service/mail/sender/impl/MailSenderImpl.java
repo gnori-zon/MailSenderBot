@@ -7,9 +7,9 @@ import org.gnori.send.mail.worker.service.mail.filler.MailMessageData;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageFiller;
 import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsParser;
 import org.gnori.send.mail.worker.service.mail.sender.MailSender;
-import org.gnori.shared.service.loader.file.FileData;
+import org.gnori.data.model.FileData;
 import org.gnori.shared.service.loader.file.FileLoader;
-import org.gnori.shared.service.loader.file.FileType;
+import org.gnori.data.model.FileType;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Document;
@@ -39,56 +39,33 @@ public class MailSenderImpl implements MailSender {
         final MailMessageData mailMessageData = createMailMessageData(senderMail, message);
 
         mailMessageFiller.fill(mailMessage, mailMessageData);
-        sendMessages(mailMessage, message.getCountForRecipient());
-
+        sendMessages(mailMessage, message.countForRecipient());
         deleteFile(mailMessageData.annex());
     }
 
     private MailMessageData createMailMessageData(String senderMail, Message message) {
 
-        final InternetAddress[] recipients = mailRecipientsParser.parse(message.getRecipients());
-        final Optional<FileSystemResource> fileSystemResourceOptional = loadFrom(message);
+        final InternetAddress[] recipients = mailRecipientsParser.parse(message.recipients());
+        final Optional<FileSystemResource> fileSystemResourceOptional = message.hasAnnex()
+                ? loadFrom(message.fileData())
+                :Optional.empty();
 
         return new MailMessageData(
-                message.getTitle(),
+                message.title(),
                 senderMail,
                 recipients,
-                message.getText(),
+                message.text(),
                 fileSystemResourceOptional.get(),
-                message.getSentDate()
+                message.sentDate()
         );
     }
 
-    private Optional<FileSystemResource> loadFrom(Message message) {
-
-        if (!message.hasAnnex()) {
-            return Optional.empty();
-        }
-
-        final FileData fileData = message.getDocAnnex() != null
-                ? fileDataOf(message.getDocAnnex())
-                : fileDataOf(message.getPhotoAnnex());
+    private Optional<FileSystemResource> loadFrom(FileData fileData) {
 
         final FileSystemResource nullableFileSystemResource = fileLoader.loadFile(fileData)
                 .fold(fileSystemResource -> fileSystemResource, fileFailure -> null);
 
         return Optional.ofNullable(nullableFileSystemResource);
-    }
-
-    private FileData fileDataOf(Document documentAnnex) {
-
-        final String fileId = documentAnnex.getFileId();
-        final String fileName = documentAnnex.getFileName();
-
-        return new FileData(fileId, fileName, FileType.DOCUMENT);
-    }
-
-    private FileData fileDataOf(PhotoSize photoAnnex) {
-
-        final String fileId = photoAnnex.getFileId();
-        final String fileName = "IMG";
-
-        return new FileData(fileId, fileName, FileType.PHOTO);
     }
 
     private void sendMessages(MimeMessage mailMessage, Integer countMessage) {

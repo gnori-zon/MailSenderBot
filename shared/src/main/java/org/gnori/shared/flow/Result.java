@@ -47,9 +47,11 @@ public interface Result<S, F> {
     Result<S,F> doIfSuccess(Consumer<S> action);
     Result<S,F> doIfFailure(Consumer<F> action);
 
-    @Value(staticConstructor = "of")
-    @EqualsAndHashCode(callSuper = false, of = "value")
     record Success<S, F>(S value) implements Result<S, F> {
+
+        public static <S, F> Success<S, F> of(S value) {
+            return new Success<>(value);
+        }
 
         @Override
         public Result<S, F> doIfSuccess(Consumer<S> action) {
@@ -114,9 +116,11 @@ public interface Result<S, F> {
         }
     }
 
-    @Value(staticConstructor = "of")
-    @EqualsAndHashCode(callSuper = false, of = "value")
     record Failure<S, F>(F value) implements Result<S, F> {
+
+        public static <S, F> Failure<S, F> of(F value) {
+            return new Failure<>(value);
+        }
 
         @Override
         public Result<S, F> doIfSuccess(Consumer<S> action) {

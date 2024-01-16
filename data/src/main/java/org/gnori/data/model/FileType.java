@@ -1,4 +1,4 @@
-package org.gnori.shared.service.loader.file;
+package org.gnori.data.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

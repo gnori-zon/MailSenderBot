@@ -1,4 +1,4 @@
-package org.gnori.shared.service.loader.file;
+package org.gnori.data.model;
 
 public record FileData(
         String id,

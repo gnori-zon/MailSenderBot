@@ -1,8 +1,8 @@
 package org.gnori.shared.service.loader.file;
 
+import org.gnori.data.model.FileData;
 import org.gnori.shared.flow.Result;
 import org.springframework.core.io.FileSystemResource;
-import org.telegram.telegrambots.meta.api.objects.Document;
 
 /**
  * Service for handling files
