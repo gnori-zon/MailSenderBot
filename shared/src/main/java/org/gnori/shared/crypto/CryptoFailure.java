@@ -1,4 +1,4 @@
-package org.gnori.shared.utils;
+package org.gnori.shared.crypto;
 
 public enum CryptoFailure {
 

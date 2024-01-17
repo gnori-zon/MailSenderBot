@@ -1,4 +1,4 @@
-package org.gnori.shared.utils;
+package org.gnori.shared.crypto;
 
 import org.gnori.shared.flow.Result;
 

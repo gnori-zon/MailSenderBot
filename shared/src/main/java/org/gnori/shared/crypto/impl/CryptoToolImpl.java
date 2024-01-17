@@ -1,7 +1,9 @@
-package org.gnori.shared.utils;
+package org.gnori.shared.crypto.impl;
 
 import org.apache.commons.codec.binary.Base64;
 import org.gnori.shared.flow.Result;
+import org.gnori.shared.crypto.CryptoFailure;
+import org.gnori.shared.crypto.CryptoTool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +18,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Key Encryption Tools
- */
 @Component
 public class CryptoToolImpl implements CryptoTool {
 
