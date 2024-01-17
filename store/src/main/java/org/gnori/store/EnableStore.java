@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EntityScan("org.gnori.store.entity")
-@ComponentScan("org.gnori.store.dao")
+@ComponentScan("org.gnori.store.domain.service")
 @EnableJpaRepositories("org.gnori.store.repository")
 public class EnableStore {
 }
