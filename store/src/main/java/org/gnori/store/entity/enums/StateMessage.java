@@ -1,17 +1,15 @@
 package org.gnori.store.entity.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum StateMessage {
+
     QUEUE("⏳in the queue"),
     SUCCESS("✔sent"),
     FAIL("❌not sent");
+
     private final String text;
-
-    StateMessage(String text) {
-        this.text = text;
-    }
-
-    @Override
-    public String toString() {
-        return text;
-    }
 }
