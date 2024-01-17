@@ -1,23 +1,31 @@
 package org.gnori.store.repository;
 
-import java.util.Optional;
 import org.gnori.store.entity.MailingHistory;
-import org.gnori.store.entity.enums.StateMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-/**
- * dao for {@link MailingHistory} entity.
- */
+
+import java.util.Optional;
+
 public interface MailingHistoryRepository extends JpaRepository<MailingHistory,Long> {
-     @Transactional
-     Optional<MailingHistory> findByAccount_Id(Long id);
-     @Transactional
+
+     @Transactional(readOnly = true)
+     Optional<MailingHistory> findByAccountId(Long id);
+
      @Modifying
-     @Query("update MailingHistory a set a.stateLastMessage = :stateLastMessage WHERE a.id = :id")
-     void updateStateLastMessage(@Param("id") Long id, @Param("stateLastMessage") StateMessage stateLastMessage);
-
-
+     @Transactional(propagation = Propagation.REQUIRED)
+     @Query(value = """
+             with account_mailing_history as (
+                  select account.mailing_history_id as id
+                  from account
+                  where account.id = :accountId
+             )
+             
+             update mailing_history history
+             set history.state_last_message = :newStateLastMessage
+             where history.id = account_mailing_history.id
+             """, nativeQuery = true)
+     void updateStateLastMessageByAccountId(Long accountId, String newStateLastMessage);
 }

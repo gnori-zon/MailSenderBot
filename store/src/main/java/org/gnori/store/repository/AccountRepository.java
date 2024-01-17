@@ -5,25 +5,44 @@ import org.gnori.store.entity.enums.State;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-/**
- * dao for {@link Account} entity.
- */
+
 public interface AccountRepository extends JpaRepository<Account,Long> {
-    Account findFirstByEmailIgnoreCase(String email);
-    @Transactional
-    @Modifying
-    @Query("update Account a set a.state = :state WHERE a.id = :id")
-    void updateStateById(@Param("id") Long id, @Param("state") State state);
-    @Transactional
-    @Modifying
-    @Query("update Account a set a.keyForMail = :keyForMail WHERE a.id = :id")
-    void updateKeyForMailById(@Param("id") Long id, @Param("keyForMail") String keyForMail);
-    @Transactional
-    @Modifying
-    @Query("update Account a set a.email = :mail WHERE a.id = :id")
-    void updateMailById(@Param("id") Long id, @Param("mail") String mail);
 
+    @Modifying
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Query("""
+            update Account a
+                set a.state = :state
+            where a.id = :id
+            """)
+    void updateStateById(Long id, State state);
 
+    @Modifying
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Query("""
+            update Account a
+                set a.keyForMail = :keyForMail
+            where a.id = :id
+             """)
+    void updateKeyForMailById(Long id, String keyForMail);
+
+    @Modifying
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Query("""
+            update Account a
+                set a.email = :mail
+            where a.id = :id
+            """)
+    void updateMailById(Long id, String mail);
+
+    @Modifying
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Query(value = """
+             update account
+               set mailing_history_id = :mailingHistoryId
+             where account.id = :id
+             """, nativeQuery = true)
+    void updateMailingHistoryId(Long id, Long accountId);
 }
