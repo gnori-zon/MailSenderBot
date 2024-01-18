@@ -34,7 +34,7 @@ public class MailUtils {
 
         for (final MailDomain domain: MailDomain.values()) {
 
-            final String containsRegex = getContainsRegex(domain.getDomains());
+            final String containsRegex = createContainsRegex(domain.getDomains());
 
             if (domainPart.matches(containsRegex)) {
                 return Optional.of(domain.getProperties());
@@ -53,7 +53,7 @@ public class MailUtils {
                 : "";
     }
 
-    private static String getContainsRegex(Collection<String> elements) {
+    private static String createContainsRegex(Collection<String> elements) {
 
         return elements.stream()
                 .collect(Collectors.joining("|", ".*[", "].*"));

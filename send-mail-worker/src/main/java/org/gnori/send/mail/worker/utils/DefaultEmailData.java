@@ -16,7 +16,8 @@ public class DefaultEmailData {
 
     @Value("${base.keys}")
     private String baseMailsPasswords;
-    private ConcurrentLinkedQueue<EmailData> emailData = new ConcurrentLinkedQueue<>();
+
+    private final ConcurrentLinkedQueue<EmailData> emailData = new ConcurrentLinkedQueue<>();
 
     @PostConstruct
     private void init(){

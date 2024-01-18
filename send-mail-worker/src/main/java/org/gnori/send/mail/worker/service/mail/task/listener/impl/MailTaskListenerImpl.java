@@ -13,8 +13,8 @@ import org.gnori.send.mail.worker.utils.LoginAuthenticator;
 import org.gnori.send.mail.worker.utils.MailUtils;
 import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
-import org.gnori.shared.utils.CryptoTool;
-import org.gnori.store.dao.ModifyDataBaseService;
+import org.gnori.shared.crypto.CryptoTool;
+import org.gnori.store.domain.service.ModifyDataBaseService;
 import org.gnori.store.entity.MessageSentRecord;
 import org.gnori.store.entity.enums.StateMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -40,10 +40,10 @@ public class MailTaskListenerImpl implements MailTaskListener {
 
         send(message)
                 .doIfSuccess(empty -> addMessageSentRecord(message))
-                .doIfSuccess(empty -> modifyDataBaseService.updateStateMessageById(message.chatId(), StateMessage.SUCCESS))
+                .doIfSuccess(empty -> modifyDataBaseService.updateStateMessageByAccountId(message.chatId(), StateMessage.SUCCESS))
                 .doIfFailure(failure -> {
                     log.error("MailTaskListener: {}", failure.name());
-                    modifyDataBaseService.updateStateMessageById(message.chatId(), StateMessage.FAIL);
+                    modifyDataBaseService.updateStateMessageByAccountId(message.chatId(), StateMessage.FAIL);
                 });
     }
 
