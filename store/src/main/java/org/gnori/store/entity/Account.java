@@ -1,15 +1,10 @@
 package org.gnori.store.entity;
 
 
-import javax.persistence.*;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.gnori.store.entity.enums.State;
+
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -24,6 +19,18 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "chat_id", unique = true, nullable = false)
+    private Long chatId;
+
+    @Column(name = "firstname")
+    private String firstname;
+
+    @Column(name = "lastname")
+    private String lastname;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "email", unique = true)
     private String email;

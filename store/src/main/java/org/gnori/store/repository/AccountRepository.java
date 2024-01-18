@@ -8,7 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface AccountRepository extends JpaRepository<Account,Long> {
+
+    Optional<Account> findByChatId(Long chatId);
 
     @Modifying
     @Transactional(propagation = Propagation.REQUIRED)

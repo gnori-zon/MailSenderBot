@@ -1,6 +1,7 @@
 package org.gnori.store.entity.enums;
 
 public enum State {
+    DEFAULT,
     ANNEX_PENDING,
     TITLE_PENDING,
     CONTENT_PENDING,
