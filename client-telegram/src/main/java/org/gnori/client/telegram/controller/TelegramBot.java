@@ -23,14 +23,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String botToken;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         sendBotMessageService.registerBot(this);
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-            updateController.processUpdate(update);
+        updateController.processUpdate(update);
     }
+
     @Override
     public String getBotUsername() {
         return botName;

@@ -6,6 +6,8 @@ import org.gnori.client.telegram.service.MessageTypesDistributorService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Optional;
+
 /**
  * Controller to call distributor
  */
@@ -15,14 +17,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class UpdateController {
 
+    private static final String UPDATE_IS_NULL = "Received update is null";
+
     private final MessageTypesDistributorService distributorService;
 
     public void processUpdate(Update update) {
 
-        switch (UpdateType.of(update)) {
-            case EMPTY -> log.error("Received update is null");
-            case UNSUPPORTED -> log.error("Unsupported message type is received: {}", update);
-            case VALID -> distributorService.distribute(update);
-        }
+        Optional.ofNullable(update)
+                .ifPresentOrElse(
+                        distributorService::distribute,
+                        () -> log.error(UPDATE_IS_NULL)
+                );
     }
 }
