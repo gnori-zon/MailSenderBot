@@ -15,7 +15,6 @@ public record FileData(
     }
 
     public String prefix() {
-
         return type.getPrefix();
     }
 

@@ -6,12 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.telegram.telegrambots.meta.api.objects.Document;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
-
 public record Message(
         long chatId,
         SendMode sendMode,
@@ -28,9 +22,11 @@ public record Message(
     public boolean hasAnnex() {
         return fileData != null;
     }
+
     public boolean hasSentDate(){
         return sentDate != null;
     }
+
     public List<String> recipients() {
 
         return Optional.ofNullable(recipients)
