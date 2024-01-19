@@ -1,10 +1,8 @@
 package org.gnori.client.telegram.command;
 
-public enum CommandType {
+public enum CommandContainerType {
     TEXT,
     CALLBACK,
     STATE,
-    DOCUMENT,
-    PHOTO,
     UNDEFINED
 }

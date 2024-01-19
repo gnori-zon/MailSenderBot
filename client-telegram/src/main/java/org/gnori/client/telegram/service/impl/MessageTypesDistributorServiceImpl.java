@@ -4,8 +4,8 @@ package org.gnori.client.telegram.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.gnori.client.telegram.command.CommandContainer;
-import org.gnori.client.telegram.command.CommandType;
+import org.gnori.client.telegram.command.CommandContainers;
+import org.gnori.client.telegram.command.CommandContainerType;
 import org.gnori.client.telegram.service.AccountRegistrator;
 import org.gnori.client.telegram.service.MessageTypesDistributorService;
 import org.gnori.store.entity.Account;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MessageTypesDistributorServiceImpl implements MessageTypesDistributorService {
 
-    private final CommandContainer commandContainer;
+    private final CommandContainers commandContainers;
     private final AccountRegistrator accountRegistrator;
 
     @Override
@@ -41,41 +41,28 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
 
     private void distribute(Account account, Update update) {
 
-        commandContainer.retriveCommand(detectCommandType(account, update))
-                .execute(account, update);
+        commandContainers.retriveCommandContainer(detectCommandType(account, update))
+                .executeCommand(account, update);
     }
 
 
-    private CommandType detectCommandType(
+    private CommandContainerType detectCommandType(
             @NonNull Account account,
             @NonNull Update update
     ) {
 
         if (!State.DEFAULT.equals(account.getState())) {
-            return CommandType.STATE;
+            return CommandContainerType.STATE;
         }
 
         if (update.hasCallbackQuery()) {
-            return CommandType.CALLBACK;
+            return CommandContainerType.CALLBACK;
         }
 
-        return Optional.ofNullable(update.getMessage())
-                .flatMap(message -> {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            return CommandContainerType.TEXT;
+        }
 
-                    if (message.hasDocument()) {
-                        return Optional.of(CommandType.DOCUMENT);
-                    }
-
-                    if (message.hasPhoto()) {
-                        return Optional.of(CommandType.PHOTO);
-                    }
-
-                    if (message.hasText()) {
-                        return Optional.of(CommandType.TEXT);
-                    }
-
-                    return Optional.empty();
-                })
-                .orElse(CommandType.UNDEFINED);
+        return CommandContainerType.UNDEFINED;
     }
 }
