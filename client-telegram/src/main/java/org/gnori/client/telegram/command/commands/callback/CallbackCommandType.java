@@ -13,6 +13,10 @@ public enum CallbackCommandType {
     CHANGE_MAIL,
     CHANGE_KEY,
     HELP,
+    SEND,
+    UPLOAD_MESSAGE,
+    CLEAR_MESSAGE,
+    CHANGE_MESSAGE_ITEM,
     UNDEFINED;
 
     public static CallbackCommandType of(Update update) {
