@@ -29,7 +29,7 @@ public class ChangeMailCallbackCommand implements CallbackCommand {
         final String text = prepareTextForBeforeChangeMailMessage();
 
         accountService.updateStateById(chatId, State.MAIL_PENDING);
-        sendBotMessageService.editMessage(chatId,messageId,text, Collections.emptyList(),true);
+        sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 
     @Override

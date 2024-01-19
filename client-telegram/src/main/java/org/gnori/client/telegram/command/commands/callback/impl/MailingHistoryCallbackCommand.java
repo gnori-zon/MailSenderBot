@@ -32,7 +32,7 @@ public class MailingHistoryCallbackCommand implements CallbackCommand {
                 .orElse(new MailingHistory());
         final String text = prepareTextForMessage(new MailingHistoryDto(mailingHistory));
 
-        sendBotMessageService.editMessage(chatId,messageId,text, Collections.emptyList(),true);
+        sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ProfileInfoCallbackCommand implements CallbackCommand {
         final List<List<String>> newCallbackData = prepareCallbackDataForProfileMessage();
 
         accountService.updateStateById(chatId, State.DEFAULT);
-        sendBotMessageService.editMessage(chatId,messageId,text,newCallbackData,true);
+        sendBotMessageService.editMessage(chatId, messageId, text, newCallbackData, true);
     }
 
     @Override
