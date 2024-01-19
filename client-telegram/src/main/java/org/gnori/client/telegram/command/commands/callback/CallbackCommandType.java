@@ -7,6 +7,9 @@ import java.util.Optional;
 
 public enum CallbackCommandType {
 
+    MAILING_HISTORY,
+    CREATE_MAILING,
+    PROFILE_INFO,
     UNDEFINED;
 
     public static CallbackCommandType of(Update update) {
