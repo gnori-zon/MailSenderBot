@@ -11,12 +11,12 @@ public class AccountDto {
 
     private final State state;
     private final String email;
-    private final Boolean keyPresent;
+    private final boolean isPresentKey;
 
     public AccountDto(Account account) {
 
         state = account.getState();
         email = account.getEmail();
-        keyPresent = !(account.getKeyForMail() == null || account.getKeyForMail().isEmpty());
+        isPresentKey = !(account.getKeyForMail() == null || account.getKeyForMail().isEmpty());
     }
 }

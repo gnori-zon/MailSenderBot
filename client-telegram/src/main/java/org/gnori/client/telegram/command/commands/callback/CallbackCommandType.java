@@ -10,6 +10,9 @@ public enum CallbackCommandType {
     MAILING_HISTORY,
     CREATE_MAILING,
     PROFILE_INFO,
+    CHANGE_MAIL,
+    CHANGE_KEY,
+    HELP,
     UNDEFINED;
 
     public static CallbackCommandType of(Update update) {
