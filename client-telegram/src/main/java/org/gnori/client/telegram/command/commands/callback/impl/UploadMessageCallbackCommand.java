@@ -28,7 +28,7 @@ public class UploadMessageCallbackCommand implements CallbackCommand {
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeDownloadMessage();
 
-        accountService.updateStateById(chatId, State.DOWNLOAD_MESSAGE_PENDING);
+        accountService.updateStateById(chatId, State.UPLOAD_MESSAGE_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

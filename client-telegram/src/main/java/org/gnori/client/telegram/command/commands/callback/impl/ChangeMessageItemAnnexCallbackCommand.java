@@ -28,7 +28,7 @@ public class ChangeMessageItemAnnexCallbackCommand implements CallbackCommand {
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeChangeAnnexMessage();
 
-        accountService.updateStateById(chatId, State.ANNEX_PENDING);
+        accountService.updateStateById(chatId, State.MESSAGE_ANNEX_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

@@ -28,7 +28,7 @@ public class ChangeMessageItemTitleCallbackCommand implements CallbackCommand {
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeChangeTitleMessage();
 
-        accountService.updateStateById(chatId, State.TITLE_PENDING);
+        accountService.updateStateById(chatId, State.MESSAGE_TITLE_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

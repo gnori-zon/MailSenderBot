@@ -24,9 +24,9 @@ public class MessageSentRecord implements Comparable<MessageSentRecord>{
     @Column(name="count_messages")
     private Integer countMessages;
 
-    @Column(name="send_date")
+    @Column(name="sent_date")
     @CreationTimestamp
-    private LocalDateTime sendDate;
+    private LocalDateTime sentDate;
 
     @Override
     public String toString() {
@@ -35,7 +35,7 @@ public class MessageSentRecord implements Comparable<MessageSentRecord>{
 
     @Override
     public int compareTo(MessageSentRecord o) {
-        return getSendDate().compareTo(o.getSendDate());
+        return getSentDate().compareTo(o.getSentDate());
     }
 }
 

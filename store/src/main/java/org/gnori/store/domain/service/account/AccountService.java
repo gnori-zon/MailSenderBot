@@ -1,5 +1,7 @@
 package org.gnori.store.domain.service.account;
 
+import org.gnori.shared.flow.Empty;
+import org.gnori.shared.flow.Result;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,5 +14,5 @@ public interface AccountService {
     void saveAccount(Account account);
     void updateStateById(Long id, State keyForMailPending);
     void updateKeyForMailById(Long id, String newKey);
-    void updateMailById(Long id, String mail) throws DataIntegrityViolationException;
+    Result<Empty, AccountServiceFailure> updateMailById(Long id, String mail);
 }

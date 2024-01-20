@@ -28,7 +28,7 @@ public class ChangeMessageItemTextCallbackCommand implements CallbackCommand {
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeChangeContentMessage();
 
-        accountService.updateStateById(chatId, State.CONTENT_PENDING);
+        accountService.updateStateById(chatId, State.MESSAGE_TEXT_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

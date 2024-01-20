@@ -28,7 +28,7 @@ public class ChangeMessageItemSendDateCallbackCommand implements CallbackCommand
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeChangeSentDateMessage();
 
-        accountService.updateStateById(chatId, State.SENT_DATE_PENDING);
+        accountService.updateStateById(chatId, State.MESSAGE_SENT_DATE_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

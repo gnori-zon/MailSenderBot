@@ -16,7 +16,7 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 
 @Component
 @RequiredArgsConstructor
-public class ChangeMessageItemRecipientsCallbackCommand implements CallbackCommand {
+public class ChangeMessageItemRecipientCallbackCommand implements CallbackCommand {
 
     private final SendBotMessageService sendBotMessageService;
     private final AccountService accountService;
@@ -28,7 +28,7 @@ public class ChangeMessageItemRecipientsCallbackCommand implements CallbackComma
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeChangeRecipientsMessage();
 
-        accountService.updateStateById(chatId, State.RECIPIENTS_PENDING);
+        accountService.updateStateById(chatId, State.MESSAGE_RECIPIENTS_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

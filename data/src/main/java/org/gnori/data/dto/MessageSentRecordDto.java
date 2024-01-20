@@ -10,12 +10,12 @@ import java.time.format.DateTimeFormatter;
 @EqualsAndHashCode
 public class MessageSentRecordDto {
 
-    private final String sendDate;
+    private final String sentDate;
     private final Integer countMessages;
 
     public MessageSentRecordDto(MessageSentRecord messageSentRecord) {
 
-        this.sendDate = messageSentRecord.getSendDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        this.sentDate = messageSentRecord.getSendDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
         this.countMessages = messageSentRecord.getCountMessages();
     }
 }

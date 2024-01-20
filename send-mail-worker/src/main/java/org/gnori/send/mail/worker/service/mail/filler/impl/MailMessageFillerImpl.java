@@ -32,8 +32,8 @@ public class MailMessageFillerImpl implements MailMessageFiller {
             helper.setSubject(data.title());
             helper.setText(data.text());
 
-            if (data.sendDate() != null) {
-                helper.setSentDate(data.sendDate());
+            if (data.sentDate() != null) {
+                helper.setSentDate(data.sentDate());
             }
 
             if (data.annex() != null) {

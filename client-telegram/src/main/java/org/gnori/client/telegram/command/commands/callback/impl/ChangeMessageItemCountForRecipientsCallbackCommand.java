@@ -28,7 +28,7 @@ public class ChangeMessageItemCountForRecipientsCallbackCommand implements Callb
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForBeforeChangeCountForRecipientsMessage();
 
-        accountService.updateStateById(chatId, State.COUNT_FOR_RECIPIENT_PENDING);
+        accountService.updateStateById(chatId, State.MESSAGE_COUNT_FOR_RECIPIENT_PENDING);
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), true);
     }
 

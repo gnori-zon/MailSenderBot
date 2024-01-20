@@ -1,5 +1,6 @@
 package org.gnori.client.telegram.command.commands.text;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Getter
+@Getter(AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public enum TextCommandType {
     START("/start"),
@@ -27,7 +28,7 @@ public enum TextCommandType {
                 .orElse(UNDEFINED);
     }
 
-    public static Map<String, TextCommandType> typeMap() {
+    private static Map<String, TextCommandType> typeMap() {
 
         return Arrays.stream(TextCommandType.values())
                 .collect(Collectors.toUnmodifiableMap(TextCommandType::getRaw, Function.identity()));

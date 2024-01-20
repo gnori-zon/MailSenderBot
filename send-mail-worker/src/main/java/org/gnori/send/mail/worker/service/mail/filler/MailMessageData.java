@@ -11,5 +11,5 @@ public record MailMessageData(
         InternetAddress[] recipients,
         String text,
         FileSystemResource annex,
-        Date sendDate
+        Date sentDate
 ) {}
