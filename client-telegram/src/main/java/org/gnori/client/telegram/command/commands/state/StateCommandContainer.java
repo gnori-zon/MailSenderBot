@@ -25,7 +25,7 @@ public class StateCommandContainer implements CommandContainer<StateCommandType>
     @Override
     public void executeCommand(Account account, Update update) {
 
-        commandMap.get(StateCommandType.of(update)).
+        commandMap.get(StateCommandType.of(account.getState())).
                 execute(account, update);
     }
 

@@ -27,10 +27,9 @@ public enum CallbackCommandType {
     SEND_CURRENT_MAIL,
     UNDEFINED;
 
-    public static CallbackCommandType of(Update update) {
+    public static CallbackCommandType of(CallbackQuery callbackQuery) {
 
-        return Optional.of(update.getCallbackQuery())
-                .map(CallbackQuery::getData)
+        return Optional.of(callbackQuery.getData())
                 .map(CallbackCommandType::valueOf)
                 .orElse(UNDEFINED);
     }

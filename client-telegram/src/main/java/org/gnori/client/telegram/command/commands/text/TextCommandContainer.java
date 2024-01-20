@@ -25,7 +25,7 @@ public class TextCommandContainer implements CommandContainer<TextCommandType> {
     @Override
     public void executeCommand(Account account, Update update) {
 
-        commandMap.get(TextCommandType.of(update))
+        commandMap.get(TextCommandType.of(update.getMessage()))
                 .execute(account, update);
     }
 

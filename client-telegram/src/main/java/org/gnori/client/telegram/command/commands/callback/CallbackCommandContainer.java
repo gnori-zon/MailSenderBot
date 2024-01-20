@@ -25,7 +25,7 @@ public class CallbackCommandContainer implements CommandContainer<CallbackComman
     @Override
     public void executeCommand(Account account, Update update) {
 
-        commandMap.get(CallbackCommandType.of(update))
+        commandMap.get(CallbackCommandType.of(update.getCallbackQuery()))
                 .execute(account, update);
     }
 

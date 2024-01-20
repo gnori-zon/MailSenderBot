@@ -16,7 +16,7 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 
 @Component
 @RequiredArgsConstructor
-public class ChangeMessageItemSendDateCallbackCommand implements CallbackCommand {
+public class ChangeMessageItemSentDateCallbackCommand implements CallbackCommand {
 
     private final SendBotMessageService sendBotMessageService;
     private final AccountService accountService;

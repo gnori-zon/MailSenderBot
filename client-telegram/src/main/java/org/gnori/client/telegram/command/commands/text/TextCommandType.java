@@ -15,17 +15,15 @@ import java.util.stream.Collectors;
 @Getter(AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public enum TextCommandType {
+
     START("/start"),
     UNDEFINED(null);
 
     private final String raw;
 
-    public static TextCommandType of(Update update) {
+    public static TextCommandType of(Message message) {
 
-        return Optional.ofNullable(update.getMessage())
-                .map(Message::getText)
-                .map(text -> typeMap().getOrDefault(text, UNDEFINED))
-                .orElse(UNDEFINED);
+        return typeMap().getOrDefault(message.getText(), UNDEFINED);
     }
 
     private static Map<String, TextCommandType> typeMap() {
