@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.utils.preparers.TextPreparer;
+import org.gnori.client.telegram.service.impl.AccountUpdateFailure;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.shared.crypto.CryptoTool;
+import org.gnori.shared.flow.Empty;
+import org.gnori.shared.flow.Result;
 import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
@@ -19,7 +21,6 @@ import java.util.Optional;
 
 import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
-import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForAfterEmptyKeyChangeKeyForMailMessage;
 
 @Component
 @RequiredArgsConstructor
@@ -34,25 +35,39 @@ public class ChangingKeyStateCommand implements StateCommand {
 
         final long chatId = account.getChatId();
 
-        final String textForOld = Optional.ofNullable(update.getMessage().getText())
-                .map(cryptoTool::encrypt)
-                .map(encryptResult -> encryptResult
-                        .doIfSuccess(encryptedKey -> accountService.updateKeyForMailById(chatId, encryptedKey))
-                        .fold(
-                                success -> prepareSuccessTextForChangingLastMessage(),
-                                failure -> prepareTextForAfterEmptyKeyChangeKeyForMailMessage()
-                        )
-                )
-                .orElseGet(TextPreparer::prepareTextForAfterEmptyKeyChangeKeyForMailMessage);
+        final String textForOld = updateAccount(account, update)
+                .fold(
+                        success -> prepareSuccessTextForChangingLastMessage(),
+                        failure -> prepareTextForAfterEmptyKeyChangeKeyForMailMessage()
+                );
 
         final int lastMessageId = update.getMessage().getMessageId() - 1;
-        accountService.updateStateById(chatId, State.DEFAULT);
+
+        account.setState(State.DEFAULT);
+        accountService.saveAccount(account);
+
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
         final String text = prepareTextForProfileMessage(new AccountDto(account));
         final List<List<String>> newCallbackData = prepareCallbackDataForProfileMessage();
 
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
+    }
+
+    private Result<Empty, AccountUpdateFailure> updateAccount(Account account, Update update) {
+
+        return Optional.ofNullable(update.getMessage().getText())
+                .map(cryptoTool::encrypt)
+                .map(encryptResult -> encryptResult
+                        .doIfSuccess(encryptedKey -> {
+
+                            account.setKeyForMail(encryptedKey);
+                            accountService.saveAccount(account);
+                        })
+                        .mapSuccess(encryptedKey -> Empty.INSTANCE)
+                        .mapFailure(failure -> AccountUpdateFailure.BAD_ENCRYPT)
+                )
+                .orElseGet(() -> Result.failure(AccountUpdateFailure.BAD_ENCRYPT));
     }
 
     @Override

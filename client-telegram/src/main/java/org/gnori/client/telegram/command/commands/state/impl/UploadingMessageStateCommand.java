@@ -5,12 +5,15 @@ import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
+import org.gnori.client.telegram.utils.command.UtilsCommandFailure;
 import org.gnori.data.model.FileData;
 import org.gnori.data.model.FileType;
+import org.gnori.data.model.Message;
+import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
-import org.gnori.shared.service.loader.file.FileFailure;
 import org.gnori.shared.service.loader.file.FileLoader;
 import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,6 +34,7 @@ import java.util.List;
 import static org.gnori.client.telegram.utils.FileDataParser.*;
 import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
+import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForAfterBadDownloadMessage;
 
 @Log4j2
 @Component
@@ -44,40 +49,21 @@ public class UploadingMessageStateCommand implements StateCommand {
 
     @Override
     public void execute(Account account, Update update) {
-        var chatId = update.getMessage().getChatId();
-        var lastMessageId = update.getMessage().getMessageId() - 1;
-        var newCallbackData = prepareCallbackDataForCreateMailingMessage();
-        var message = messageRepositoryService.getMessage(chatId);
-        var textForOld = prepareTextForAfterBadDownloadMessage();
 
-        if (update.getMessage().hasDocument()) {
-            final Document newDocument = update.getMessage().getDocument();
-            final String contentText = getContentText(chatId, newDocument);
-            final String titleForMessage = getTitleFromContent(contentText);
-            final String textForMessage = getTextFromContent(contentText);
-            final List<String> recipients = getRecipientsFromContent(contentText);
-            final Integer countForRecipient = getCountForRecipientFromContent(contentText);
-            final String sentDateRaw = getSentDateFromContent(contentText);
-            // todo: refactor on copy
-//            message.setCountForRecipient(countForRecipient);
-//            message.setRecipients(recipients);
-//            message.setTitle(titleForMessage);
-//            message.setText(textForMessage);
-            UtilsCommand.parseLocalDate(sentDateRaw)
-                    .doIfSuccess(sentDate -> {
-                        if (sentDate.isAfter(LocalDate.now())) {
-//                            message.setSentDate(newSentDate); // todo: refactor on copy
-                        }
-                    });
+        final long chatId = account.getChatId();
+        var textForOld = updateMessage(chatId, update)
+                .fold(
+                        success -> prepareTextForAfterSuccessDownloadMessage(),
+                        failure -> prepareTextForAfterBadDownloadMessage()
+                );
 
-            messageRepositoryService.putMessage(chatId, message);
-            textForOld = prepareTextForAfterSuccessDownloadMessage();
-        }
-
-        final String text = prepareTextForPreviewMessage(message);
-
+        final int lastMessageId = update.getMessage().getMessageId() - 1;
         modifyDataBaseService.updateStateById(chatId, State.DEFAULT);
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
+
+        final Message message = messageRepositoryService.getMessage(chatId);
+        final List<List<String>> newCallbackData = prepareCallbackDataForCreateMailingMessage();
+        final String text = prepareTextForPreviewMessage(message);
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
     }
 
@@ -86,29 +72,67 @@ public class UploadingMessageStateCommand implements StateCommand {
         return StateCommandType.UPLOADING_MESSAGE;
     }
 
-    private String getContentText(Long id, Document doc) {
+    private Result<Empty, MessageUpdateFailure> updateMessage(Long chatId, Update update) {
 
-        return fileLoader.loadFile(new FileData(String.valueOf(id), doc.getFileName(), FileType.DOCUMENT))
-                .mapSuccess(FileSystemResource::getFile)
-                .flatMapSuccess(file -> {
+        return extractMessageContent(update)
+                .doIfSuccess(messageContent -> {
+                    var message = messageRepositoryService.getMessage(chatId);
 
-                    try {
+                    final String titleForMessage = getTitleFromContent(messageContent);
+                    final String textForMessage = getTextFromContent(messageContent);
+                    final List<String> recipients = getRecipientsFromContent(messageContent);
+                    final Integer countForRecipient = getCountForRecipientFromContent(messageContent);
+                    final LocalDate sentDate = UtilsCommand.parseLocalDate(getSentDateFromContent(messageContent))
+                            .flatMapSuccess(parsedSentDate -> {
+                                if (parsedSentDate.isAfter(LocalDate.now())) {
+                                    return Result.success(parsedSentDate);
+                                }
+                                return Result.failure(UtilsCommandFailure.DATE_TIME_PARSE_EXCEPTION);
+                            })
+                            .fold(success -> success, failure -> null);
 
-                        return Result.success(Files.readString(file.toPath(), StandardCharsets.UTF_8));
-                    } catch (IOException e) {
-
-                        return Result.failure(FileFailure.IO_FAILURE);
-                    } finally {
-
-                        boolean isDeleted = file.delete();
-                        if (!isDeleted) {
-                            log.error("File: {} not removed", file.toURI());
-                        }
-                    }
+                    messageRepositoryService.putMessage(chatId, message.with(titleForMessage, textForMessage, recipients, countForRecipient, sentDate));
                 })
-                .fold(
-                        successText -> successText,
-                        failure -> ""
-                );
+                .mapSuccess(messageContent -> Empty.INSTANCE);
+    }
+
+
+    private Result<String, MessageUpdateFailure> extractMessageContent(Update update) {
+
+        return extractDocumentFileData(update)
+                .flatMapSuccess(fileData -> fileLoader.loadFile(fileData).mapFailure(failure -> MessageUpdateFailure.INCORRECT_INPUT_TYPE))
+                .mapSuccess(FileSystemResource::getFile)
+                .flatMapSuccess(this::readFile)
+                .mapFailure(failure -> MessageUpdateFailure.INCORRECT_INPUT_TYPE);
+    }
+
+    private Result<String, MessageUpdateFailure> readFile(File file) {
+
+        try {
+
+            return Result.success(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+
+            return Result.failure(MessageUpdateFailure.INTERNAL_ERROR);
+        } finally {
+
+            boolean isDeleted = file.delete();
+            if (!isDeleted) {
+                log.error("File: {} not removed", file.toURI());
+            }
+        }
+    }
+
+    private Result<FileData, MessageUpdateFailure> extractDocumentFileData(Update update) {
+
+        if (update.getMessage().hasDocument()) {
+
+            final Document newDocument = update.getMessage().getDocument();
+            final FileData fileData = new FileData(newDocument.getFileId(), newDocument.getFileName(), FileType.DOCUMENT);
+
+            return Result.success(fileData);
+        }
+
+        return Result.failure(MessageUpdateFailure.INCORRECT_INPUT_TYPE);
     }
 }

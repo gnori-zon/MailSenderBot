@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
 import org.gnori.data.model.Message;
+import org.gnori.shared.flow.Empty;
+import org.gnori.shared.flow.Result;
 import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
@@ -16,8 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
-import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareSuccessTextForChangingLastMessage;
-import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForPreviewMessage;
+import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
 
 @Component
 @RequiredArgsConstructor
@@ -31,21 +32,32 @@ public class ChangingMessageItemTitleStateCommand implements StateCommand {
     public void execute(Account account, Update update) {
 
         final long chatId = account.getChatId();
-        final String newTitle = update.getMessage().getText();
-        final String textForOld = prepareSuccessTextForChangingLastMessage();
+        final String textForOld = updateMessage(chatId, update)
+                .fold(
+                        success -> prepareSuccessTextForChangingLastMessage(),
+                        failure -> prepareFailureTextIncorrectTypeForChangingLastMessage()
+                );
 
-        final Message message = messageRepositoryService.getMessage(chatId);
-//        message.setTitle(newTitle); // todo: refactor on copy
-        messageRepositoryService.putMessage(chatId, message);
+        accountService.updateStateById(chatId, State.DEFAULT);
 
         final int lastMessageId = update.getMessage().getMessageId() - 1;
-        accountService.updateStateById(chatId, State.DEFAULT);
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
+        final Message message = messageRepositoryService.getMessage(chatId);
         final String text = prepareTextForPreviewMessage(message);
         final List<List<String>> newCallbackData = prepareCallbackDataForCreateMailingMessage();
 
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
+    }
+
+    private Result<Object, Object> updateMessage(long chatId, Update update) {
+
+        final String newTitle = update.getMessage().getText();
+
+        final Message message = messageRepositoryService.getMessage(chatId);
+        messageRepositoryService.putMessage(chatId, message.withTitle(newTitle));
+
+        return Result.success(Empty.INSTANCE);
     }
 
     @Override
