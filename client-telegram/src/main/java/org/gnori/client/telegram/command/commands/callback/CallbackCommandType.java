@@ -25,12 +25,23 @@ public enum CallbackCommandType {
     CHANGE_MESSAGE_ITEM_SENT_DATE,
     SEND_ANONYMOUSLY,
     SEND_CURRENT_MAIL,
+    BACK,
     UNDEFINED;
+
+    public static final  String DATA_DELIMITER = "#";
 
     public static CallbackCommandType of(CallbackQuery callbackQuery) {
 
         return Optional.of(callbackQuery.getData())
                 .map(CallbackCommandType::valueOf)
                 .orElse(UNDEFINED);
+    }
+
+    public static boolean isBackCommand(Update update) {
+
+        return Optional.ofNullable(update.getCallbackQuery())
+                .map(CallbackQuery::getData)
+                .map(callbackData -> BACK.name().equals(callbackData))
+                .orElse(false);
     }
 }

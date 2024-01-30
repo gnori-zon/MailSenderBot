@@ -11,10 +11,12 @@ import org.gnori.send.mail.worker.service.mail.task.listener.MailTaskListener;
 import org.gnori.send.mail.worker.utils.DefaultEmailData;
 import org.gnori.send.mail.worker.utils.LoginAuthenticator;
 import org.gnori.send.mail.worker.utils.MailUtils;
+import org.gnori.shared.crypto.CryptoTool;
 import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
-import org.gnori.shared.crypto.CryptoTool;
-import org.gnori.store.domain.service.ModifyDataBaseService;
+import org.gnori.store.domain.service.account.AccountService;
+import org.gnori.store.domain.service.mailing.MailingHistoryService;
+import org.gnori.store.domain.service.messagesentrecord.MessageSentRecordService;
 import org.gnori.store.entity.MessageSentRecord;
 import org.gnori.store.entity.enums.StateMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -30,7 +32,9 @@ public class MailTaskListenerImpl implements MailTaskListener {
 
     private final MailSender mailSender;
     private final DefaultEmailData defaultEmailData;
-    private final ModifyDataBaseService modifyDataBaseService;
+    private final MailingHistoryService mailingHistoryService;
+    private final MessageSentRecordService messageSentRecordService;
+    private final AccountService accountService;
     private final CryptoTool cryptoTool;
 
     @RabbitListener(queues = "${spring.rabbitmq.queue-name}")
@@ -40,10 +44,10 @@ public class MailTaskListenerImpl implements MailTaskListener {
 
         send(message)
                 .doIfSuccess(empty -> addMessageSentRecord(message))
-                .doIfSuccess(empty -> modifyDataBaseService.updateStateMessageByAccountId(message.chatId(), StateMessage.SUCCESS))
+                .doIfSuccess(empty -> mailingHistoryService.updateStateMessageByAccountId(message.accountId(), StateMessage.SUCCESS))
                 .doIfFailure(failure -> {
                     log.error("MailTaskListener: {}", failure.name());
-                    modifyDataBaseService.updateStateMessageByAccountId(message.chatId(), StateMessage.FAIL);
+                    mailingHistoryService.updateStateMessageByAccountId(message.accountId(), StateMessage.FAIL);
                 });
     }
 
@@ -75,7 +79,7 @@ public class MailTaskListenerImpl implements MailTaskListener {
     @LogExecutionTime
     private Result<Empty, MailFailure> sendWithUserMail(Message message) {
 
-        return modifyDataBaseService.findAccountById(message.chatId())
+        return accountService.findAccountById(message.accountId())
                 .map(account -> {
 
                     final String username = account.getEmail();
@@ -94,7 +98,7 @@ public class MailTaskListenerImpl implements MailTaskListener {
                 .countMessages(countWillSendMessages(message))
                 .build();
 
-        modifyDataBaseService.addMessageSentRecord(message.chatId(), messageSentRecord);
+        messageSentRecordService.addMessageSentRecordByAccountId(message.accountId(), messageSentRecord);
     }
 
     private int countWillSendMessages(Message message) {

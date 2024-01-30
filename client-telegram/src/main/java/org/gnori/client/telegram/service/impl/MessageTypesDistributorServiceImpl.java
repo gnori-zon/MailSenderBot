@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.command.CommandContainers;
 import org.gnori.client.telegram.command.CommandContainerType;
+import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.AccountRegistrator;
 import org.gnori.client.telegram.service.MessageTypesDistributorService;
 import org.gnori.store.entity.Account;
@@ -50,6 +51,10 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
             @NonNull Account account,
             @NonNull Update update
     ) {
+
+        if (CallbackCommandType.isBackCommand(update)) {
+            return CommandContainerType.CALLBACK;
+        }
 
         if (!State.DEFAULT.equals(account.getState())) {
             return CommandContainerType.STATE;
