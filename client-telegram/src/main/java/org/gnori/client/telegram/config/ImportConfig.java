@@ -7,6 +7,4 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({EnableStore.class, EnableShared.class})
-public class ImportConfig {
-
-}
+public class ImportConfig {}

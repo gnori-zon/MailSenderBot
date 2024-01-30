@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
 import org.gnori.data.model.Message;
+import org.gnori.data.model.SendMode;
 import org.gnori.store.domain.service.mailing.MailingHistoryService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.StateMessage;
@@ -42,13 +43,10 @@ public class SendCurrentMailCallbackCommand implements CallbackCommand {
 
         sendBotMessageService.editMessage(chatId, messageId, textForWaiting, Collections.emptyList(), false);
         final Message messageToSend = messageRepository.getMessage(chatId);
-        // todo: refactor on copy
-//        messageToSend.setChatId(chatId);
-//        messageToSend.setSendMode(SendMode.CURRENT_MAIL);
         final List<List<String>> newCallbackData = prepareCallbackDataForStartMessage();
         final String text = prepareTextForSendCurrentAndAnonymouslyMessage();
 
-        rabbitTemplate.convertAndSend(exchangeName, null, messageToSend);
+        rabbitTemplate.convertAndSend(exchangeName, null, messageToSend.withSendMode(SendMode.CURRENT_MAIL));
         messageRepository.removeMessage(chatId);
         mailingHistoryService.updateStateMessageByAccountId(chatId, StateMessage.QUEUE);
 

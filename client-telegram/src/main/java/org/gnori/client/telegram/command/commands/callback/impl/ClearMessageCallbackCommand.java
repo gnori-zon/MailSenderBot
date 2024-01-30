@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.MessageRepositoryService;
+import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;

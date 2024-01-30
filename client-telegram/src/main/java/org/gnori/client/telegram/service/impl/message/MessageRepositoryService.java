@@ -17,7 +17,7 @@ public class MessageRepositoryService {
 
         return messages.getOrDefault(
                 accountId,
-                new Message(accountId, SendMode.ANONYMOUSLY, null, null, null, Collections.emptyList(), 1, null)
+                emptyMessageOf(accountId)
         );
     }
 
@@ -27,5 +27,19 @@ public class MessageRepositoryService {
 
     public boolean removeMessage(Long id){
         return messages.remove(id) != null;
+    }
+
+    private Message emptyMessageOf(Long accountId) {
+
+        return new Message(
+                accountId,
+                SendMode.ANONYMOUSLY,
+                null,
+                null,
+                null,
+                Collections.emptyList(),
+                1,
+                null
+        );
     }
 }
