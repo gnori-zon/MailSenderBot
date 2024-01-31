@@ -2,13 +2,18 @@ package org.gnori.client.telegram.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
 import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
 import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
 import org.gnori.client.telegram.utils.command.UtilsCommandFailure;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.data.model.FileData;
 import org.gnori.data.model.FileType;
 import org.gnori.data.model.Message;
@@ -32,9 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.gnori.client.telegram.utils.FileDataParser.*;
-import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
-import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForAfterBadDownloadMessage;
 
 @Log4j2
 @Component
@@ -42,6 +45,7 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 public class UploadingMessageStateCommand implements StateCommand {
 
 
+    private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
     private final AccountService modifyDataBaseService;
     private final MessageRepositoryService messageRepositoryService;
@@ -62,7 +66,7 @@ public class UploadingMessageStateCommand implements StateCommand {
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
         final Message message = messageRepositoryService.getMessage(chatId);
-        final List<List<String>> newCallbackData = prepareCallbackDataForCreateMailingMessage();
+        final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
         final String text = prepareTextForPreviewMessage(message);
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
     }
@@ -70,6 +74,16 @@ public class UploadingMessageStateCommand implements StateCommand {
     @Override
     public StateCommandType getSupportedType() {
         return StateCommandType.UPLOADING_MESSAGE;
+    }
+
+    private CallbackButtonDataPreparerParam callbackButtonDataPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_ACTION_MAILING_ITEM,
+                MenuStepCommandType.CHANGE_MESSAGE_ITEM,
+                true,
+                false
+        );
     }
 
     private Result<Empty, MessageUpdateFailure> updateMessage(Long chatId, Update update) {

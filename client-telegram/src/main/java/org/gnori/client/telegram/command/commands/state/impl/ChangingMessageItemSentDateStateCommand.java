@@ -1,12 +1,17 @@
 package org.gnori.client.telegram.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
 import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
 import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.data.model.Message;
 import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
@@ -21,16 +26,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForCreateMailingMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
 
 @Component
 @RequiredArgsConstructor
 public class ChangingMessageItemSentDateStateCommand implements StateCommand {
 
+    private final AccountService accountService;
     private final SendBotMessageService sendBotMessageService;
     private final MessageRepositoryService messageRepositoryService;
-    private final AccountService accountService;
+    private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
     public void execute(Account account, Update update) {
@@ -50,7 +55,7 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
 
         final Message message = messageRepositoryService.getMessage(chatId);
         final String text = prepareTextForPreviewMessage(message);
-        final List<List<String>> newCallbackData = prepareCallbackDataForCreateMailingMessage();
+        final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
     }
@@ -58,6 +63,17 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
     @Override
     public StateCommandType getSupportedType() {
         return StateCommandType.CHANGING_MESSAGE_ITEM_SENT_DATE;
+    }
+
+
+    private CallbackButtonDataPreparerParam callbackButtonDataPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_CHANGE_MESSAGE_ITEM,
+                MenuStepCommandType.CHANGE_MESSAGE_ITEM,
+                true,
+                false
+        );
     }
 
     private Result<Empty, MessageUpdateFailure> updateMessage(long chatId, Update update) {

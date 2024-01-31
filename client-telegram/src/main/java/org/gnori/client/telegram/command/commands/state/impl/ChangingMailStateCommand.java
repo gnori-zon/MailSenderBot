@@ -1,11 +1,16 @@
 package org.gnori.client.telegram.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
 import org.gnori.client.telegram.service.impl.AccountUpdateFailure;
+import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
@@ -26,6 +31,7 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
 @RequiredArgsConstructor
 public class ChangingMailStateCommand implements StateCommand {
 
+    private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
     private final AccountService accountService;
 
@@ -51,7 +57,7 @@ public class ChangingMailStateCommand implements StateCommand {
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOldMessage, Collections.emptyList(), false);
 
         final String text = prepareTextForProfileMessage(new AccountDto(account));
-        final List<List<String>> newCallbackData = prepareCallbackDataForProfileMessage();
+        final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(successUpdateMailCallbackButtonPreparerParamOf());
 
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
     }
@@ -61,6 +67,15 @@ public class ChangingMailStateCommand implements StateCommand {
         return StateCommandType.CHANGING_MAIL;
     }
 
+    private CallbackButtonDataPreparerParam successUpdateMailCallbackButtonPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_PROFILE_INFO_ITEM,
+                MenuStepCommandType.SETUP_SETTINGS_ITEM,
+                true,
+                false
+        );
+    }
 
     private Result<String, AccountUpdateFailure> extractText(Update update) {
 

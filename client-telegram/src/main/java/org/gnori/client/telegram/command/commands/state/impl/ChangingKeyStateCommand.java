@@ -1,10 +1,15 @@
 package org.gnori.client.telegram.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
 import org.gnori.client.telegram.service.impl.AccountUpdateFailure;
+import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.shared.crypto.CryptoTool;
 import org.gnori.shared.flow.Empty;
@@ -19,13 +24,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForProfileMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
 
 @Component
 @RequiredArgsConstructor
 public class ChangingKeyStateCommand implements StateCommand {
 
+    private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
     private final AccountService accountService;
     private final CryptoTool cryptoTool;
@@ -49,9 +54,24 @@ public class ChangingKeyStateCommand implements StateCommand {
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
         final String text = prepareTextForProfileMessage(new AccountDto(account));
-        final List<List<String>> newCallbackData = prepareCallbackDataForProfileMessage();
+        final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(successUpdateKeyCallbackButtonPreparerParamOf());
 
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
+    }
+
+    @Override
+    public StateCommandType getSupportedType() {
+        return StateCommandType.CHANGING_KEY;
+    }
+
+    private CallbackButtonDataPreparerParam successUpdateKeyCallbackButtonPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_PROFILE_INFO_ITEM,
+                MenuStepCommandType.SETUP_SETTINGS_ITEM,
+                true,
+                false
+        );
     }
 
     private Result<Empty, AccountUpdateFailure> updateAccount(Account account, Update update) {
@@ -68,10 +88,5 @@ public class ChangingKeyStateCommand implements StateCommand {
                         .mapFailure(failure -> AccountUpdateFailure.BAD_ENCRYPT)
                 )
                 .orElseGet(() -> Result.failure(AccountUpdateFailure.BAD_ENCRYPT));
-    }
-
-    @Override
-    public StateCommandType getSupportedType() {
-        return StateCommandType.CHANGING_KEY;
     }
 }

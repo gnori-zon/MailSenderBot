@@ -2,6 +2,10 @@ package org.gnori.client.telegram.command.commands;
 
 import lombok.AllArgsConstructor;
 import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -9,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForStartMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForLastForUnknownMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForStartMessage;
 
@@ -18,6 +21,7 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 public class UndefinedCommand {
 
     private final SendBotMessageService sendBotMessageService;
+    private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     public void execute(Account account, Update update) {
 
@@ -28,8 +32,16 @@ public class UndefinedCommand {
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
         final String text = prepareTextForStartMessage();
-        final List<List<String>> newCallbackData = prepareCallbackDataForStartMessage();
+        final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, false);
+    }
+
+    private CallbackButtonDataPreparerParam callbackButtonDataPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_START_MENU_ITEM,
+                false
+        );
     }
 }

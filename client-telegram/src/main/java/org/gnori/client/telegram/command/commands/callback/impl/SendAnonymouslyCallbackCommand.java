@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
 import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.data.model.Message;
 import org.gnori.data.model.SendMode;
 import org.gnori.store.domain.service.mailing.MailingHistoryService;
@@ -18,7 +22,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Collections;
 import java.util.List;
 
-import static org.gnori.client.telegram.utils.preparers.CallbackDataPreparer.prepareCallbackDataForStartMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForSendCurrentAndAnonymouslyMessage;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForWaitingForConcreteSendingMessage;
 
@@ -29,10 +32,11 @@ public class SendAnonymouslyCallbackCommand implements CallbackCommand {
     @Value("${spring.rabbitmq.exchange-name}")
     private String exchangeName;
 
+    private final RabbitTemplate rabbitTemplate;
     private final SendBotMessageService sendBotMessageService;
     private final MailingHistoryService mailingHistoryService;
     private final MessageRepositoryService messageRepositoryService;
-    private final RabbitTemplate rabbitTemplate;
+    private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
     public void execute(Account account, Update update) {
@@ -44,7 +48,7 @@ public class SendAnonymouslyCallbackCommand implements CallbackCommand {
         sendBotMessageService.editMessage(chatId, messageId, textForWaiting, Collections.emptyList(), false);
 
 
-        final List<List<String>> newCallbackData = prepareCallbackDataForStartMessage();
+        final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
         final String text = prepareTextForSendCurrentAndAnonymouslyMessage();
 
         final Message messageToSend = messageRepositoryService.getMessage(chatId);
@@ -59,5 +63,13 @@ public class SendAnonymouslyCallbackCommand implements CallbackCommand {
     @Override
     public CallbackCommandType getSupportedType() {
         return CallbackCommandType.SEND_ANONYMOUSLY;
+    }
+
+    private CallbackButtonDataPreparerParam callbackButtonDataPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_START_MENU_ITEM,
+                false
+        );
     }
 }
