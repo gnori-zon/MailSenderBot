@@ -1,11 +1,14 @@
 package org.gnori.client.telegram.utils.command;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.gnori.shared.flow.Result;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UtilsCommand {
 
     private static final String DATE_TIME_FORMAT_PATTER = "yyyy-MM-dd HH:mm:ss";

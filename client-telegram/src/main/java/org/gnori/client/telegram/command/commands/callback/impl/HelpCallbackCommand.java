@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.impl.bot.model.UrlButtonData;
+import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.utils.preparers.button.data.url.UrlButtonDataPresetType;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,13 +15,13 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareTextForHelpMessage;
-import static org.gnori.client.telegram.utils.preparers.UrlDatePreparer.prepareUrlsForHelpMessage;
 
 @Component
 @RequiredArgsConstructor
 public class HelpCallbackCommand implements CallbackCommand {
 
     private final SendBotMessageService sendBotMessageService;
+    private final ButtonDataPreparer<UrlButtonData, UrlButtonDataPresetType> urlButtonDataPreparer;
 
     @Override
     public void execute(Account account, Update update) {
@@ -26,7 +29,7 @@ public class HelpCallbackCommand implements CallbackCommand {
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = prepareTextForHelpMessage();
-        final List<List<String>> urlsData = prepareUrlsForHelpMessage();
+        final List<UrlButtonData> urlButtonDataList = urlButtonDataPreparer.prepare(UrlButtonDataPresetType.HELP_MAIL_CONFIGURATION);
 
         sendBotMessageService.editMessage(chatId, messageId, text, Collections.emptyList(), urlsData, true);
     }
@@ -35,4 +38,6 @@ public class HelpCallbackCommand implements CallbackCommand {
     public CallbackCommandType getSupportedType() {
         return CallbackCommandType.HELP;
     }
+
+
 }
