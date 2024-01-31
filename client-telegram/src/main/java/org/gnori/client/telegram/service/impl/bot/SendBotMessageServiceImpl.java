@@ -1,11 +1,14 @@
-package org.gnori.client.telegram.service.impl;
+package org.gnori.client.telegram.service.impl.bot;
 
 import org.gnori.client.telegram.controller.TelegramBot;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,10 +19,11 @@ import org.gnori.client.telegram.service.SendBotMessageService;
 /**
  * Implementation service {@link SendBotMessageService}
  */
+
 @Log4j2
 @Service
 public class SendBotMessageServiceImpl implements SendBotMessageService {
-    static final String ERROR_TEXT = "Error occurred: ";
+    static final String ERROR_TEXT = "Error occurred: {}";
     private TelegramBot telegramBot;
 
     @Override
@@ -28,26 +32,33 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
     }
 
     @Override
-    public void sendMessage(long chatId, String textToSend) {
-        SendMessage sendMessage = new SendMessage();
+    public void sendMessage(
+            long chatId,
+            String textToSend
+    ) {
+
+        final SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(chatId));
         sendMessage.setText(textToSend);
         sendMessage.setParseMode("Markdown");
 
-        executeMessage(sendMessage);
+        execute(sendMessage);
     }
 
     @Override
-    public void executeEditMessage(Long chatId,
-                                   Integer messageId,
-                                   String textForMessage,
-                                   List<List<String>> newCallbackData,
-                                   Boolean witBackButton) {
+    public void editMessage(
+            Long chatId,
+            Integer messageId,
+            String textForMessage,
+            List<List<String>> newCallbackData,
+            Boolean witBackButton
+    ) {
+
         var markupInline = new InlineKeyboardMarkup();
         markupInline.setKeyboard(Collections.emptyList());
-        if(!newCallbackData.isEmpty()){
+        if (!newCallbackData.isEmpty()) {
             markupInline = newInlineKeyboardMarkupColumn(newCallbackData, witBackButton);
-        }else if(witBackButton){
+        } else if (witBackButton) {
             markupInline = new InlineKeyboardMarkup();
             List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
             rowsInline.add(createBackInlineKeyboardButton());
@@ -62,17 +73,17 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
                 .replyMarkup(markupInline)
                 .build();
 
-        executeMessage(message);
+        execute(message);
 
     }
 
     @Override
-    public void executeEditMessage(Long chatId,
-                                   Integer messageId,
-                                   String textForMessage,
-                                   List<List<String>> newCallbackData,
-                                   List<List<String>> urls,
-                                   Boolean witBackButton) {
+    public void editMessage(Long chatId,
+                            Integer messageId,
+                            String textForMessage,
+                            List<List<String>> newCallbackData,
+                            List<List<String>> urls,
+                            Boolean witBackButton) {
         var markupInline = newInlineKeyboardMarkupColumn(newCallbackData, urls, witBackButton);
 
         var message = EditMessageText.builder()
@@ -83,33 +94,34 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
                 .replyMarkup(markupInline)
                 .build();
 
-        executeMessage(message);
+        execute(message);
     }
 
     @Override
-    public void createChangeableMessage(Long chatId,
-                                        String textForMessage,
-                                        List<List<String>> newCallbackData,
-                                        Boolean witBackButton) {
-        var markupInline = new InlineKeyboardMarkup();
-        if(!newCallbackData.isEmpty()){
-            markupInline = newInlineKeyboardMarkupColumn(newCallbackData, witBackButton);
-        }
+    public void createChangeableMessage(
+            Long chatId,
+            String textForMessage,
+            List<List<String>> newCallbackData,
+            Boolean witBackButton
+    ) {
 
-        var message = SendMessage.builder()
+        final SendMessage message = SendMessage.builder()
                 .chatId(chatId)
                 .text(textForMessage)
                 .parseMode("Markdown")
-                .replyMarkup(markupInline)
                 .build();
 
-        executeMessage(message);
+        if (!newCallbackData.isEmpty()) {
+            message.setReplyMarkup(newInlineKeyboardMarkupColumn(newCallbackData, witBackButton));
+        }
+
+        execute(message);
     }
 
-    private InlineKeyboardMarkup newInlineKeyboardMarkupColumn(List<List<String>> newCallbackData,Boolean witBackButton) {
+    private InlineKeyboardMarkup newInlineKeyboardMarkupColumn(List<List<String>> newCallbackData, Boolean witBackButton) {
         var markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for(var callbackData : newCallbackData.get(0)){
+        for (var callbackData : newCallbackData.get(0)) {
             var index = newCallbackData.get(0).indexOf(callbackData);
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             var buttonIntermediate = new InlineKeyboardButton();
@@ -118,18 +130,19 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
             rowInline.add(buttonIntermediate);
             rowsInline.add(rowInline);
         }
-        if(witBackButton){
+        if (witBackButton) {
             rowsInline.add(createBackInlineKeyboardButton());
         }
         markupInline.setKeyboard(rowsInline);
         return markupInline;
     }
+
     private InlineKeyboardMarkup newInlineKeyboardMarkupColumn(List<List<String>> newCallbackData,
                                                                List<List<String>> urls,
                                                                Boolean witBackButton) {
         var markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        if(!newCallbackData.isEmpty()) {
+        if (!newCallbackData.isEmpty()) {
             for (var callbackData : newCallbackData.get(0)) {
                 var index = newCallbackData.get(0).indexOf(callbackData);
                 List<InlineKeyboardButton> rowInline = new ArrayList<>();
@@ -140,7 +153,7 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
                 rowsInline.add(rowInline);
             }
         }
-        if(!urls.isEmpty()) {
+        if (!urls.isEmpty()) {
             for (var url : urls.get(0)) {
                 var index = urls.get(0).indexOf(url);
                 List<InlineKeyboardButton> rowInline = new ArrayList<>();
@@ -152,27 +165,11 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
             }
         }
 
-        if(witBackButton){
+        if (witBackButton) {
             rowsInline.add(createBackInlineKeyboardButton());
         }
         markupInline.setKeyboard(rowsInline);
         return markupInline;
-    }
-
-
-    private void executeMessage(SendMessage message) {
-        try {
-            telegramBot.execute(message);
-        } catch (TelegramApiException e) {
-            log.error(ERROR_TEXT + e.getMessage());
-        }
-    }
-    private void executeMessage(EditMessageText message) {
-        try {
-            telegramBot.execute(message);
-        } catch (TelegramApiException e) {
-            log.error(ERROR_TEXT + e.getMessage());
-        }
     }
 
     private List<InlineKeyboardButton> createBackInlineKeyboardButton() {
@@ -184,6 +181,12 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
         return rowInline;
     }
 
+    private void execute(BotApiMethod<?> botApiMethod) {
 
-
+        try {
+            telegramBot.execute(botApiMethod);
+        } catch (TelegramApiException e) {
+            log.error(ERROR_TEXT, e.getMessage());
+        }
+    }
 }
