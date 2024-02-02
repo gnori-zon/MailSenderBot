@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
@@ -24,7 +24,7 @@ public class CreateMailingCallbackCommand implements CallbackCommand {
 
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
-    private final MessageRepositoryService messageRepository;
+    private final MessageStorageImpl messageRepository;
 
     @Override
     public void execute(Account account, Update update) {
@@ -34,7 +34,7 @@ public class CreateMailingCallbackCommand implements CallbackCommand {
         final String text = prepareTextForPreviewMessage();
         final List<CallbackButtonData> callbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
-        messageRepository.removeMessage(chatId);
+        messageRepository.clearMessage(account.getId());
         sendBotMessageService.editMessage(chatId, messageId, text, newCallbackData, true);
     }
 

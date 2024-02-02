@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.impl.bot.model;
+package org.gnori.client.telegram.service.bot.model;
 
 public record UrlButtonData(
         String text,

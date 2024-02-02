@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.impl;
+package org.gnori.client.telegram.service;
 
 public enum AccountUpdateFailure {
     BAD_ENCRYPT,

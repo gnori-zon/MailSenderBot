@@ -2,7 +2,7 @@ package org.gnori.client.telegram.controller.update;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.gnori.client.telegram.service.MessageTypesDistributorService;
+import org.gnori.client.telegram.service.distribute.MessageTypesDistributorService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

@@ -3,7 +3,7 @@ package org.gnori.client.telegram.command.commands.callback.impl;
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
 import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;

@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.impl;
+package org.gnori.client.telegram.service.distribute;
 
 
 import lombok.NonNull;
@@ -7,8 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.command.CommandContainers;
 import org.gnori.client.telegram.command.CommandContainerType;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
-import org.gnori.client.telegram.service.AccountRegistrator;
-import org.gnori.client.telegram.service.MessageTypesDistributorService;
+import org.gnori.client.telegram.service.registrator.AccountRegistrator;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.stereotype.Service;

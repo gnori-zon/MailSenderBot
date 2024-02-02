@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
@@ -26,7 +26,7 @@ public class ClearMessageCallbackCommand implements CallbackCommand {
 
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
-    private final MessageRepositoryService messageRepositoryService;
+    private final MessageStorageImpl messageStorageImpl;
 
     @Override
     public void execute(Account account, Update update) {
@@ -37,7 +37,7 @@ public class ClearMessageCallbackCommand implements CallbackCommand {
         final String textForLatMessage = prepareSuccessTextForChangingLastMessage();
         final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
-        messageRepositoryService.removeMessage(chatId);
+        messageStorageImpl.clearMessage(account.getId());
         sendBotMessageService.editMessage(chatId, messageId, textForLatMessage, Collections.emptyList(), false);
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
     }

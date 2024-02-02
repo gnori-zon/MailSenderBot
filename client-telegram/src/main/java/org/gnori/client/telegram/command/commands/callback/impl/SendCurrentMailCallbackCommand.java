@@ -3,9 +3,9 @@ package org.gnori.client.telegram.command.commands.callback.impl;
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
@@ -35,7 +35,7 @@ public class SendCurrentMailCallbackCommand implements CallbackCommand {
     private final RabbitTemplate rabbitTemplate;
     private final SendBotMessageService sendBotMessageService;
     private final MailingHistoryService mailingHistoryService;
-    private final MessageRepositoryService messageRepository;
+    private final MessageStorageImpl messageRepository;
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
@@ -46,10 +46,10 @@ public class SendCurrentMailCallbackCommand implements CallbackCommand {
         final String textForWaiting = prepareTextForWaitingForConcreteSendingMessage();
 
         sendBotMessageService.editMessage(chatId, messageId, textForWaiting, Collections.emptyList(), false);
-        final Message messageToSend = messageRepository.getMessage(chatId);
+        final Message messageToSend = messageRepository.getMessage(account.getId());
 
         rabbitTemplate.convertAndSend(exchangeName, null, messageToSend.withSendMode(SendMode.CURRENT_MAIL));
-        messageRepository.removeMessage(chatId);
+        messageRepository.clearMessage(account.getId());
         mailingHistoryService.updateStateMessageByAccountId(chatId, StateMessage.QUEUE);
 
         final String text = prepareTextForSendCurrentAndAnonymouslyMessage();

@@ -1,8 +1,8 @@
 package org.gnori.client.telegram.command.commands;
 
 import lombok.AllArgsConstructor;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;

@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service;
+package org.gnori.client.telegram.service.registrator;
 
 import org.gnori.store.entity.Account;
 import org.telegram.telegrambots.meta.api.objects.Update;

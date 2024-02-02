@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.impl.bot;
+package org.gnori.client.telegram.service.bot;
 
 import org.gnori.client.telegram.controller.TelegramBot;
 
@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.gnori.client.telegram.service.SendBotMessageService;
 
 /**
  * Implementation service {@link SendBotMessageService}

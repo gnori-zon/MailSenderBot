@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
-import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
+import org.gnori.client.telegram.service.message.MessageUpdateFailure;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
 import org.gnori.client.telegram.utils.command.UtilsCommandFailure;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
@@ -35,7 +35,7 @@ public class ChangingMessageItemCountForRecipientStateCommand implements StateCo
 
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
-    private final MessageRepositoryService messageRepositoryService;
+    private final MessageStorageImpl messageStorageImpl;
     private final AccountService accountService;
 
     @Override
@@ -43,18 +43,18 @@ public class ChangingMessageItemCountForRecipientStateCommand implements StateCo
 
         final long chatId = account.getChatId();
 
-        final String textForOld = updateMessage(chatId, update)
+        final String textForOld = updateMessage(account.getId(), update)
                 .fold(
                         success -> prepareSuccessTextForChangingLastMessage(),
                         failure -> prepareTextForAfterNotNumberChangeCountForRecipientsMessage()
                 );
 
-        accountService.updateStateById(chatId, State.DEFAULT);
+        accountService.updateStateById(account.getId(), State.DEFAULT);
 
         final int lastMessageId = update.getMessage().getMessageId() - 1;
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
-        final Message message = messageRepositoryService.getMessage(chatId);
+        final Message message = messageStorageImpl.getMessage(account.getId());
         final String text = prepareTextForPreviewMessage(message);
         final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
@@ -76,13 +76,13 @@ public class ChangingMessageItemCountForRecipientStateCommand implements StateCo
         );
     }
 
-    private Result<Empty, MessageUpdateFailure> updateMessage(long chatId, Update update) {
+    private Result<Empty, MessageUpdateFailure> updateMessage(long accountId, Update update) {
 
         return extractNewCount(update)
                         .doIfSuccess(newCount -> {
 
-                            final Message message = messageRepositoryService.getMessage(chatId);
-                            messageRepositoryService.putMessage(chatId, message.withCountForRecipient(newCount));
+                            final Message message = messageStorageImpl.getMessage(accountId);
+                            messageStorageImpl.updateMessage(accountId, message.withCountForRecipient(newCount));
                         })
                         .mapSuccess(newCount -> Empty.INSTANCE)
                         .mapFailure(failure -> MessageUpdateFailure.INCORRECT_INPUT_TYPE);

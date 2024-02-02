@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
-import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
+import org.gnori.client.telegram.service.message.MessageUpdateFailure;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
@@ -34,7 +34,7 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
 
     private final AccountService accountService;
     private final SendBotMessageService sendBotMessageService;
-    private final MessageRepositoryService messageRepositoryService;
+    private final MessageStorageImpl messageStorageImpl;
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
@@ -42,7 +42,7 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
 
         final long chatId = account.getChatId();
 
-        final String textForOld = updateMessage(chatId, update)
+        final String textForOld = updateMessage(account.getId(), update)
                 .fold(
                         success -> prepareSuccessTextForChangingLastMessage(),
                         failure -> prepareTextInvalidDateForAfterChangeSentDateMessage()
@@ -53,7 +53,7 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
         final int lastMessageId = update.getMessage().getMessageId() - 1;
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
-        final Message message = messageRepositoryService.getMessage(chatId);
+        final Message message = messageStorageImpl.getMessage(chatId);
         final String text = prepareTextForPreviewMessage(message);
         final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
@@ -76,14 +76,14 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
         );
     }
 
-    private Result<Empty, MessageUpdateFailure> updateMessage(long chatId, Update update) {
+    private Result<Empty, MessageUpdateFailure> updateMessage(long accountId, Update update) {
 
         return extractSentDate(update)
                 .flatMapSuccess(this::validateSentDate)
                 .doIfSuccess(newSentDate -> {
 
-                    final Message message = messageRepositoryService.getMessage(chatId);
-                    messageRepositoryService.putMessage(chatId, message.withSentDate(newSentDate));
+                    final Message message = messageStorageImpl.getMessage(accountId);
+                    messageStorageImpl.updateMessage(accountId, message.withSentDate(newSentDate));
                 })
                 .mapSuccess(newSentDate -> Empty.INSTANCE);
     }

@@ -3,8 +3,8 @@ package org.gnori.client.telegram.command.commands.text.impl;
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.text.TextCommand;
 import org.gnori.client.telegram.command.commands.text.TextCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
@@ -18,7 +18,7 @@ import static org.gnori.client.telegram.utils.preparers.TextPreparer.prepareText
 
 @Component
 @RequiredArgsConstructor
-public class StartCommand implements TextCommand {
+public class StartTextCommand implements TextCommand {
 
     private final SendBotMessageService sendBotMessageService;
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;

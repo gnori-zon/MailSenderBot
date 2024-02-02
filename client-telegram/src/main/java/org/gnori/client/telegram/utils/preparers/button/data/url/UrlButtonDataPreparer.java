@@ -1,9 +1,8 @@
 package org.gnori.client.telegram.utils.preparers.button.data.url;
 
 import com.google.common.collect.ImmutableList;
-import org.gnori.client.telegram.service.impl.bot.model.UrlButtonData;
+import org.gnori.client.telegram.service.bot.model.UrlButtonData;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
-import org.gnori.client.telegram.utils.preparers.button.data.url.UrlButtonDataPresetType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

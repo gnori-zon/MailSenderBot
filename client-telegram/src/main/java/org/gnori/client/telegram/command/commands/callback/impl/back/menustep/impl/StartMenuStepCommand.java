@@ -3,7 +3,7 @@ package org.gnori.client.telegram.command.commands.callback.impl.back.menustep.i
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommand;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
-import org.gnori.client.telegram.command.commands.text.impl.StartCommand;
+import org.gnori.client.telegram.command.commands.text.impl.StartTextCommand;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class StartMenuStepCommand implements MenuStepCommand {
 
-    private final StartCommand command;
+    private final StartTextCommand command;
 
     @Override
     public void execute(Account account, Update update) {

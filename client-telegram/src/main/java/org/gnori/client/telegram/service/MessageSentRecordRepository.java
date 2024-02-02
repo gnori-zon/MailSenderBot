@@ -2,9 +2,8 @@ package org.gnori.client.telegram.service;
 
 import org.gnori.store.entity.MessageSentRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-/**
- * dao for {@link MessageSentRecord} entity.
- */
-public interface MessageSentRecordRepository extends JpaRepository<MessageSentRecord,Long> {
+@Repository
+public interface MessageSentRecordRepository extends JpaRepository<MessageSentRecord, Long> {
 }

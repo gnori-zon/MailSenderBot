@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
-import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
+import org.gnori.client.telegram.service.message.MessageUpdateFailure;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
@@ -31,14 +31,14 @@ public class ChangingMessageItemTextStateCommand implements StateCommand {
 
     private final AccountService accountService;
     private final SendBotMessageService sendBotMessageService;
-    private final MessageRepositoryService messageRepositoryService;
+    private final MessageStorageImpl messageStorageImpl;
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
     public void execute(Account account, Update update) {
 
         final long chatId = account.getChatId();
-        final String textForOld = updateMessage(chatId, update)
+        final String textForOld = updateMessage(account.getId(), update)
                 .fold(
                         success -> prepareSuccessTextForChangingLastMessage(),
                         failure -> prepareFailureTextIncorrectTypeForChangingLastMessage()
@@ -47,9 +47,9 @@ public class ChangingMessageItemTextStateCommand implements StateCommand {
         accountService.updateStateById(chatId, State.DEFAULT);
 
         final int lastMessageId = update.getMessage().getMessageId() - 1;
-        sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
+        sendBotMessageService.editMessage(account.getChatId(), lastMessageId, textForOld, Collections.emptyList(), false);
 
-        final Message message = messageRepositoryService.getMessage(chatId);
+        final Message message = messageStorageImpl.getMessage(account.getId());
         final String text = prepareTextForPreviewMessage(message);
         final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
@@ -71,12 +71,12 @@ public class ChangingMessageItemTextStateCommand implements StateCommand {
         );
     }
 
-    private Result<Empty, MessageUpdateFailure> updateMessage(long chatId, Update update) {
+    private Result<Empty, MessageUpdateFailure> updateMessage(long accountId, Update update) {
 
         final String newMessageText = update.getMessage().getText();
 
-        final Message message = messageRepositoryService.getMessage(chatId);
-        messageRepositoryService.putMessage(chatId, message.withText(newMessageText));
+        final Message message = messageStorageImpl.getMessage(accountId);
+        messageStorageImpl.updateMessage(accountId, message.withText(newMessageText));
 
         return Result.success(Empty.INSTANCE);
     }

@@ -5,10 +5,11 @@ import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.command.commands.state.StateCommand;
 import org.gnori.client.telegram.command.commands.state.StateCommandType;
-import org.gnori.client.telegram.service.SendBotMessageService;
-import org.gnori.client.telegram.service.impl.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.service.impl.message.MessageRepositoryService;
-import org.gnori.client.telegram.service.impl.message.MessageUpdateFailure;
+import org.gnori.client.telegram.service.bot.SendBotMessageService;
+import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
+import org.gnori.client.telegram.service.message.MessageStorageImpl;
+import org.gnori.client.telegram.service.message.MessageUpdateFailure;
+import org.gnori.client.telegram.utils.MessageItemTextExtractor;
 import org.gnori.client.telegram.utils.command.UtilsCommand;
 import org.gnori.client.telegram.utils.command.UtilsCommandFailure;
 import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
@@ -35,8 +36,8 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.gnori.client.telegram.utils.FileDataParser.*;
 import static org.gnori.client.telegram.utils.preparers.TextPreparer.*;
 
 @Log4j2
@@ -48,14 +49,15 @@ public class UploadingMessageStateCommand implements StateCommand {
     private final ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
     private final SendBotMessageService sendBotMessageService;
     private final AccountService modifyDataBaseService;
-    private final MessageRepositoryService messageRepositoryService;
+    private final MessageStorageImpl messageStorageImpl;
+    private final MessageItemTextExtractor messageItemTextExtractor;
     private final FileLoader fileLoader;
 
     @Override
     public void execute(Account account, Update update) {
 
         final long chatId = account.getChatId();
-        var textForOld = updateMessage(chatId, update)
+        var textForOld = updateMessage(account.getId() , update)
                 .fold(
                         success -> prepareTextForAfterSuccessDownloadMessage(),
                         failure -> prepareTextForAfterBadDownloadMessage()
@@ -65,7 +67,7 @@ public class UploadingMessageStateCommand implements StateCommand {
         modifyDataBaseService.updateStateById(chatId, State.DEFAULT);
         sendBotMessageService.editMessage(chatId, lastMessageId, textForOld, Collections.emptyList(), false);
 
-        final Message message = messageRepositoryService.getMessage(chatId);
+        final Message message = messageStorageImpl.getMessage(account.getId());
         final List<CallbackButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
         final String text = prepareTextForPreviewMessage(message);
         sendBotMessageService.createChangeableMessage(chatId, text, newCallbackData, true);
@@ -86,28 +88,50 @@ public class UploadingMessageStateCommand implements StateCommand {
         );
     }
 
-    private Result<Empty, MessageUpdateFailure> updateMessage(Long chatId, Update update) {
+    private Result<Empty, MessageUpdateFailure> updateMessage(Long accountId, Update update) {
 
         return extractMessageContent(update)
                 .doIfSuccess(messageContent -> {
-                    var message = messageRepositoryService.getMessage(chatId);
 
-                    final String titleForMessage = getTitleFromContent(messageContent);
-                    final String textForMessage = getTextFromContent(messageContent);
-                    final List<String> recipients = getRecipientsFromContent(messageContent);
-                    final Integer countForRecipient = getCountForRecipientFromContent(messageContent);
-                    final LocalDate sentDate = UtilsCommand.parseLocalDate(getSentDateFromContent(messageContent))
-                            .flatMapSuccess(parsedSentDate -> {
-                                if (parsedSentDate.isAfter(LocalDate.now())) {
-                                    return Result.success(parsedSentDate);
-                                }
-                                return Result.failure(UtilsCommandFailure.DATE_TIME_PARSE_EXCEPTION);
-                            })
-                            .fold(success -> success, failure -> null);
+                    final Message message = messageStorageImpl.getMessage(accountId);
 
-                    messageRepositoryService.putMessage(chatId, message.with(titleForMessage, textForMessage, recipients, countForRecipient, sentDate));
+                    final String titleForMessage = orElseEmpty(messageItemTextExtractor.extractTitle(messageContent));
+                    final String textForMessage = orElseEmpty(messageItemTextExtractor.extractText(messageContent));
+                    final List<String> recipients = messageItemTextExtractor.extractRecipients(messageContent);
+                    final Integer countForRecipient = orElseOne(messageItemTextExtractor.extractCountForRecipient(messageContent));
+                    final LocalDate sentDate = messageItemTextExtractor.extractSentDate(messageContent)
+                            .map(this::validateDate)
+                            .orElse(null);
+
+                    messageStorageImpl.updateMessage(accountId, message.with(titleForMessage, textForMessage, recipients, countForRecipient, sentDate));
                 })
                 .mapSuccess(messageContent -> Empty.INSTANCE);
+    }
+
+    private LocalDate validateDate(String sentDateRaw) {
+
+        return UtilsCommand.parseLocalDate(sentDateRaw)
+                .flatMapSuccess(parsedSentDate -> {
+
+                    if (parsedSentDate.isAfter(LocalDate.now())) {
+                        return Result.success(parsedSentDate);
+                    }
+
+                    return Result.failure(UtilsCommandFailure.DATE_TIME_PARSE_EXCEPTION);
+                })
+                .fold(success -> success, failure -> null);
+    }
+
+    private Integer orElseOne(Optional<Integer> optionalNumber) {
+
+        return optionalNumber
+                .orElse(1);
+    }
+
+    private String orElseEmpty(Optional<String> optionalString) {
+
+        return optionalString
+                .orElse("");
     }
 
 

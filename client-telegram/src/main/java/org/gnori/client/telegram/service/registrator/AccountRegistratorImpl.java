@@ -1,7 +1,6 @@
 package org.gnori.client.telegram.service.registrator;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.client.telegram.service.AccountRegistrator;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.gnori.store.repository.AccountRepository;
