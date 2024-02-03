@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.utils.preparers;
+package org.gnori.client.telegram.service.command.utils.preparers;
 
 import java.util.List;
 import org.gnori.data.dto.AccountDto;
@@ -9,17 +9,21 @@ import org.gnori.data.model.Message;
  * Utils for preparing text
  */
 public class TextPreparer {
-    public static String prepareTextForBeginningMessage() {
+
+    public static String prepareTextForStartMessage() {
         return "Select the item you need👇🏿";
     }
     public static String prepareTextForSendCurrentAndAnonymouslyMessage() {
-        return "✔Added to queue\n"+prepareTextForBeginningMessage();
+        return "✔Added to queue\n"+ prepareTextForStartMessage();
     }
     public static String prepareTextForChangeItemMessage() {
         return "*Select the item for changing:*";
     }
     public static String prepareSuccessTextForChangingLastMessage() {
         return "✔Success";
+    }
+    public static String prepareFailureTextIncorrectTypeForChangingLastMessage() {
+        return "❌ incorrect type!";
     }
     public static String prepareTextForLastForUnknownMessage() {
         return "This command is not implemented👀\n" +
@@ -91,7 +95,7 @@ public class TextPreparer {
 
     public static String prepareTextForSendMessage(AccountDto account) {
         var baseText = "*Choose a sending method:*";
-        if(!(account.getEmail()!=null && account.hasKey())){
+        if(!(account.getEmail()!=null && account.isPresentKey())){
             baseText += "\nYou can add your mail to send";
         }
         return baseText;
@@ -99,7 +103,7 @@ public class TextPreparer {
 
     public static String prepareTextForProfileMessage(AccountDto account) {
         var email = account.getEmail()!=null ? account.getEmail() : "❌";
-        var keyPresent = account.hasKey()? "✔" : "❌";
+        var keyPresent = account.isPresentKey()? "✔" : "❌";
 
         return String.format("*Account:*\n" +
                 "mail: %s\n" +
@@ -107,20 +111,33 @@ public class TextPreparer {
     }
     public static String prepareTextForPreviewMessage(Message message){
 
-        var messageText = message.getText().trim();
-        var lengthTextConstraint = messageText.length() > 100;
-        var textForResult = lengthTextConstraint ? messageText.substring(0,75) : messageText;
-        var suffixResultText = (lengthTextConstraint || messageText.isEmpty())? "...": "";
-        var messageTitle= message.getTitle().trim();
-        var titleForResult = messageTitle.equals("") ? "Without title" : messageTitle;
+        final String messageText = message.text().trim();
+        final boolean lengthTextConstraint = messageText.length() > 100;
+        final String textForResult = lengthTextConstraint ? messageText.substring(0 , 75) : messageText;
+        final String suffixResultText = (lengthTextConstraint || messageText.isEmpty())? "...": "";
+        final String messageTitle= message.title().trim();
+        final String titleForResult = messageTitle.isEmpty() ? "Without title" : messageTitle;
+
         return "*Preview:*" +
                 "\n" +
                 "\n*"+titleForResult+"*" +
                 "\n "+textForResult+suffixResultText +
                 "\n Attachment: "+(message.hasAnnex()? "✔" : "❌")+
-                "\n Recipients: "+ recipientsToString(message.getRecipients())+
-                "\n Pieces for each: "+ message.getCountForRecipient()+
-                "\n Date of mailing: "+(message.hasSentDate()? message.getSentDate():"now");
+                "\n Recipients: "+ recipientsToString(message.recipients())+
+                "\n Pieces for each: "+ message.countForRecipient()+
+                "\n Date of mailing: "+(message.hasSentDate() ? message.sentDate() : "now");
+    }
+
+    public static String prepareTextForPreviewMessage() {
+
+        return """
+                 *Preview:*
+                 
+                 Attachment: ❌
+                 Recipients:
+                 Pieces for each: 1
+                 Date of mailing: now
+                 """;
     }
 
     public static String prepareTextForMessage(MailingHistoryDto mailingHistory) {
@@ -133,7 +150,7 @@ public class TextPreparer {
             }
             var countLine = 0;
             for(var record : mailingHistory.getMailingList()){
-                var line = ++countLine+") "+convertDate(record.getSendDate()) + " | " +record.getCountMessages().toString()+ " pcs";
+                var line = ++countLine+") "+convertDate(record.getSentDate()) + " | " +record.getCountMessages().toString()+ " pcs";
                 text.append("\n").append(line);
             }
             return text.toString();

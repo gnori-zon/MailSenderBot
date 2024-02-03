@@ -1,9 +1,11 @@
-package org.gnori.client.telegram.utils.preparers.button.data.callback;
+package org.gnori.client.telegram.service.command.utils.preparers.button.data.callback;
 
-import org.gnori.client.telegram.command.commands.callback.CallbackCommandType;
-import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
-import org.gnori.client.telegram.service.bot.model.CallbackButtonData;
-import org.gnori.client.telegram.utils.preparers.button.data.ButtonDataPreparer;
+import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.service.bot.model.button.ButtonData;
+import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
+import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
+import org.gnori.client.telegram.service.bot.model.button.CallbackButtonData;
+import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,12 +13,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackButtonData, CallbackButtonDataPreparerParam> {
+@RequiredArgsConstructor
+public class CallbackButtonDataPreparer implements ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> {
+
+    private final ButtonDataPreparer<ButtonData, MenuStepCommandType> backButtonDataPreparer;
 
     @Override
-    public List<CallbackButtonData> prepare(CallbackButtonDataPreparerParam param) {
+    public List<ButtonData> prepare(CallbackButtonDataPreparerParam param) {
 
-        final List<CallbackButtonData> callbackButtonDataList = Optional.of(param.type())
+        final List<ButtonData> buttonDataList = Optional.of(param.type())
                 .map(type -> switch (type) {
 
                     case SELECT_START_MENU_ITEM -> getSelectStartMenuItemCallbackButtonDataList();
@@ -28,13 +33,13 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackBu
                 .orElseGet(ArrayList::new);
 
         if (param.withBack()) {
-            callbackButtonDataList.add(getBackCallbackButtonData(param.menuStep()));
+            buttonDataList.addAll(backButtonDataPreparer.prepare(param.menuStep()));
         }
 
-        return callbackButtonDataList.stream().toList();
+        return buttonDataList.stream().toList();
     }
 
-    private List<CallbackButtonData> getSelectStartMenuItemCallbackButtonDataList() {
+    private List<ButtonData> getSelectStartMenuItemCallbackButtonDataList() {
 
         return new ArrayList<>(List.of(
                 new CallbackButtonData(
@@ -52,7 +57,7 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackBu
         ));
     }
 
-    private List<CallbackButtonData> getSelectProfileInfoItemCallbackButtonDataList() {
+    private List<ButtonData> getSelectProfileInfoItemCallbackButtonDataList() {
 
         return new ArrayList<>(List.of(
                 new CallbackButtonData(
@@ -70,7 +75,7 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackBu
         ));
     }
 
-    private List<CallbackButtonData> getSelectActionMailingItemCallbackButtonDataList() {
+    private List<ButtonData> getSelectActionMailingItemCallbackButtonDataList() {
 
         return new ArrayList<>(List.of(
                 new CallbackButtonData(
@@ -92,7 +97,7 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackBu
         ));
     }
 
-    private List<CallbackButtonData> getSelectChangeMessageItemCallbackButtonDataList() {
+    private List<ButtonData> getSelectChangeMessageItemCallbackButtonDataList() {
 
         return new ArrayList<>(List.of(
                 new CallbackButtonData(
@@ -122,9 +127,9 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackBu
         ));
     }
 
-    private List<CallbackButtonData> getSelectSendMessageModeCallbackButtonDataList(boolean hasCurrentMail) {
+    private List<ButtonData> getSelectSendMessageModeCallbackButtonDataList(boolean hasCurrentMail) {
 
-        final List<CallbackButtonData> callbackButtonDataList = new ArrayList<>();
+        final List<ButtonData> callbackButtonDataList = new ArrayList<>();
         callbackButtonDataList.add(
                 new CallbackButtonData(
                         "👽Send anonymously",
@@ -143,13 +148,5 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<CallbackBu
         }
 
         return callbackButtonDataList;
-    }
-
-    private CallbackButtonData getBackCallbackButtonData(MenuStepCommandType menuStep) {
-
-        return new CallbackButtonData(
-                "Back",
-                "%s%s%s".formatted(CallbackCommandType.BACK, CallbackCommandType.DATA_DELIMITER, menuStep.name())
-        );
     }
 }

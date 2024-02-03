@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service;
+package org.gnori.store.repository;
 
 import org.gnori.store.entity.MessageSentRecord;
 import org.springframework.data.jpa.repository.JpaRepository;

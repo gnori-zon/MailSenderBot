@@ -25,8 +25,10 @@ public class BinaryLoaderImpl implements BinaryLoader {
 
     @Value("${bot.token}")
     private String token;
+
     @Value("${service.file-info.uri}")
     private String fileInfoUri;
+
     @Value("${service.file-storage.uri}")
     private String fileStorageUri;
 

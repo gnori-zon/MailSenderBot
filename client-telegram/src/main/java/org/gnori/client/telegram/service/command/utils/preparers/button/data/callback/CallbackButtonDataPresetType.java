@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.utils.preparers.button.data.callback;
+package org.gnori.client.telegram.service.command.utils.preparers.button.data.callback;
 
 public enum CallbackButtonDataPresetType {
 

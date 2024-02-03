@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.utils;
+package org.gnori.client.telegram.service.command.utils.text.extractor;
 
 import java.util.List;
 import java.util.Optional;

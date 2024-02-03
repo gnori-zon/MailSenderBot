@@ -1,17 +1,21 @@
 server:
   port: 8080
-#telegram
+
+# Telegram-bot
 bot:
   name:
   token:
+
+# Telegram files uri
 service:
   file-info:
     uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
   file-storage:
     uri: https://api.telegram.org/file/bot{token}/{filePath}
 
-  # database
 spring:
+
+  # Database
   datasource:
     url: jdbc:postgresql://localhost:5432/
     username:
@@ -22,13 +26,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-# rabbitMQ
+  # RabbitMQ
   rabbitmq:
     username: guest
     password: guest
     queue-name: send.mail
     exchange-name: exchange
-#for Crypto
+
+# Crypto
 cipher:
   initVector: F-JaNdRgUjXn2r5u
   key: hVmYp3s6v9y$B&E)

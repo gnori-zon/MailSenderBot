@@ -1,6 +1,6 @@
-package org.gnori.client.telegram.utils.preparers.button.data.callback;
+package org.gnori.client.telegram.service.command.utils.preparers.button.data.callback;
 
-import org.gnori.client.telegram.command.commands.callback.impl.back.menustep.MenuStepCommandType;
+import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 
 public record CallbackButtonDataPreparerParam(
         CallbackButtonDataPresetType type,

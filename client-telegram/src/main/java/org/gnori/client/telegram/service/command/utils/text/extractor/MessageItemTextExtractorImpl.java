@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.utils;
+package org.gnori.client.telegram.service.command.utils.text.extractor;
 
 import org.springframework.stereotype.Component;
 
@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class MessageItemTextExtractorImpl implements MessageItemTextExtractor {

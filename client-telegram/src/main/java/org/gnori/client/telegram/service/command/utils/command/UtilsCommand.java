@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.utils.command;
+package org.gnori.client.telegram.service.command.utils.command;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
