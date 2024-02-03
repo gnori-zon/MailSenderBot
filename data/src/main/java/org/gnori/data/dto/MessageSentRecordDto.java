@@ -15,7 +15,7 @@ public class MessageSentRecordDto {
 
     public MessageSentRecordDto(MessageSentRecord messageSentRecord) {
 
-        this.sentDate = messageSentRecord.getSendDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        this.sentDate = messageSentRecord.getSentDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
         this.countMessages = messageSentRecord.getCountMessages();
     }
 }

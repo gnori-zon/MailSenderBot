@@ -1,8 +1,8 @@
-package org.gnori.client.telegram.service.mapper.impl;
+package org.gnori.client.telegram.service.bot.message.mapper;
 
-import org.gnori.client.telegram.service.bot.model.button.ButtonData;
-import org.gnori.client.telegram.service.bot.model.button.CallbackButtonData;
-import org.gnori.client.telegram.service.bot.model.button.UrlButtonData;
+import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.message.model.button.CallbackButtonData;
+import org.gnori.client.telegram.service.bot.message.model.button.UrlButtonData;
 import org.gnori.client.telegram.service.mapper.Mapper;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;

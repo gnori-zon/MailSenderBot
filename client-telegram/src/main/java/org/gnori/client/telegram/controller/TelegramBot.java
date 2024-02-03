@@ -2,7 +2,7 @@ package org.gnori.client.telegram.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.controller.update.UpdateController;
-import org.gnori.client.telegram.service.bot.BotMessageService;
+import org.gnori.client.telegram.service.bot.message.BotMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

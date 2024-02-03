@@ -1,10 +1,8 @@
 package org.gnori.client.telegram.service.command.utils.preparers.button.data.url;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.client.telegram.service.bot.model.button.ButtonData;
-import org.gnori.client.telegram.service.bot.model.button.CallbackButtonData;
-import org.gnori.client.telegram.service.bot.model.button.UrlButtonData;
-import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
+import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.message.model.button.UrlButtonData;
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.springframework.stereotype.Component;

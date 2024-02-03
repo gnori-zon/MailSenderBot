@@ -1,6 +1,6 @@
 package org.gnori.client.telegram.service.command.utils.preparers.button.data;
 
-import org.gnori.client.telegram.service.bot.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
 
 import java.util.List;
 

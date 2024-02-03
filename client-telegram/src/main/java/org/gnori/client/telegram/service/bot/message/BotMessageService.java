@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.bot;
+package org.gnori.client.telegram.service.bot.message;
 
 import org.gnori.client.telegram.controller.TelegramBot;
 

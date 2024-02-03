@@ -1,9 +1,9 @@
 package org.gnori.client.telegram.service.command.commands.text.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.client.telegram.service.bot.BotMessageEditor;
-import org.gnori.client.telegram.service.bot.model.button.ButtonData;
-import org.gnori.client.telegram.service.bot.model.message.EditBotMessageParam;
+import org.gnori.client.telegram.service.bot.message.BotMessageEditor;
+import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.message.model.message.EditBotMessageParam;
 import org.gnori.client.telegram.service.command.commands.text.TextCommand;
 import org.gnori.client.telegram.service.command.commands.text.TextCommandType;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;

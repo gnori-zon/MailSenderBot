@@ -1,9 +1,9 @@
 package org.gnori.client.telegram.service.account.registrator;
 
 import lombok.RequiredArgsConstructor;
+import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
-import org.gnori.store.repository.AccountRepository;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,11 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountRegistratorImpl implements AccountRegistrator {
 
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     @Override
     public Optional<Account> getRegisterAccount(Long chatId) {
-        return accountRepository.findByChatId(chatId);
+        return accountService.findByChatId(chatId);
     }
 
     @Override
@@ -36,6 +36,6 @@ public class AccountRegistratorImpl implements AccountRegistrator {
                 .state(State.DEFAULT)
                 .build();
 
-        return accountRepository.saveAndFlush(account);
+        return accountService.save(account);
     }
 }

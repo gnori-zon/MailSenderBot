@@ -33,8 +33,8 @@ public class MessageStorageImpl implements MessageStorage {
         return new Message(
                 accountId,
                 SendMode.ANONYMOUSLY,
-                null,
-                null,
+                "",
+                "",
                 null,
                 Collections.emptyList(),
                 1,

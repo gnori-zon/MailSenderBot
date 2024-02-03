@@ -1,11 +1,11 @@
 package org.gnori.client.telegram.service.command.commands.callback.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.client.telegram.service.bot.BotMessageEditor;
-import org.gnori.client.telegram.service.bot.BotMessageSender;
-import org.gnori.client.telegram.service.bot.model.button.ButtonData;
-import org.gnori.client.telegram.service.bot.model.message.EditBotMessageParam;
-import org.gnori.client.telegram.service.bot.model.message.SendBotMessageParam;
+import org.gnori.client.telegram.service.bot.message.BotMessageEditor;
+import org.gnori.client.telegram.service.bot.message.BotMessageSender;
+import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.message.model.message.EditBotMessageParam;
+import org.gnori.client.telegram.service.bot.message.model.message.SendBotMessageParam;
 import org.gnori.client.telegram.service.command.commands.callback.CallbackCommand;
 import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;

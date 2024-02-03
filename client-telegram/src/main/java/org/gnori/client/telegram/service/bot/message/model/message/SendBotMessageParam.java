@@ -1,6 +1,6 @@
-package org.gnori.client.telegram.service.bot.model.message;
+package org.gnori.client.telegram.service.bot.message.model.message;
 
-import org.gnori.client.telegram.service.bot.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
 
 import java.util.Collections;
 import java.util.List;

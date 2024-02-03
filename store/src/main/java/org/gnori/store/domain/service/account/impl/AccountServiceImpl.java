@@ -22,13 +22,13 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
     @Override
-    public Optional<Account> findAccountById(Long id) {
-        return accountRepository.findById(id);
+    public Optional<Account> findByChatId(Long chatId) {
+        return accountRepository.findByChatId(chatId);
     }
 
     @Override
-    public void saveAccount(Account account) {
-        accountRepository.save(account);
+    public Optional<Account> findAccountById(Long id) {
+        return accountRepository.findById(id);
     }
 
     @Override
@@ -54,5 +54,10 @@ public class AccountServiceImpl implements AccountService {
             log.error("mail: {}, already bind to account", mail);
             return Result.failure(AccountServiceFailure.UNIQUE_CONSTRAINT_FAILURE);
         }
+    }
+
+    @Override
+    public Account save(Account account) {
+        return accountRepository.saveAndFlush(account);
     }
 }

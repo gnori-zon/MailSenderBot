@@ -1,22 +1,16 @@
-package org.gnori.client.telegram.service.bot;
+package org.gnori.client.telegram.service.bot.message;
 
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.controller.TelegramBot;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import lombok.extern.log4j.Log4j2;
-import org.gnori.client.telegram.service.bot.model.message.EditBotMessageParam;
-import org.gnori.client.telegram.service.bot.model.message.SendBotMessageParam;
+import org.gnori.client.telegram.service.bot.message.model.message.EditBotMessageParam;
+import org.gnori.client.telegram.service.bot.message.model.message.SendBotMessageParam;
 import org.gnori.client.telegram.service.mapper.Mapper;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Log4j2
