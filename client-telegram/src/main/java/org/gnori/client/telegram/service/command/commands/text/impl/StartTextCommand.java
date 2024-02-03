@@ -1,0 +1,50 @@
+package org.gnori.client.telegram.service.command.commands.text.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.service.bot.BotMessageEditor;
+import org.gnori.client.telegram.service.bot.model.button.ButtonData;
+import org.gnori.client.telegram.service.bot.model.message.EditBotMessageParam;
+import org.gnori.client.telegram.service.command.commands.text.TextCommand;
+import org.gnori.client.telegram.service.command.commands.text.TextCommandType;
+import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.store.entity.Account;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.List;
+
+import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForStartMessage;
+
+@Component
+@RequiredArgsConstructor
+public class StartTextCommand implements TextCommand {
+
+    private final BotMessageEditor botMessageEditor;
+    private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
+
+    @Override
+    public void execute(Account account, Update update) {
+
+        final long chatId = account.getChatId();
+        final int messageId = update.getMessage().getMessageId();
+        final String text = prepareTextForStartMessage();
+        final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
+
+        botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, newCallbackButtonDataList));
+    }
+
+    @Override
+    public TextCommandType getSupportedType() {
+        return TextCommandType.START;
+    }
+
+    private CallbackButtonDataPreparerParam callbackButtonDataPreparerParamOf() {
+
+        return new CallbackButtonDataPreparerParam(
+                CallbackButtonDataPresetType.SELECT_START_MENU_ITEM,
+                false
+        );
+    }
+}

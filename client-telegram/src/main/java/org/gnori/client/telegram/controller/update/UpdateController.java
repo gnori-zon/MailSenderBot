@@ -8,10 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Optional;
 
-/**
- * Controller to call distributor
- */
-
 @Log4j2
 @Component
 @RequiredArgsConstructor
