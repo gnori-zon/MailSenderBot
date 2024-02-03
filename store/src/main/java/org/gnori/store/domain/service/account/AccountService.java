@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface AccountService {
 
     Optional<Account> findAccountById(Long id);
-    void saveAccount(Account account);
     void updateStateById(Long id, State state);
     void updateKeyForMailById(Long id, String newKey);
     Result<Empty, AccountServiceFailure> updateMailById(Long id, String mail);

@@ -1,7 +1,7 @@
 package org.gnori.client.telegram.service.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.client.telegram.service.AccountUpdateFailure;
+import org.gnori.client.telegram.service.account.updater.AccountUpdater;
 import org.gnori.client.telegram.service.bot.BotMessageEditor;
 import org.gnori.client.telegram.service.bot.BotMessageSender;
 import org.gnori.client.telegram.service.bot.model.button.ButtonData;
@@ -14,24 +14,18 @@ import org.gnori.client.telegram.service.command.utils.preparers.button.data.But
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
 import org.gnori.data.dto.AccountDto;
-import org.gnori.shared.crypto.CryptoTool;
-import org.gnori.shared.flow.Empty;
-import org.gnori.shared.flow.Result;
-import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class ChangingKeyStateCommand implements StateCommand {
 
-    private final CryptoTool cryptoTool;
-    private final AccountService accountService;
+    private final AccountUpdater accountUpdater;
     private final BotMessageEditor botMessageEditor;
     private final BotMessageSender botMessageSender;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
@@ -39,11 +33,12 @@ public class ChangingKeyStateCommand implements StateCommand {
     @Override
     public void execute(Account account, Update update) {
 
-        accountService.updateStateById(account.getId(), State.DEFAULT);
+        accountUpdater.updateState(account.getId(), State.DEFAULT);
 
         final long chatId = account.getChatId();
         final int lastMessageId = update.getMessage().getMessageId() - 1;
-        final String textForOld = updateAccount(account, update)
+        final String newKeyRaw = update.getMessage().getText();
+        final String textForOld = accountUpdater.updateMailKey(account.getId(), newKeyRaw)
                 .fold(
                         success -> prepareSuccessTextForChangingLastMessage(),
                         failure -> prepareTextForAfterEmptyKeyChangeKeyForMailMessage()
@@ -70,21 +65,5 @@ public class ChangingKeyStateCommand implements StateCommand {
                 true,
                 false
         );
-    }
-
-    private Result<Empty, AccountUpdateFailure> updateAccount(Account account, Update update) {
-
-        return Optional.ofNullable(update.getMessage().getText())
-                .map(cryptoTool::encrypt)
-                .map(encryptResult -> encryptResult
-                        .doIfSuccess(encryptedKey -> {
-
-                            account.setKeyForMail(encryptedKey);
-                            accountService.saveAccount(account);
-                        })
-                        .mapSuccess(encryptedKey -> Empty.INSTANCE)
-                        .mapFailure(failure -> AccountUpdateFailure.BAD_ENCRYPT)
-                )
-                .orElseGet(() -> Result.failure(AccountUpdateFailure.BAD_ENCRYPT));
     }
 }

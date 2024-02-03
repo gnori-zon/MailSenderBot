@@ -1,6 +1,7 @@
 package org.gnori.client.telegram.service.command.commands.callback.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.service.account.updater.AccountUpdater;
 import org.gnori.client.telegram.service.bot.BotMessageEditor;
 import org.gnori.client.telegram.service.bot.model.button.ButtonData;
 import org.gnori.client.telegram.service.bot.model.message.EditBotMessageParam;
@@ -9,7 +10,6 @@ import org.gnori.client.telegram.service.command.commands.callback.CallbackComma
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
-import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.stereotype.Component;
@@ -23,14 +23,14 @@ import static org.gnori.client.telegram.service.command.utils.preparers.TextPrep
 @RequiredArgsConstructor
 public class ChangeMessageItemSentDateCallbackCommand implements CallbackCommand {
 
-    private final AccountService accountService;
+    private final AccountUpdater accountUpdater;
     private final BotMessageEditor botMessageEditor;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
     public void execute(Account account, Update update) {
 
-        accountService.updateStateById(account.getId(), State.MESSAGE_SENT_DATE_PENDING);
+        accountUpdater.updateState(account.getId(), State.MESSAGE_SENT_DATE_PENDING);
 
         final long chatId = update.getCallbackQuery().getMessage().getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();

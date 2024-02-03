@@ -1,4 +1,4 @@
-package org.gnori.client.telegram.service.registrator;
+package org.gnori.client.telegram.service.account.registrator;
 
 import lombok.RequiredArgsConstructor;
 import org.gnori.store.entity.Account;

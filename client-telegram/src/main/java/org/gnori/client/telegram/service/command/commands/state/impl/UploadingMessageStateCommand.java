@@ -2,6 +2,7 @@ package org.gnori.client.telegram.service.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.gnori.client.telegram.service.account.updater.AccountUpdater;
 import org.gnori.client.telegram.service.bot.BotMessageEditor;
 import org.gnori.client.telegram.service.bot.BotMessageSender;
 import org.gnori.client.telegram.service.bot.model.button.ButtonData;
@@ -24,7 +25,6 @@ import org.gnori.data.model.Message;
 import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
 import org.gnori.shared.service.loader.file.FileLoader;
-import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.core.io.FileSystemResource;
@@ -47,7 +47,7 @@ public class UploadingMessageStateCommand implements StateCommand {
 
 
     private final FileLoader fileLoader;
-    private final AccountService accountService;
+    private final AccountUpdater accountUpdater;
     private final MessageStorage messageStorage;
     private final BotMessageEditor botMessageEditor;
     private final BotMessageSender botMessageSender;
@@ -57,7 +57,7 @@ public class UploadingMessageStateCommand implements StateCommand {
     @Override
     public void execute(Account account, Update update) {
 
-        accountService.updateStateById(account.getId(), State.DEFAULT);
+        accountUpdater.updateState(account.getId(), State.DEFAULT);
 
         final long chatId = account.getChatId();
         final int lastMessageId = update.getMessage().getMessageId() - 1;

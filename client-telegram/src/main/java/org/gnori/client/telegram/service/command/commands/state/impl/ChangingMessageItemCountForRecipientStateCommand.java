@@ -1,6 +1,7 @@
 package org.gnori.client.telegram.service.command.commands.state.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gnori.client.telegram.service.account.updater.AccountUpdater;
 import org.gnori.client.telegram.service.bot.BotMessageEditor;
 import org.gnori.client.telegram.service.bot.BotMessageSender;
 import org.gnori.client.telegram.service.bot.model.button.ButtonData;
@@ -19,7 +20,6 @@ import org.gnori.client.telegram.service.message.MessageUpdateFailure;
 import org.gnori.data.model.Message;
 import org.gnori.shared.flow.Empty;
 import org.gnori.shared.flow.Result;
-import org.gnori.store.domain.service.account.AccountService;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ import static org.gnori.client.telegram.service.command.utils.preparers.TextPrep
 @RequiredArgsConstructor
 public class ChangingMessageItemCountForRecipientStateCommand implements StateCommand {
 
-    private final AccountService accountService;
+    private final AccountUpdater accountUpdater;
     private final MessageStorage messageStorage;
     private final BotMessageEditor botMessageEditor;
     private final BotMessageSender botMessageSender;
@@ -43,7 +43,7 @@ public class ChangingMessageItemCountForRecipientStateCommand implements StateCo
     @Override
     public void execute(Account account, Update update) {
 
-        accountService.updateStateById(account.getId(), State.DEFAULT);
+        accountUpdater.updateState(account.getId(), State.DEFAULT);
 
         final long chatId = account.getChatId();
         final int lastMessageId = update.getMessage().getMessageId() - 1;

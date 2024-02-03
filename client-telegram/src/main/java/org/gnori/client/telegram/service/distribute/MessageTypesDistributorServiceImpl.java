@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.gnori.client.telegram.service.command.CommandContainers;
 import org.gnori.client.telegram.service.command.CommandContainerType;
 import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
-import org.gnori.client.telegram.service.registrator.AccountRegistrator;
+import org.gnori.client.telegram.service.account.registrator.AccountRegistrator;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.stereotype.Service;
