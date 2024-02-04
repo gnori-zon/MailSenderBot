@@ -13,6 +13,9 @@ import org.gnori.client.telegram.service.command.commands.state.StateCommandType
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.PatternTextPreparerParam;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
@@ -25,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChangingMailStateCommand implements StateCommand {
 
+    private final TextPreparer textPreparer;
     private final AccountUpdater accountUpdater;
     private final BotMessageEditor botMessageEditor;
     private final BotMessageSender botMessageSender;
@@ -40,16 +44,17 @@ public class ChangingMailStateCommand implements StateCommand {
         final String mailRaw = update.getMessage().getText();
         final String textForOldMessage = accountUpdater.updateMail(account.getId(), mailRaw)
                 .fold(
-                        success -> prepareSuccessTextForChangingLastMessage(),
+                        success -> textPreparer.prepare(SimpleTextPreparerParam.DEFAULT_SUCCESS),
                         failure -> switch (failure) {
-                            case ALREADY_EXIST_MAIL -> prepareTextForAfterMailIsExistChangeMailMessage();
-                            default -> prepareTextForAfterInvalidMailChangeMailMessage();
+                            case ALREADY_EXIST_MAIL -> textPreparer.prepare(SimpleTextPreparerParam.AFTER_CHANGE_MAIL_ALREADY_EXIST);
+                            default -> textPreparer.prepare(SimpleTextPreparerParam.AFTER_CHANGE_MAIL_INVALID);
                         }
                 );
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, lastMessageId, textForOldMessage));
 
-        final String text = prepareTextForProfileMessage(new AccountDto(account));
+        final AccountDto accountDto = new AccountDto(account);
+        final String text = textPreparer.prepare(PatternTextPreparerParam.profileInfo(accountDto));
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(successUpdateMailCallbackButtonPreparerParamOf());
 
         botMessageSender.send(new SendBotMessageParam(chatId, text, newCallbackButtonDataList));

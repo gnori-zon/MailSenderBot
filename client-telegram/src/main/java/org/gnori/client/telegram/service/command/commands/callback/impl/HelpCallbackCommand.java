@@ -10,18 +10,19 @@ import org.gnori.client.telegram.service.command.commands.callback.impl.back.men
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.url.UrlButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.url.UrlButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForHelpMessage;
-
 @Component
 @RequiredArgsConstructor
 public class HelpCallbackCommand implements CallbackCommand {
 
+    private final TextPreparer textPreparer;
     private final BotMessageEditor botMessageEditor;
     private final ButtonDataPreparer<ButtonData, UrlButtonDataPreparerParam> buttonDataPreparer;
 
@@ -30,7 +31,7 @@ public class HelpCallbackCommand implements CallbackCommand {
 
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final String text = prepareTextForHelpMessage();
+        final String text = textPreparer.prepare(SimpleTextPreparerParam.HELP_MESSAGE);
         final List<ButtonData> urlButtonDataList = buttonDataPreparer.prepare(urlButtonDataPreparerParamOf());
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, urlButtonDataList));

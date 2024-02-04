@@ -6,7 +6,7 @@ public record WithOptionalPartTextPreparerParam(
         boolean includeOptionalPart
 ) implements TextPreparerParam {
 
-    private static WithOptionalPartTextPreparerParam selectSendMessageMode(boolean existCurrentMail) {
+    public static WithOptionalPartTextPreparerParam selectSendMessageMode(boolean existCurrentMail) {
 
         return new WithOptionalPartTextPreparerParam(
                 "*Choose a sending method:*",

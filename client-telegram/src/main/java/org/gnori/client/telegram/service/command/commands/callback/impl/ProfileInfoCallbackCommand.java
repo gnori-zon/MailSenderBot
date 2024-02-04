@@ -11,6 +11,8 @@ import org.gnori.client.telegram.service.command.commands.callback.impl.back.men
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.PatternTextPreparerParam;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
@@ -19,12 +21,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForProfileMessage;
-
 @Component
 @RequiredArgsConstructor
 public class ProfileInfoCallbackCommand implements CallbackCommand {
 
+    private final TextPreparer textPreparer;
     private final AccountUpdater accountService;
     private final BotMessageEditor botMessageEditor;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
@@ -36,7 +37,8 @@ public class ProfileInfoCallbackCommand implements CallbackCommand {
 
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final String text = prepareTextForProfileMessage(new AccountDto(account));
+        final AccountDto accountDto = new AccountDto(account);
+        final String text = textPreparer.prepare(PatternTextPreparerParam.profileInfo(accountDto));
         final List<ButtonData> callbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerOf());
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, callbackButtonDataList));

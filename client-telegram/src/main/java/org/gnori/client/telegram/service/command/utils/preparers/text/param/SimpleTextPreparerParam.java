@@ -41,6 +41,7 @@ public enum SimpleTextPreparerParam implements TextPreparerParam {
     AFTER_CHANGE_MAIL_ALREADY_EXIST("❌This mail is already in use, please try again"),
     AFTER_CHANGE_MAIL_INVALID("❌Invalid mail, please try again"),
     AFTER_CHANGE_KEY_MAIL_INVALID("❌Invalid key, please try again"),
+    AFTER_INCORRECT_TYPE("❌Incorrect type, please try again"),
     UNDEFINED(
             """
             This command is not implemented👀

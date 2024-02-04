@@ -16,9 +16,13 @@ import org.gnori.client.telegram.service.command.utils.command.UtilsCommandFailu
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.PatternTextPreparerParam;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.client.telegram.service.command.utils.text.extractor.MessageItemTextExtractor;
 import org.gnori.client.telegram.service.message.MessageStorage;
 import org.gnori.client.telegram.service.message.MessageUpdateFailure;
+import org.gnori.data.dto.MessageDto;
 import org.gnori.data.model.FileData;
 import org.gnori.data.model.FileType;
 import org.gnori.data.model.Message;
@@ -47,6 +51,7 @@ public class UploadingMessageStateCommand implements StateCommand {
 
 
     private final FileLoader fileLoader;
+    private final TextPreparer textPreparer;
     private final AccountUpdater accountUpdater;
     private final MessageStorage messageStorage;
     private final BotMessageEditor botMessageEditor;
@@ -63,14 +68,14 @@ public class UploadingMessageStateCommand implements StateCommand {
         final int lastMessageId = update.getMessage().getMessageId() - 1;
         final String textForOld = updateMessage(account.getId() , update)
                 .fold(
-                        success -> prepareTextForAfterSuccessDownloadMessage(),
-                        failure -> prepareTextForAfterBadDownloadMessage()
+                        success -> textPreparer.prepare(SimpleTextPreparerParam.DEFAULT_SUCCESS),
+                        failure -> textPreparer.prepare(SimpleTextPreparerParam.AFTER_UPLOAD_MESSAGE_INVALID)
                 );
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, lastMessageId, textForOld));
 
-        final Message message = messageStorage.getMessage(account.getId());
-        final String text = prepareTextForPreviewMessage(message);
+        final MessageDto messageDto = new MessageDto(messageStorage.getMessage(account.getId()));
+        final String text = textPreparer.prepare(PatternTextPreparerParam.previewMessage(messageDto));
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
         botMessageSender.send(new SendBotMessageParam(chatId, text, newCallbackButtonDataList));

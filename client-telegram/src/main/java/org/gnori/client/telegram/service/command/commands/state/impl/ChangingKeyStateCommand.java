@@ -13,6 +13,9 @@ import org.gnori.client.telegram.service.command.commands.state.StateCommandType
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.PatternTextPreparerParam;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
@@ -25,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChangingKeyStateCommand implements StateCommand {
 
+    private final TextPreparer textPreparer;
     private final AccountUpdater accountUpdater;
     private final BotMessageEditor botMessageEditor;
     private final BotMessageSender botMessageSender;
@@ -40,13 +44,14 @@ public class ChangingKeyStateCommand implements StateCommand {
         final String newKeyRaw = update.getMessage().getText();
         final String textForOld = accountUpdater.updateMailKey(account.getId(), newKeyRaw)
                 .fold(
-                        success -> prepareSuccessTextForChangingLastMessage(),
-                        failure -> prepareTextForAfterEmptyKeyChangeKeyForMailMessage()
+                        success -> textPreparer.prepare(SimpleTextPreparerParam.DEFAULT_SUCCESS),
+                        failure -> textPreparer.prepare(SimpleTextPreparerParam.AFTER_CHANGE_KEY_MAIL_INVALID)
                 );
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, lastMessageId, textForOld));
 
-        final String text = prepareTextForProfileMessage(new AccountDto(account));
+        final AccountDto accountDto = new AccountDto(account);
+        final String text = textPreparer.prepare(PatternTextPreparerParam.profileInfo(accountDto));
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(successUpdateKeyCallbackButtonPreparerParamOf());
 
         botMessageSender.send(new SendBotMessageParam(chatId, text, newCallbackButtonDataList));

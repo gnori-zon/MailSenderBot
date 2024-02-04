@@ -10,6 +10,8 @@ import org.gnori.client.telegram.service.command.commands.callback.impl.back.men
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.WithOptionalPartTextPreparerParam;
 import org.gnori.data.dto.AccountDto;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
@@ -17,12 +19,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForSendMessage;
-
 @Component
 @RequiredArgsConstructor
 public class SendCallbackCommand implements CallbackCommand {
 
+    private final TextPreparer textPreparer;
     private final BotMessageEditor botMessageEditor;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
@@ -31,7 +32,8 @@ public class SendCallbackCommand implements CallbackCommand {
 
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final String text = prepareTextForSendMessage(new AccountDto(account));
+        final AccountDto accountDto = new AccountDto(account);
+        final String text = textPreparer.prepare(WithOptionalPartTextPreparerParam.selectSendMessageMode(accountDto.getEmail() != null && accountDto.isPresentKey()));
         final List<ButtonData> callbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf(account.getEmail() == null));
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, callbackButtonDataList));

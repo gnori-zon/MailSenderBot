@@ -9,6 +9,8 @@ import org.gnori.client.telegram.service.command.commands.callback.CallbackComma
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.client.telegram.service.message.MessageStorage;
 import org.gnori.data.model.Message;
 import org.gnori.data.model.SendMode;
@@ -22,9 +24,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForSendCurrentAndAnonymouslyMessage;
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForWaitingForConcreteSendingMessage;
-
 @Component
 @RequiredArgsConstructor
 public class SendAnonymouslyCallbackCommand implements CallbackCommand {
@@ -32,10 +31,11 @@ public class SendAnonymouslyCallbackCommand implements CallbackCommand {
     @Value("${spring.rabbitmq.exchange-name}")
     private String exchangeName;
 
+    private final TextPreparer textPreparer;
+    private final MessageStorage messageStorage;
     private final RabbitTemplate rabbitTemplate;
     private final BotMessageEditor botMessageEditor;
     private final MailingHistoryService mailingHistoryService;
-    private final MessageStorage messageStorage;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
@@ -49,12 +49,12 @@ public class SendAnonymouslyCallbackCommand implements CallbackCommand {
 
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final String textForWaiting = prepareTextForWaitingForConcreteSendingMessage();
+        final String textForWaiting = textPreparer.prepare(SimpleTextPreparerParam.BEFORE_SEND_TO_QUEUE_MESSAGE);
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, textForWaiting));
 
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
-        final String text = prepareTextForSendCurrentAndAnonymouslyMessage();
+        final String text = textPreparer.prepare(SimpleTextPreparerParam.AFTER_SEND_TO_QUEUE_MESSAGE);
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, newCallbackButtonDataList));
     }

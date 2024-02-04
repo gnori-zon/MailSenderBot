@@ -10,6 +10,8 @@ import org.gnori.client.telegram.service.command.commands.callback.CallbackComma
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.store.entity.Account;
 import org.gnori.store.entity.enums.State;
 import org.springframework.stereotype.Component;
@@ -17,12 +19,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForBeforeChangeTitleMessage;
-
 @Component
 @RequiredArgsConstructor
 public class ChangeMessageItemTitleCallbackCommand implements CallbackCommand {
 
+    private final TextPreparer textPreparer;
     private final AccountUpdater accountUpdater;
     private final BotMessageEditor botMessageEditor;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
@@ -34,7 +35,7 @@ public class ChangeMessageItemTitleCallbackCommand implements CallbackCommand {
 
         final long chatId = update.getCallbackQuery().getMessage().getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final String text = prepareTextForBeforeChangeTitleMessage();
+        final String text = textPreparer.prepare(SimpleTextPreparerParam.BEFORE_CHANGE_TITLE);
         final List<ButtonData> callbackButtonDataList = buttonDataPreparer.prepare(CallbackButtonDataPreparerParam.onlyBack(MenuStepCommandType.SETUP_CREATE_MAILING_ITEM));
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, callbackButtonDataList));

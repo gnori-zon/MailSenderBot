@@ -10,18 +10,19 @@ import org.gnori.client.telegram.service.command.commands.callback.impl.back.men
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPreparerParam;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.callback.CallbackButtonDataPresetType;
+import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
+import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
 import org.gnori.store.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static org.gnori.client.telegram.service.command.utils.preparers.TextPreparer.prepareTextForChangeItemMessage;
-
 @Component
 @RequiredArgsConstructor
 public class ChangeMessageItemCallbackCommand implements CallbackCommand {
 
+    private final TextPreparer textPreparer;
     private final BotMessageEditor botMessageEditor;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
@@ -30,7 +31,7 @@ public class ChangeMessageItemCallbackCommand implements CallbackCommand {
 
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final String text = prepareTextForChangeItemMessage();
+        final String text = textPreparer.prepare(SimpleTextPreparerParam.SELECT_CHANGE_MESSAGE_ITEM);
         final List<ButtonData> callbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, callbackButtonDataList));
