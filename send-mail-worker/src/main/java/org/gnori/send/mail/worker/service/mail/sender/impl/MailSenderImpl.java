@@ -27,9 +27,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MailSenderImpl implements MailSender {
 
-    private final MailRecipientsParser mailRecipientsParser;
-    private final MailMessageFiller mailMessageFiller;
     private final FileLoader fileLoader;
+    private final MailMessageFiller mailMessageFiller;
+    private final MailRecipientsParser mailRecipientsParser;
 
     @Override
     public Result<Empty, MailFailure> send(String senderMail, Session session, Message message) {

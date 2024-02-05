@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 @Log4j2
@@ -33,7 +36,7 @@ public class MailMessageFillerImpl implements MailMessageFiller {
             helper.setText(data.text());
 
             if (data.sentDate() != null) {
-                helper.setSentDate(data.sentDate());
+                helper.setSentDate(asDate(data.sentDate()));
             }
 
             if (data.annex() != null) {
@@ -51,6 +54,12 @@ public class MailMessageFillerImpl implements MailMessageFiller {
     }
 
     private String extractAnnexFilename(FileSystemResource annex) {
-        return Optional.ofNullable(annex.getFilename()).orElse(DEFAULT_ANNEX_NAME);
+
+        return Optional.ofNullable(annex.getFilename())
+                .orElse(DEFAULT_ANNEX_NAME);
+    }
+
+    private Date asDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 }

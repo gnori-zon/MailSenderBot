@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +21,13 @@ public class DefaultEmailData {
     private final ConcurrentLinkedQueue<EmailData> emailData = new ConcurrentLinkedQueue<>();
 
     @PostConstruct
-    private void init(){
+    private void init() {
 
         final List<String> logins = Arrays.stream(baseMailsLogins.split(",")).map(String::trim).toList();
         final List<String> passwords = Arrays.stream(baseMailsPasswords.split(",")).map(String::trim).toList();
 
-        for(int i = 0; i < logins.size();i++){
-            emailData.add(new EmailData(logins.get(i),passwords.get(i)));
+        for (int i = 0; i < logins.size(); i++) {
+            emailData.add(new EmailData(logins.get(i), passwords.get(i)));
         }
     }
 

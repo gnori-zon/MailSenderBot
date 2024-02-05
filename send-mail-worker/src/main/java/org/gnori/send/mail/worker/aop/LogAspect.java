@@ -20,11 +20,11 @@ public class LogAspect {
     @Around("@annotation(org.gnori.send.mail.worker.aop.LogExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable{
 
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
 
         final Object proceed = joinPoint.proceed();
 
-        long executionTime = System.currentTimeMillis() - startTime;
+        final long executionTime = System.currentTimeMillis() - startTime;
 
         log.info(PROFILING_LOG_PATTERN, joinPoint.getSignature(), executionTime);
 

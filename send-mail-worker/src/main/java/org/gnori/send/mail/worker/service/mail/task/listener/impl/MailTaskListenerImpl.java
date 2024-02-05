@@ -80,15 +80,17 @@ public class MailTaskListenerImpl implements MailTaskListener {
     private Result<Empty, MailFailure> sendWithUserMail(Message message) {
 
         return accountService.findAccountById(message.accountId())
-                .map(account -> {
+                .map(account ->
+                        cryptoTool.decrypt(account.getKeyForMail())
+                                .mapFailure(failure -> MailFailure.BAD_DECRYPT_KEY)
+                                .flatMapSuccess(decryptedKey -> {
 
-                    final String username = account.getEmail();
-                    final String keyForMail = cryptoTool.decrypt(account.getKeyForMail());
-                    final Properties properties = MailUtils.detectProperties(username).orElse(null);
-                    final Session session = Session.getInstance(properties, new LoginAuthenticator(username, keyForMail));
+                                    final String username = account.getEmail();
+                                    final Properties properties = MailUtils.detectProperties(username).orElse(null);
+                                    final Session session = Session.getInstance(properties, new LoginAuthenticator(username, decryptedKey));
 
-                    return mailSender.send(username, session, message);
-                })
+                                    return mailSender.send(username, session, message);
+                                }))
                 .orElseGet(() -> Result.failure(MailFailure.NOT_FOUND_EMAIL_ACCOUNT));
     }
 

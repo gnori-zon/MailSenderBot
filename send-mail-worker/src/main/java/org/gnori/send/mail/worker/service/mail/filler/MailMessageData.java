@@ -3,6 +3,7 @@ package org.gnori.send.mail.worker.service.mail.filler;
 import org.springframework.core.io.FileSystemResource;
 
 import javax.mail.internet.InternetAddress;
+import java.time.LocalDate;
 import java.util.Date;
 
 public record MailMessageData(
@@ -11,5 +12,5 @@ public record MailMessageData(
         InternetAddress[] recipients,
         String text,
         FileSystemResource annex,
-        Date sentDate
+        LocalDate sentDate
 ) {}
