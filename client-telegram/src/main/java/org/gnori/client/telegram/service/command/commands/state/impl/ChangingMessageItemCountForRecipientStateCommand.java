@@ -22,10 +22,10 @@ import org.gnori.client.telegram.service.message.MessageStorage;
 import org.gnori.client.telegram.service.message.MessageUpdateFailure;
 import org.gnori.data.dto.MessageDto;
 import org.gnori.data.model.Message;
-import org.gnori.shared.flow.Empty;
-import org.gnori.shared.flow.Result;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.flow.Empty;
+import org.gnori.data.flow.Result;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

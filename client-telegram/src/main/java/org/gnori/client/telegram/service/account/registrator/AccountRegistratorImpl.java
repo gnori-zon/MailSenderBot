@@ -1,9 +1,9 @@
 package org.gnori.client.telegram.service.account.registrator;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.store.domain.service.account.AccountService;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.service.account.AccountService;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Update;

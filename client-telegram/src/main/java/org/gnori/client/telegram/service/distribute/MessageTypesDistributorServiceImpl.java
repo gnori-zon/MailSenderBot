@@ -8,8 +8,8 @@ import org.gnori.client.telegram.service.command.CommandContainers;
 import org.gnori.client.telegram.service.command.CommandContainerType;
 import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.account.registrator.AccountRegistrator;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

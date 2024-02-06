@@ -12,7 +12,6 @@ repositories {
  * Submodules import sample
  */
 dependencies {
-    implementation project(':store')
     implementation project(':data')
     implementation project(':shared')
 }

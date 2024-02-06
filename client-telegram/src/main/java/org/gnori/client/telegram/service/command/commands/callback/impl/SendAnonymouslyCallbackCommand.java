@@ -14,9 +14,9 @@ import org.gnori.client.telegram.service.command.utils.preparers.text.param.Simp
 import org.gnori.client.telegram.service.message.MessageStorage;
 import org.gnori.data.model.Message;
 import org.gnori.data.model.SendMode;
-import org.gnori.store.domain.service.mailing.MailingHistoryService;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.enums.StateMessage;
+import org.gnori.data.service.mailing.MailingHistoryService;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.enums.StateMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

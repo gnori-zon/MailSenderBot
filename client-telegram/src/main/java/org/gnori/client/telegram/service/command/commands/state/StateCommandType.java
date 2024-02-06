@@ -3,7 +3,7 @@ package org.gnori.client.telegram.service.command.commands.state;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.entity.enums.State;
 
 import java.util.Arrays;
 import java.util.Map;

@@ -14,7 +14,7 @@ import org.gnori.client.telegram.service.command.utils.preparers.text.TextPrepar
 import org.gnori.client.telegram.service.command.utils.preparers.text.param.PatternTextPreparerParam;
 import org.gnori.client.telegram.service.message.MessageStorage;
 import org.gnori.data.dto.MessageDto;
-import org.gnori.store.entity.Account;
+import org.gnori.data.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

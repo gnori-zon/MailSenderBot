@@ -1,8 +1,8 @@
 package org.gnori.client.telegram.service.account.updater;
 
-import org.gnori.shared.flow.Empty;
-import org.gnori.shared.flow.Result;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.flow.Empty;
+import org.gnori.data.flow.Result;
+import org.gnori.data.entity.enums.State;
 
 public interface AccountUpdater {
 

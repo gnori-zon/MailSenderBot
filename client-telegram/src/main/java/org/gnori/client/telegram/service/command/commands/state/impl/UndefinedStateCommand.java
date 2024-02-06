@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.service.command.commands.UndefinedCommand;
 import org.gnori.client.telegram.service.command.commands.state.StateCommand;
 import org.gnori.client.telegram.service.command.commands.state.StateCommandType;
-import org.gnori.store.entity.Account;
+import org.gnori.data.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

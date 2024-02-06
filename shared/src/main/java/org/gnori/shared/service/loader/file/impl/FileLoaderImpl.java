@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Result;
 import org.gnori.shared.service.loader.binary.BinaryLoader;
 import org.gnori.data.model.FileData;
 import org.gnori.shared.service.loader.file.FileFailure;

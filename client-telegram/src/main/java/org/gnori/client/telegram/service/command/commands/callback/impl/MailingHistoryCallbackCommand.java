@@ -12,9 +12,9 @@ import org.gnori.client.telegram.service.command.utils.preparers.button.data.cal
 import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.text.param.PatternTextPreparerParam;
 import org.gnori.data.dto.MailingHistoryDto;
-import org.gnori.store.domain.service.mailing.MailingHistoryService;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.MailingHistory;
+import org.gnori.data.service.mailing.MailingHistoryService;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.MailingHistory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

@@ -2,8 +2,8 @@ package org.gnori.data.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.gnori.store.entity.MailingHistory;
-import org.gnori.store.entity.enums.StateMessage;
+import org.gnori.data.entity.MailingHistory;
+import org.gnori.data.entity.enums.StateMessage;
 
 import java.util.List;
 import java.util.stream.Collectors;

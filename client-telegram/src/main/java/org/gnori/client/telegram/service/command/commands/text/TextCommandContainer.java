@@ -2,7 +2,7 @@ package org.gnori.client.telegram.service.command.commands.text;
 
 import org.gnori.client.telegram.service.command.CommandContainer;
 import org.gnori.client.telegram.service.command.CommandContainerType;
-import org.gnori.store.entity.Account;
+import org.gnori.data.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

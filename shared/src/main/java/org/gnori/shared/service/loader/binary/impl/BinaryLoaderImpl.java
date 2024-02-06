@@ -3,7 +3,7 @@ package org.gnori.shared.service.loader.binary.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.gnori.shared.service.loader.binary.BinaryLoader;
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Result;
 import org.gnori.shared.service.loader.url.URLLoader;
 import org.gnori.shared.service.loader.LoadFailure;
 import org.json.JSONException;

@@ -2,8 +2,8 @@ package org.gnori.data.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.enums.State;
 
 @Getter
 @EqualsAndHashCode

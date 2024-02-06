@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsParser;
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
 import org.gnori.send.mail.worker.utils.MailUtils;
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Result;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.AddressException;

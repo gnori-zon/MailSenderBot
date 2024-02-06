@@ -1,7 +1,7 @@
 package org.gnori.shared.crypto.impl;
 
 import org.apache.commons.codec.binary.Base64;
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Result;
 import org.gnori.shared.crypto.CryptoFailure;
 import org.gnori.shared.crypto.CryptoTool;
 import org.springframework.beans.factory.annotation.Value;

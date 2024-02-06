@@ -9,8 +9,8 @@ import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsP
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
 import org.gnori.send.mail.worker.service.mail.sender.MailSender;
 import org.gnori.data.model.FileData;
-import org.gnori.shared.flow.Empty;
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Empty;
+import org.gnori.data.flow.Result;
 import org.gnori.shared.service.loader.file.FileLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;

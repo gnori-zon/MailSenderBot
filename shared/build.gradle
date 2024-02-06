@@ -3,7 +3,6 @@
  */
 dependencies {
     provided project(':data')
-    provided project(':store')
 }
 // Spring
 dependencies {

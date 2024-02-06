@@ -3,10 +3,10 @@ package org.gnori.client.telegram.service.account.updater;
 import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.service.command.utils.command.UtilsCommand;
 import org.gnori.shared.crypto.CryptoTool;
-import org.gnori.shared.flow.Empty;
-import org.gnori.shared.flow.Result;
-import org.gnori.store.domain.service.account.AccountService;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.flow.Empty;
+import org.gnori.data.flow.Result;
+import org.gnori.data.service.account.AccountService;
+import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.gnori.client.telegram.service.command.commands.callback.impl.CreateMailingCallbackCommand;
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommand;
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
-import org.gnori.store.entity.Account;
+import org.gnori.data.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

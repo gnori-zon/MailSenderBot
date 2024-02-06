@@ -12,7 +12,7 @@ import org.gnori.client.telegram.service.command.utils.preparers.button.data.url
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.url.UrlButtonDataPresetType;
 import org.gnori.client.telegram.service.command.utils.preparers.text.TextPreparer;
 import org.gnori.client.telegram.service.command.utils.preparers.text.param.SimpleTextPreparerParam;
-import org.gnori.store.entity.Account;
+import org.gnori.data.entity.Account;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

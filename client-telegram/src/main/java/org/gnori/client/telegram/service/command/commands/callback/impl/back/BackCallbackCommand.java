@@ -6,8 +6,8 @@ import org.gnori.client.telegram.service.command.commands.callback.CallbackComma
 import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandContainer;
 import org.gnori.client.telegram.service.command.commands.callback.impl.back.menustep.MenuStepCommandType;
-import org.gnori.store.entity.Account;
-import org.gnori.store.entity.enums.State;
+import org.gnori.data.entity.Account;
+import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

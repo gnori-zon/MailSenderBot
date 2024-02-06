@@ -6,6 +6,7 @@ plugins {
 /**
  * General dependencies to all modules
  */
+
 subprojects {
 
     apply plugin: 'java'

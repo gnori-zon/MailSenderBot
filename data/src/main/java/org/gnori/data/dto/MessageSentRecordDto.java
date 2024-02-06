@@ -2,7 +2,7 @@ package org.gnori.data.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.gnori.store.entity.MessageSentRecord;
+import org.gnori.data.entity.MessageSentRecord;
 
 import java.time.format.DateTimeFormatter;
 

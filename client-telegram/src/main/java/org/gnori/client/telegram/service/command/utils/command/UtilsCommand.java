@@ -2,7 +2,7 @@ package org.gnori.client.telegram.service.command.utils.command;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Result;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

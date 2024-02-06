@@ -1,6 +1,6 @@
 package org.gnori.shared.crypto;
 
-import org.gnori.shared.flow.Result;
+import org.gnori.data.flow.Result;
 
 public interface CryptoTool {
 
