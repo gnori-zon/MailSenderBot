@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface MailRecipientsParser {
 
-    Result<InternetAddress[], MailFailure> parse(List<String> recipients);
+    InternetAddress[] parse(List<String> recipients);
 }

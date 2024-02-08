@@ -20,7 +20,7 @@ public class MailUtils {
     private static final String DOMAIN_SEPARATOR = "@";
 
     public static boolean validateMail(String emailAddress) {
-        return emailAddress.matches(VALID_EMAIL_PATTERN);
+        return emailAddress != null && emailAddress.matches(VALID_EMAIL_PATTERN);
     }
 
     public static Optional<Properties> detectProperties(String mail) {

@@ -2,15 +2,15 @@ package org.gnori.send.mail.worker.service.mail.sender.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.gnori.data.flow.Empty;
+import org.gnori.data.flow.Result;
+import org.gnori.data.model.FileData;
 import org.gnori.data.model.Message;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageData;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageFiller;
 import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsParser;
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
 import org.gnori.send.mail.worker.service.mail.sender.MailSender;
-import org.gnori.data.model.FileData;
-import org.gnori.data.flow.Empty;
-import org.gnori.data.flow.Result;
 import org.gnori.shared.service.loader.file.FileLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
@@ -36,30 +36,26 @@ public class MailSenderImpl implements MailSender {
 
         final MimeMessage mailMessage = new MimeMessage(session);
 
-        return createMailMessageData(senderMail, message)
+        return Result.<MailMessageData, MailFailure>success(createMailMessageData(senderMail, message))
                 .doIfSuccess(mailMessageData -> mailMessageFiller.fill(mailMessage, mailMessageData))
                 .doIfSuccess(mailMessageData -> sendMessages(mailMessage, message.countForRecipient()))
                 .flatMapSuccess(mailMessageData -> deleteFile(mailMessageData.annex()));
     }
 
-    private Result<MailMessageData, MailFailure> createMailMessageData(String senderMail, Message message) {
+    private MailMessageData createMailMessageData(String senderMail, Message message) {
 
-        return mailRecipientsParser.parse(message.recipients())
-                .mapSuccess(recipients -> {
+        final FileSystemResource fileSystemResource = message.hasAnnex()
+                ? loadFrom(message.fileData()).orElse(null)
+                : null;
 
-                    final FileSystemResource fileSystemResource = message.hasAnnex()
-                            ? loadFrom(message.fileData()).orElse(null)
-                            : null;
-
-                    return new MailMessageData(
-                            message.title(),
-                            senderMail,
-                            recipients,
-                            message.text(),
-                            fileSystemResource,
-                            message.sentDate()
-                    );
-                });
+        return new MailMessageData(
+                message.title(),
+                senderMail,
+                mailRecipientsParser.parse(message.recipients()),
+                message.text(),
+                fileSystemResource,
+                message.sentDate()
+        );
     }
 
     private Optional<FileSystemResource> loadFrom(FileData fileData) {
