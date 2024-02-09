@@ -1,9 +1,11 @@
 package org.gnori.shared.crypto.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.gnori.data.flow.Result;
 import org.gnori.shared.crypto.CryptoFailure;
 import org.gnori.shared.crypto.CryptoTool;
+import org.gnori.shared.crypto.CryptoToolParams;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,16 +21,14 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @Component
+@RequiredArgsConstructor
 public class CryptoToolImpl implements CryptoTool {
 
     private static final String CIPHER_NAME = "AES/CBC/PKCS5PADDING";
     private static final String CHARSET = "UTF-8";
     private static final String ALGORITHM_NAME = "AES";
 
-    @Value("${cipher.key}")
-    private String key;
-    @Value("${cipher.initVector}")
-    private String initVector;
+    private final CryptoToolParams params;
 
     @Override
     public Result<String, CryptoFailure> encrypt(String value) {
@@ -50,8 +50,8 @@ public class CryptoToolImpl implements CryptoTool {
 
         try {
 
-            final IvParameterSpec ivParameterSpec = new IvParameterSpec(initVector.getBytes(CHARSET));
-            final SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(CHARSET), ALGORITHM_NAME);
+            final IvParameterSpec ivParameterSpec = new IvParameterSpec(params.initVector().getBytes(CHARSET));
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(params.key().getBytes(CHARSET), ALGORITHM_NAME);
 
             final Cipher cipher = Cipher.getInstance(CIPHER_NAME);
             cipher.init(cryptoMode, secretKeySpec, ivParameterSpec);
