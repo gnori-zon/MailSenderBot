@@ -8,11 +8,12 @@ import org.gnori.data.model.FileData;
 import org.gnori.data.model.Message;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageData;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageFiller;
-import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsParser;
+import org.gnori.send.mail.worker.service.mail.parser.recipinets.MailRecipientsParser;
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
 import org.gnori.send.mail.worker.service.mail.sender.MailSender;
 import org.gnori.shared.service.loader.file.FileLoader;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -34,19 +35,25 @@ public class MailSenderImpl implements MailSender {
     @Override
     public Result<Empty, MailFailure> send(String senderMail, Session session, Message message) {
 
-        final MimeMessage mailMessage = new MimeMessage(session);
-
         return Result.<MailMessageData, MailFailure>success(createMailMessageData(senderMail, message))
-                .doIfSuccess(mailMessageData -> mailMessageFiller.fill(mailMessage, mailMessageData))
-                .doIfSuccess(mailMessageData -> sendMessages(mailMessage, message.countForRecipient()))
-                .flatMapSuccess(mailMessageData -> deleteFile(mailMessageData.annex()));
+                .flatMapSuccess(mailMessageData ->
+                        mailMessageFiller.fill(new MimeMessage(session), mailMessageData)
+                                .mapSuccess(mimeMessage -> Pair.of(mailMessageData, mimeMessage))
+                )
+                .doIfSuccess(pair -> {
+                    final MimeMessage filledMimeMessage = pair.getSecond();
+                    sendMessages(filledMimeMessage, message.countForRecipient());
+                })
+                .mapSuccess(Pair::getFirst)
+                .mapSuccess(MailMessageData::annex)
+                .flatMapSuccess(this::deleteFile);
     }
 
     private MailMessageData createMailMessageData(String senderMail, Message message) {
 
-        final FileSystemResource fileSystemResource = message.hasAnnex()
-                ? loadFrom(message.fileData()).orElse(null)
-                : null;
+        final FileSystemResource fileSystemResource = Optional.ofNullable(message.fileData())
+                .flatMap(this::loadFrom)
+                .orElse(null);
 
         return new MailMessageData(
                 message.title(),

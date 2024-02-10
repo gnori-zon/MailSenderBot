@@ -1,7 +1,7 @@
-package org.gnori.send.mail.worker.service.mail.recipinets.parser.impl;
+package org.gnori.send.mail.worker.service.mail.parser.recipinets.impl;
 
 import lombok.extern.log4j.Log4j2;
-import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsParser;
+import org.gnori.send.mail.worker.service.mail.parser.recipinets.MailRecipientsParser;
 import org.gnori.send.mail.worker.utils.MailUtils;
 import org.springframework.stereotype.Component;
 

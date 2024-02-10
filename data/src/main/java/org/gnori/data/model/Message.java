@@ -12,7 +12,6 @@ public record Message(
         String title,
         String text,
         FileData fileData,
-
         List<String> recipients,
         int countForRecipient,
         LocalDate sentDate

@@ -1,11 +1,10 @@
 package org.gnori.send.mail.worker.service.mail.filler.impl;
 
 import lombok.extern.log4j.Log4j2;
+import org.gnori.data.flow.Result;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageData;
 import org.gnori.send.mail.worker.service.mail.filler.MailMessageFiller;
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
-import org.gnori.data.flow.Empty;
-import org.gnori.data.flow.Result;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ public class MailMessageFillerImpl implements MailMessageFiller {
     private static final String DEFAULT_ANNEX_NAME = "annex";
 
     @Override
-    public Result<Empty, MailFailure> fill(MimeMessage mailMessage, MailMessageData data) {
+    public Result<MimeMessage, MailFailure> fill(MimeMessage mailMessage, MailMessageData data) {
 
         try {
 
@@ -45,7 +44,7 @@ public class MailMessageFillerImpl implements MailMessageFiller {
                 helper.addAttachment(filename, data.annex());
             }
 
-            return Result.success(Empty.INSTANCE);
+            return Result.success(mailMessage);
 
         } catch (MessagingException e) {
             log.error("bad fill mail message: {}", e.getLocalizedMessage());

@@ -1,4 +1,4 @@
-package org.gnori.send.mail.worker.service.mail.recipinets.parser;
+package org.gnori.send.mail.worker.service.mail.parser.recipinets;
 
 import javax.mail.internet.InternetAddress;
 import java.util.List;

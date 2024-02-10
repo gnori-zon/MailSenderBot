@@ -1,6 +1,6 @@
-package org.gnori.send.mail.worker.service.mail.recipinets.parser.impl;
+package org.gnori.send.mail.worker.service.mail.parser.recipinets.impl;
 
-import org.gnori.send.mail.worker.service.mail.recipinets.parser.MailRecipientsParser;
+import org.gnori.send.mail.worker.service.mail.parser.recipinets.MailRecipientsParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -7,5 +7,5 @@ import org.gnori.data.flow.Result;
 import javax.mail.internet.MimeMessage;
 
 public interface MailMessageFiller {
-    Result<Empty, MailFailure> fill(MimeMessage mailMessage, MailMessageData data);
+    Result<MimeMessage, MailFailure> fill(MimeMessage mailMessage, MailMessageData data);
 }
