@@ -24,7 +24,7 @@ spring:
     password: guest
     queue-name: send.mail
 #  for send-worker
-base:
+base-mails-data:
   mails:
   keys:
 #for Crypto
