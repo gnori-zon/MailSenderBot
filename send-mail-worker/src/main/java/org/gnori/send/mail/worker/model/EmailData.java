@@ -1,4 +1,4 @@
-package org.gnori.send.mail.worker.utils;
+package org.gnori.send.mail.worker.model;
 
 public record EmailData(
         String login,

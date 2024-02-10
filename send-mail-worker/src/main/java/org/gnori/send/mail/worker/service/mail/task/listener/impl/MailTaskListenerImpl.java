@@ -8,7 +8,7 @@ import org.gnori.send.mail.worker.aop.LogExecutionTime;
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
 import org.gnori.send.mail.worker.service.mail.sender.MailSender;
 import org.gnori.send.mail.worker.service.mail.task.listener.MailTaskListener;
-import org.gnori.send.mail.worker.utils.DefaultEmailData;
+import org.gnori.send.mail.worker.service.storage.emaildata.DefaultEmailDataStorage;
 import org.gnori.send.mail.worker.utils.LoginAuthenticator;
 import org.gnori.send.mail.worker.utils.MailUtils;
 import org.gnori.shared.crypto.CryptoTool;
@@ -31,7 +31,7 @@ import java.util.Properties;
 public class MailTaskListenerImpl implements MailTaskListener {
 
     private final MailSender mailSender;
-    private final DefaultEmailData defaultEmailData;
+    private final DefaultEmailDataStorage defaultEmailDataStorage;
     private final MailingHistoryService mailingHistoryService;
     private final MessageSentRecordService messageSentRecordService;
     private final AccountService accountService;
@@ -62,7 +62,7 @@ public class MailTaskListenerImpl implements MailTaskListener {
     @LogExecutionTime
     private Result<Empty, MailFailure> sendAnonymously(Message message) {
 
-        return defaultEmailData.find()
+        return defaultEmailDataStorage.find()
                 .map(mail -> {
 
                     final Properties props = MailUtils.detectProperties(mail.login()).orElseThrow();
@@ -70,7 +70,7 @@ public class MailTaskListenerImpl implements MailTaskListener {
 
 
                     return mailSender.send(mail.login(), session, message)
-                            .doAnyway(() -> defaultEmailData.add(mail));
+                            .doAnyway(() -> defaultEmailDataStorage.add(mail));
                 })
                 .orElseGet(() -> Result.failure(MailFailure.NO_FREE_MAILING_ADDRESSES));
 

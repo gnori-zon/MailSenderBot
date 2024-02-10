@@ -7,7 +7,7 @@ public final class LoginAuthenticator extends Authenticator {
     private final PasswordAuthentication authentication;
 
     public LoginAuthenticator(String username, String password) {
-        authentication = new PasswordAuthentication(username,password);
+        authentication = new PasswordAuthentication(username, password);
     }
 
     @Override
