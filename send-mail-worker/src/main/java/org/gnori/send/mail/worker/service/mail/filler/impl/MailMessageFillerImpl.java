@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -59,6 +60,11 @@ public class MailMessageFillerImpl implements MailMessageFiller {
     }
 
     private Date asDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
+        final Instant localDateInstant = localDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant();
+
+        return Date.from(localDateInstant);
     }
 }

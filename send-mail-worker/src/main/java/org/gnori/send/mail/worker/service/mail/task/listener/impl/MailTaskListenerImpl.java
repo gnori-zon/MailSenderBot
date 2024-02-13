@@ -3,7 +3,14 @@ package org.gnori.send.mail.worker.service.mail.task.listener.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.gnori.data.entity.MessageSentRecord;
+import org.gnori.data.entity.enums.StateMessage;
+import org.gnori.data.flow.Empty;
+import org.gnori.data.flow.Result;
 import org.gnori.data.model.Message;
+import org.gnori.data.service.account.AccountService;
+import org.gnori.data.service.mailing.MailingHistoryService;
+import org.gnori.data.service.messagesentrecord.MessageSentRecordService;
 import org.gnori.send.mail.worker.aop.LogExecutionTime;
 import org.gnori.send.mail.worker.service.mail.sender.MailFailure;
 import org.gnori.send.mail.worker.service.mail.sender.MailSender;
@@ -12,13 +19,6 @@ import org.gnori.send.mail.worker.service.storage.emaildata.DefaultEmailDataStor
 import org.gnori.send.mail.worker.utils.LoginAuthenticator;
 import org.gnori.send.mail.worker.utils.MailUtils;
 import org.gnori.shared.crypto.CryptoTool;
-import org.gnori.data.flow.Empty;
-import org.gnori.data.flow.Result;
-import org.gnori.data.service.account.AccountService;
-import org.gnori.data.service.mailing.MailingHistoryService;
-import org.gnori.data.service.messagesentrecord.MessageSentRecordService;
-import org.gnori.data.entity.MessageSentRecord;
-import org.gnori.data.entity.enums.StateMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -104,6 +104,10 @@ public class MailTaskListenerImpl implements MailTaskListener {
     }
 
     private int countWillSendMessages(Message message) {
-        return (int) message.recipients().stream().filter(MailUtils::validateMail).count() * message.countForRecipient();
+
+        final long countRecipients = message.recipients().stream()
+                .filter(MailUtils::validateMail).count();
+
+        return (int) countRecipients * message.countForRecipient();
     }
 }
