@@ -2,6 +2,7 @@ package org.gnori.send.mail.worker.service.mail.parser.recipinets.impl;
 
 import org.gnori.send.mail.worker.service.mail.parser.recipinets.MailRecipientsParser;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.mail.internet.InternetAddress;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+@DisplayName("Unit-level testing for MailRecipientsParserImpl")
 class MailRecipientsParserImplTest {
 
     private static final int MAX_RECIPIENTS = 499;
