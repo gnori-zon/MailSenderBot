@@ -124,15 +124,22 @@ class MailMessageFillerImplTest {
     @Test
     void failureFill() {
 
-        final MimeMessage mimeMessage = new MimeMessage(getDefaultSession());
-        final List<MailMessageData> invalidMailMessageDataList = Collections.emptyList(); // todo: fill collection
+        final List<MailMessageData> invalidMailMessageDataList = List.of(
+                new MailMessageData(null, "seneder@mail.com", new InternetAddress[0], "text", null, null),
+                new MailMessageData("title", null, new InternetAddress[0], "text", null, null),
+                new MailMessageData("title", "seneder@mail.com", null, "text", null, null),
+                new MailMessageData("title", "seneder@mail.com", new InternetAddress[0], null, null, null)
+        );
 
         final AtomicInteger countInvalidResult = new AtomicInteger();
-        invalidMailMessageDataList.forEach(mailMessageData ->
-                filler.fill(mimeMessage, mailMessageData)
-                        .doIfFailure(failure -> countInvalidResult.incrementAndGet()));
+        invalidMailMessageDataList.forEach(mailMessageData -> {
 
-        Assertions.assertEquals(invalidMailMessageDataList.size(), countInvalidResult);
+            final MimeMessage mimeMessage = new MimeMessage(getDefaultSession());
+            filler.fill(mimeMessage, mailMessageData)
+                    .doIfFailure(failure -> countInvalidResult.incrementAndGet());
+        });
+
+        Assertions.assertEquals(invalidMailMessageDataList.size(), countInvalidResult.get());
     }
 
     private boolean existAttachment(MimeMessage message) {

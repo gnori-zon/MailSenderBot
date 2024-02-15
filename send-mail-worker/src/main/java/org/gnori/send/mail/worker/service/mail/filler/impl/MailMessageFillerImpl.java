@@ -47,9 +47,14 @@ public class MailMessageFillerImpl implements MailMessageFiller {
 
             return Result.success(mailMessage);
 
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             log.error("bad fill mail message: {}", e.getLocalizedMessage());
-            return Result.failure(MailFailure.MESSAGING_EXCEPTION);
+
+            if (e instanceof MessagingException) {
+                return Result.failure(MailFailure.MESSAGING_EXCEPTION);
+            }
+
+            return Result.failure(MailFailure.BAD_FILL_MESSAGE);
         }
     }
 
