@@ -30,6 +30,15 @@ public class MailUtils {
                 .flatMap(MailUtils::findProperties);
     }
 
+    private static String extractDomainPart(@NotNull String mail) {
+
+        final int indexSeparator = mail.indexOf(DOMAIN_SEPARATOR);
+
+        return indexSeparator != -1
+                ? mail.substring(indexSeparator + 1)
+                : "";
+    }
+
     private static Optional<Properties> findProperties(String domainPart) {
 
         for (final MailDomain domain: MailDomain.values()) {
@@ -44,18 +53,9 @@ public class MailUtils {
         return Optional.empty();
     }
 
-    private static String extractDomainPart(@NotNull String mail) {
-
-        final int indexSeparator = mail.indexOf(DOMAIN_SEPARATOR);
-        
-        return indexSeparator != -1
-                ? mail.substring(indexSeparator)
-                : "";
-    }
-
     private static String createContainsRegex(Collection<String> elements) {
 
         return elements.stream()
-                .collect(Collectors.joining("|", ".*[", "].*"));
+                .collect(Collectors.joining("|", ".*(", ")[.].*"));
     }
 }
