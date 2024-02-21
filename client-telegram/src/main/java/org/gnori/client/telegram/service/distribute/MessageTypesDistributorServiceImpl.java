@@ -4,10 +4,10 @@ package org.gnori.client.telegram.service.distribute;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.gnori.client.telegram.service.command.CommandContainers;
-import org.gnori.client.telegram.service.command.CommandContainerType;
-import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
 import org.gnori.client.telegram.service.account.registrator.AccountRegistrator;
+import org.gnori.client.telegram.service.command.CommandContainerType;
+import org.gnori.client.telegram.service.command.CommandContainers;
+import org.gnori.client.telegram.service.command.commands.callback.CallbackCommandType;
 import org.gnori.data.entity.Account;
 import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Service;
@@ -26,17 +26,15 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
     @Override
     public void distribute(Update update) {
 
-        getRegisterAccount(update)
-                .ifPresent(account -> distribute(account, update));
+        final Account account = getRegisterAccount(update);
+        distribute(account, update);
     }
 
-    private Optional<Account> getRegisterAccount(Update update) {
+    private Account getRegisterAccount(Update update) {
 
         return Optional.ofNullable(update.getMessage())
-                .map(message ->
-                        accountRegistrator.getRegisterAccount(message.getChatId())
-                                .orElseGet(() -> accountRegistrator.registrateBy(update))
-                );
+                .flatMap(message -> accountRegistrator.getRegisterAccount(message.getChatId()))
+                .orElseGet(() -> accountRegistrator.registrateBy(update));
     }
 
     private void distribute(Account account, Update update) {

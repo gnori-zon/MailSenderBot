@@ -98,6 +98,6 @@ public class BinaryLoaderImpl implements BinaryLoader {
 
         return fileStorageUri
                 .replace("{token}", token)
-                .replace("{filePath}",filePath);
+                .replace("{filePath}", filePath);
     }
 }

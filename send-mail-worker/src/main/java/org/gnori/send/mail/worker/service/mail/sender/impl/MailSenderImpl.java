@@ -41,12 +41,17 @@ public class MailSenderImpl implements MailSender {
                                 .mapSuccess(mimeMessage -> Pair.of(mailMessageData, mimeMessage))
                 )
                 .doIfSuccess(pair -> {
+
                     final MimeMessage filledMimeMessage = pair.getSecond();
+
                     sendMessages(filledMimeMessage, message.countForRecipient());
                 })
-                .mapSuccess(Pair::getFirst)
-                .mapSuccess(MailMessageData::annex)
-                .flatMapSuccess(this::deleteFile);
+                .flatMapSuccess(pair -> {
+
+                    final MailMessageData mailMessageData = pair.getFirst();
+
+                    return this.deleteFile(mailMessageData.annex());
+                });
     }
 
     private MailMessageData createMailMessageData(String senderMail, Message message) {
