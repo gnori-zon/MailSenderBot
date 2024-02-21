@@ -11,6 +11,7 @@ import org.gnori.client.telegram.service.command.commands.callback.CallbackComma
 import org.gnori.data.entity.Account;
 import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Optional;
@@ -32,9 +33,20 @@ public class MessageTypesDistributorServiceImpl implements MessageTypesDistribut
 
     private Account getRegisterAccount(Update update) {
 
-        return Optional.ofNullable(update.getMessage())
+        return Optional.ofNullable(extractMessage(update))
                 .flatMap(message -> accountRegistrator.getRegisterAccount(message.getChatId()))
                 .orElseGet(() -> accountRegistrator.registrateBy(update));
+    }
+
+    private Message extractMessage(Update update) {
+
+        if (update.hasCallbackQuery()) {
+
+            return update.getCallbackQuery()
+                    .getMessage();
+        }
+
+        return update.getMessage();
     }
 
     private void distribute(Account account, Update update) {

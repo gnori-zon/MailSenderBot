@@ -27,6 +27,7 @@ public enum TextCommandType {
     private static Map<String, TextCommandType> typeMap() {
 
         return Arrays.stream(TextCommandType.values())
+                .filter(type -> type.getRaw() != null)
                 .collect(Collectors.toUnmodifiableMap(TextCommandType::getRaw, Function.identity()));
     }
 }

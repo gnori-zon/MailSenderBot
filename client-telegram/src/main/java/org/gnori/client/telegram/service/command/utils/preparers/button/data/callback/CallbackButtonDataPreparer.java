@@ -21,7 +21,7 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<ButtonData
     @Override
     public List<ButtonData> prepare(CallbackButtonDataPreparerParam param) {
 
-        final List<ButtonData> buttonDataList = Optional.of(param.type())
+        final List<ButtonData> buttonDataList = Optional.ofNullable(param.type())
                 .map(type -> switch (type) {
 
                     case SELECT_START_MENU_ITEM -> getSelectStartMenuItemCallbackButtonDataList();

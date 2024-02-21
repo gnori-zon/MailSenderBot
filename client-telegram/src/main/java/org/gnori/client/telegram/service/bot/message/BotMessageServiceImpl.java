@@ -36,6 +36,8 @@ public class BotMessageServiceImpl implements BotMessageService, BotMessageSende
 
         final EditMessageText editMessageText = editMessageTextMapper.map(param);
         editMessageText.setParseMode(DEFAULT_PARSE_MODE);
+
+        execute(editMessageText);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package org.gnori.client.telegram.service.command.commands.text.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.client.telegram.service.bot.message.BotMessageEditor;
+import org.gnori.client.telegram.service.bot.message.BotMessageSender;
 import org.gnori.client.telegram.service.bot.message.model.button.ButtonData;
-import org.gnori.client.telegram.service.bot.message.model.message.EditBotMessageParam;
+import org.gnori.client.telegram.service.bot.message.model.message.SendBotMessageParam;
 import org.gnori.client.telegram.service.command.commands.text.TextCommand;
 import org.gnori.client.telegram.service.command.commands.text.TextCommandType;
 import org.gnori.client.telegram.service.command.utils.preparers.button.data.ButtonDataPreparer;
@@ -22,18 +22,17 @@ import java.util.List;
 public class StartTextCommand implements TextCommand {
 
     private final TextPreparer textPreparer;
-    private final BotMessageEditor botMessageEditor;
+    private final BotMessageSender botMessageSender;
     private final ButtonDataPreparer<ButtonData, CallbackButtonDataPreparerParam> buttonDataPreparer;
 
     @Override
     public void execute(Account account, Update update) {
 
         final long chatId = account.getChatId();
-        final int messageId = update.getMessage().getMessageId();
         final String text = textPreparer.prepare(SimpleTextPreparerParam.START_MESSAGE);
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
-        botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, newCallbackButtonDataList));
+        botMessageSender.send(new SendBotMessageParam(chatId, text, newCallbackButtonDataList));
     }
 
     @Override

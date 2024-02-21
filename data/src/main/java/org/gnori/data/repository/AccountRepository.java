@@ -46,7 +46,7 @@ public interface AccountRepository extends JpaRepository<Account,Long> {
     @Query(value = """
              update account
                set mailing_history_id = :mailingHistoryId
-             where account.id = :id
+             where id = :id
              """, nativeQuery = true)
-    void updateMailingHistoryId(Long id, Long accountId);
+    void updateMailingHistoryId(Long id, Long mailingHistoryId);
 }

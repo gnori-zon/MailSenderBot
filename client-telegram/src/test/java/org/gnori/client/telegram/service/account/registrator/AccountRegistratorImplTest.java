@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.*;
 
 @DisplayName("Unit-level testing for AccountRegistratorImpl")
 class AccountRegistratorImplTest {
@@ -58,12 +55,12 @@ class AccountRegistratorImplTest {
 
     private Update updateFrom(Chat chat, User user) {
 
-        final ChatMemberUpdated chatMember = new ChatMemberUpdated();
-        chatMember.setFrom(user);
-        chatMember.setChat(chat);
+        final Message message = new Message();
+        message.setFrom(user);
+        message.setChat(chat);
 
         final Update update = new Update();
-        update.setChatMember(chatMember);
+        update.setMessage(message);
 
         return update;
     }

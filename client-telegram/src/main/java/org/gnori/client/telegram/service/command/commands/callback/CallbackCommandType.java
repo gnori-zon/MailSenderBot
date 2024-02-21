@@ -3,6 +3,7 @@ package org.gnori.client.telegram.service.command.commands.callback;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public enum CallbackCommandType {
@@ -33,6 +34,7 @@ public enum CallbackCommandType {
     public static CallbackCommandType of(CallbackQuery callbackQuery) {
 
         return Optional.of(callbackQuery.getData())
+                .flatMap(callbackData -> Arrays.stream(callbackData.split(DATA_DELIMITER)).findFirst())
                 .map(CallbackCommandType::valueOf)
                 .orElse(UNDEFINED);
     }
@@ -41,7 +43,8 @@ public enum CallbackCommandType {
 
         return Optional.ofNullable(update.getCallbackQuery())
                 .map(CallbackQuery::getData)
-                .map(callbackData -> BACK.name().equals(callbackData))
+                .flatMap(callbackData -> Arrays.stream(callbackData.split(DATA_DELIMITER)).findFirst())
+                .map(firstCallbackParam -> BACK.name().equals(firstCallbackParam))
                 .orElse(false);
     }
 }

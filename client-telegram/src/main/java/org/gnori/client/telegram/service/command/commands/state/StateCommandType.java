@@ -36,6 +36,7 @@ public enum StateCommandType {
     private static Map<State, StateCommandType> typeMap() {
 
         return Arrays.stream(StateCommandType.values())
+                .filter(type -> type.getState() != null)
                 .collect(Collectors.toUnmodifiableMap(StateCommandType::getState, Function.identity()));
     }
 }

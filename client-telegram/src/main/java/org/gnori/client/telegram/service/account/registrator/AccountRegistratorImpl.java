@@ -6,7 +6,7 @@ import org.gnori.data.entity.Account;
 import org.gnori.data.entity.enums.State;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
@@ -26,9 +26,10 @@ public class AccountRegistratorImpl implements AccountRegistrator {
     @Override
     public Account registrateBy(Update update) {
 
-        final ChatMemberUpdated chatMember = update.getChatMember();
-        final User user = chatMember.getFrom();
-        final Chat chat = chatMember.getChat();
+
+        final Message message = extractMessage(update);
+        final User user = message.getFrom();
+        final Chat chat = message.getChat();
 
         final Account account = Account.builder()
                 .chatId(chat.getId())
@@ -39,5 +40,16 @@ public class AccountRegistratorImpl implements AccountRegistrator {
                 .build();
 
         return accountService.save(account);
+    }
+
+    private Message extractMessage(Update update) {
+
+        if (update.hasCallbackQuery()) {
+
+            return update.getCallbackQuery()
+                    .getMessage();
+        }
+
+        return update.getMessage();
     }
 }
