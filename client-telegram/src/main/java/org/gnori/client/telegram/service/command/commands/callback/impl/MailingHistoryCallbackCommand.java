@@ -34,7 +34,7 @@ public class MailingHistoryCallbackCommand implements CallbackCommand {
 
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        final MailingHistoryDto mailingHistoryDto = mailingHistoryService.getMailingHistoryById(chatId)
+        final MailingHistoryDto mailingHistoryDto = mailingHistoryService.getMailingHistoryByAccountId(account.getId())
                 .map(MailingHistoryDto::new)
                 .orElseGet(() -> new MailingHistoryDto(new MailingHistory()));
 

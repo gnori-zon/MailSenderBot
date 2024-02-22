@@ -19,6 +19,7 @@ import org.gnori.client.telegram.service.command.utils.preparers.text.param.Simp
 import org.gnori.data.dto.AccountDto;
 import org.gnori.data.entity.Account;
 import org.gnori.data.entity.enums.State;
+import org.gnori.data.service.account.AccountService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -29,6 +30,7 @@ import java.util.List;
 public class ChangingMailStateCommand implements StateCommand {
 
     private final TextPreparer textPreparer;
+    private final AccountService accountService;
     private final AccountUpdater accountUpdater;
     private final BotMessageEditor botMessageEditor;
     private final BotMessageSender botMessageSender;
@@ -53,7 +55,10 @@ public class ChangingMailStateCommand implements StateCommand {
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, lastMessageId, textForOldMessage));
 
-        final AccountDto accountDto = new AccountDto(account);
+        final AccountDto accountDto = accountService.findAccountById(account.getId())
+                .map(AccountDto::new)
+                .orElseThrow();
+
         final String text = textPreparer.prepare(PatternTextPreparerParam.profileInfo(accountDto));
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(successUpdateMailCallbackButtonPreparerParamOf());
 

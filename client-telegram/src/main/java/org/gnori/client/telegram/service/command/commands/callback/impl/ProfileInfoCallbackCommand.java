@@ -53,7 +53,7 @@ public class ProfileInfoCallbackCommand implements CallbackCommand {
 
         return new CallbackButtonDataPreparerParam(
                 CallbackButtonDataPresetType.SELECT_PROFILE_INFO_ITEM,
-                MenuStepCommandType.SETUP_SETTINGS_ITEM,
+                MenuStepCommandType.PROFILE_INFO,
                 true,
                 false
         );

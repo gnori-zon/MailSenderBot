@@ -18,14 +18,15 @@ public interface MailingHistoryRepository extends JpaRepository<MailingHistory,L
      @Transactional(propagation = Propagation.REQUIRED)
      @Query(value = """
              with account_mailing_history as (
-                  select account.mailing_history_id as id
+                  select
+                    mailing_history_id as id
                   from account
-                  where account.id = :accountId
+                  where id = :accountId
              )
              
-             update mailing_history history
-             set history.state_last_message = :newStateLastMessage
-             where history.id = account_mailing_history.id
+             update mailing_history
+             set state_last_message = :newStateLastMessage
+             where id = (select id from account_mailing_history)
              """, nativeQuery = true)
      void updateStateLastMessageByAccountId(Long accountId, String newStateLastMessage);
 }

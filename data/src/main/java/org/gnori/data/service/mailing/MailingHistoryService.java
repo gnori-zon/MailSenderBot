@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface MailingHistoryService {
 
-    Optional<MailingHistory> getMailingHistoryById(Long id);
+    Optional<MailingHistory> getMailingHistoryByAccountId(Long id);
     void updateStateMessageByAccountId(Long id, StateMessage stateMessage);
 }

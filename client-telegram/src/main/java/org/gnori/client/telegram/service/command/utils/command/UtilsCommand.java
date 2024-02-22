@@ -11,7 +11,7 @@ import java.time.format.DateTimeParseException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UtilsCommand {
 
-    private static final String DATE_TIME_FORMAT_PATTER = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_TIME_FORMAT_PATTER = "yyyy-MM-dd";
     private static final String VALID_MAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
     public static Result<String, UtilsCommandFailure> validateMail(String emailAddress) {

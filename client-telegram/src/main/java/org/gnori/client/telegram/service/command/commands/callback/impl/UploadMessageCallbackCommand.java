@@ -36,7 +36,7 @@ public class UploadMessageCallbackCommand implements CallbackCommand {
         final long chatId = update.getCallbackQuery().getMessage().getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final String text = textPreparer.prepare(SimpleTextPreparerParam.BEFORE_UPLOAD_MESSAGE);
-        final List<ButtonData> callbackButtonDataList = buttonDataPreparer.prepare(CallbackButtonDataPreparerParam.onlyBack(MenuStepCommandType.SETUP_CREATE_MAILING_ITEM));
+        final List<ButtonData> callbackButtonDataList = buttonDataPreparer.prepare(CallbackButtonDataPreparerParam.onlyBack(MenuStepCommandType.SETUP_ACTION_MAILING_ITEM));
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, messageId, text, callbackButtonDataList));
     }

@@ -1,9 +1,10 @@
 package org.gnori.client.telegram.service.account.registrator;
 
 import lombok.RequiredArgsConstructor;
-import org.gnori.data.service.account.AccountService;
 import org.gnori.data.entity.Account;
+import org.gnori.data.entity.MailingHistory;
 import org.gnori.data.entity.enums.State;
+import org.gnori.data.service.account.AccountService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -26,10 +27,8 @@ public class AccountRegistratorImpl implements AccountRegistrator {
     @Override
     public Account registrateBy(Update update) {
 
-
-        final Message message = extractMessage(update);
-        final User user = message.getFrom();
-        final Chat chat = message.getChat();
+        final User user = extractUser(update);
+        final Chat chat = extractChat(update);
 
         final Account account = Account.builder()
                 .chatId(chat.getId())
@@ -37,9 +36,28 @@ public class AccountRegistratorImpl implements AccountRegistrator {
                 .lastname(user.getLastName())
                 .username(user.getUserName())
                 .state(State.DEFAULT)
+                .mailingHistory(new MailingHistory())
                 .build();
 
         return accountService.save(account);
+    }
+
+    private User extractUser(Update update) {
+
+        if (update.hasCallbackQuery()) {
+
+            return update.getCallbackQuery()
+                    .getFrom();
+        }
+
+        return update.getMessage()
+                .getFrom();
+    }
+
+    private Chat extractChat(Update update) {
+
+        return extractMessage(update)
+                .getChat();
     }
 
     private Message extractMessage(Update update) {

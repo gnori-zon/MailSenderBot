@@ -21,14 +21,14 @@ public enum SimpleTextPreparerParam implements TextPreparerParam {
              ///                 Main content                ///
              ===          Number of emails to each           ===
              :::             Recipients via \",\"            :::
-             ---Date of mailing (format: yyyy-MM-dd HH:mm:ss)---
+             ---Date of mailing (format: yyyy-MM-dd)---
              
              ❕ Data will be skipped if entered incorrectly.
             """
     ),
     BEFORE_CHANGE_TITLE("*Enter a new title: *"),
     BEFORE_CHANGE_TEXT("*Enter new main text: *"),
-    BEFORE_CHANGE_SENT_DATE("*Enter a new date of mailing in UTC+3:00 (format: yyyy-MM-dd HH:mm:ss)*"),
+    BEFORE_CHANGE_SENT_DATE("*Enter a new date of mailing in UTC+3:00 (format: yyyy-MM-dd)*"),
     BEFORE_CHANGE_RECIPIENTS("*Enter new recipients : *"),
     BEFORE_CHANGE_COUNT_FOR_RECIPIENT("*Enter the new number of messages per recipient: *"),
     BEFORE_CHANGE_ANNEX("*Enter a new attachment (photo/file): *"),

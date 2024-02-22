@@ -16,7 +16,7 @@ public class MailingHistoryServiceImpl implements MailingHistoryService {
     private final MailingHistoryRepository mailingHistoryRepository;
 
     @Override
-    public Optional<MailingHistory> getMailingHistoryById(Long id) {
+    public Optional<MailingHistory> getMailingHistoryByAccountId(Long id) {
         return mailingHistoryRepository.findByAccountId(id);
     }
 

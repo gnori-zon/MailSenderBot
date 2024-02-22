@@ -22,7 +22,7 @@ public record MessageDto(
                 message.hasAnnex(),
                 message.recipients(),
                 message.countForRecipient(),
-                message.hasSentDate() ? message.sentDate().format(DateTimeFormatter.RFC_1123_DATE_TIME) : "now"
+                message.hasSentDate() ? message.sentDate().format(DateTimeFormatter.ISO_LOCAL_DATE) : "now"
         );
     }
 }

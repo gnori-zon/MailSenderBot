@@ -59,9 +59,9 @@ public record PatternTextPreparerParam(
 
         return new PatternTextPreparerParam(
                 """
-                        *Preview:*" +
+                        *Preview:*
                                         
-                        *%s*
+                         *%s*
                          %s
                          Attachment: %s
                          Recipients: %s

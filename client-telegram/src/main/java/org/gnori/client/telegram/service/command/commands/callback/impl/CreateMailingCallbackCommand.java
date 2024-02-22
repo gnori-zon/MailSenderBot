@@ -32,8 +32,6 @@ public class CreateMailingCallbackCommand implements CallbackCommand {
     @Override
     public void execute(Account account, Update update) {
 
-        messageStorage.clearMessage(account.getId());
-
         final long chatId = account.getChatId();
         final int messageId = update.getCallbackQuery().getMessage().getMessageId();
         final MessageDto messageDto = new MessageDto(messageStorage.getMessage(account.getId()));

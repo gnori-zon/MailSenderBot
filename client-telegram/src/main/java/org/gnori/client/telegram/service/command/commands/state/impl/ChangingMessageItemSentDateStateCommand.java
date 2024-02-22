@@ -58,7 +58,7 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
 
         botMessageEditor.edit(new EditBotMessageParam(chatId, lastMessageId, textForOld));
 
-        final MessageDto messageDto = new MessageDto(messageStorage.getMessage(chatId));
+        final MessageDto messageDto = new MessageDto(messageStorage.getMessage(account.getId()));
         final String text = textPreparer.prepare(PatternTextPreparerParam.previewMessage(messageDto));
         final List<ButtonData> newCallbackButtonDataList = buttonDataPreparer.prepare(callbackButtonDataPreparerParamOf());
 
@@ -95,7 +95,7 @@ public class ChangingMessageItemSentDateStateCommand implements StateCommand {
 
     private Result<LocalDate, MessageUpdateFailure> validateSentDate(LocalDate sendDate) {
 
-        if (LocalDate.now().isAfter(sendDate)) {
+        if (LocalDate.now().isBefore(sendDate)) {
             return Result.success(sendDate);
         }
 
