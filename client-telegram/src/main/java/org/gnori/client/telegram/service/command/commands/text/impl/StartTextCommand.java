@@ -43,7 +43,7 @@ public class StartTextCommand implements TextCommand {
     private CallbackButtonDataPreparerParam callbackButtonDataPreparerParamOf() {
 
         return new CallbackButtonDataPreparerParam(
-                CallbackButtonDataPresetType.SELECT_START_MENU_ITEM,
+                CallbackButtonDataPresetType.START,
                 false
         );
     }

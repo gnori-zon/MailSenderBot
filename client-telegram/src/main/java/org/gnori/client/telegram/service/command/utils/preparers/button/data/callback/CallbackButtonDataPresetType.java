@@ -2,6 +2,7 @@ package org.gnori.client.telegram.service.command.utils.preparers.button.data.ca
 
 public enum CallbackButtonDataPresetType {
 
+    START,
     SELECT_SEND_MESSAGE_MODE,
     SELECT_PROFILE_INFO_ITEM,
     SELECT_CHANGE_MESSAGE_ITEM,

@@ -24,6 +24,7 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<ButtonData
         final List<ButtonData> buttonDataList = Optional.ofNullable(param.type())
                 .map(type -> switch (type) {
 
+                    case START -> getStartCallbackButtonDataList();
                     case SELECT_START_MENU_ITEM -> getSelectStartMenuItemCallbackButtonDataList();
                     case SELECT_PROFILE_INFO_ITEM -> getSelectProfileInfoItemCallbackButtonDataList();
                     case SELECT_ACTION_MAILING_ITEM -> getSelectActionMailingItemCallbackButtonDataList();
@@ -37,6 +38,16 @@ public class CallbackButtonDataPreparer implements ButtonDataPreparer<ButtonData
         }
 
         return buttonDataList.stream().toList();
+    }
+
+    private List<ButtonData> getStartCallbackButtonDataList() {
+
+        return new ArrayList<>(List.of(
+                new CallbackButtonData(
+                        "Start 🚀",
+                        CallbackCommandType.START.name()
+                )
+        ));
     }
 
     private List<ButtonData> getSelectStartMenuItemCallbackButtonDataList() {

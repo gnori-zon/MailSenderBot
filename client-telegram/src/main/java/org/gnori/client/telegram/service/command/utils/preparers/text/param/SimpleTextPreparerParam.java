@@ -8,10 +8,11 @@ import lombok.Getter;
 public enum SimpleTextPreparerParam implements TextPreparerParam {
 
     DEFAULT_SUCCESS("✔Success"),
-    START_MESSAGE("Select the item you need👇🏿"),
+    START_MESSAGE("pls, click"),
+    START_MENU_MESSAGE("Select the item you need👇🏿"),
     HELP_MESSAGE("*Choose your mail*"),
     BEFORE_SEND_TO_QUEUE_MESSAGE("Sending to the queue...🛫"),
-    AFTER_SEND_TO_QUEUE_MESSAGE("✔Added to queue\n" + START_MESSAGE.getText()),
+    AFTER_SEND_TO_QUEUE_MESSAGE("✔Added to queue\n" + START_MENU_MESSAGE.getText()),
     SELECT_CHANGE_MESSAGE_ITEM("*Select the item for changing:*"),
     BEFORE_UPLOAD_MESSAGE(
             """

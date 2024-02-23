@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public enum CallbackCommandType {
 
+    START,
     MAILING_HISTORY,
     CREATE_MAILING,
     PROFILE_INFO,
