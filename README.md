@@ -2,7 +2,7 @@
 telegram bot for mailings (spammer)
 
 <p align="center">
-   <img src="https://img.shields.io/badge/Version-1.0-important" alt="App Version">
+   <img src="https://img.shields.io/badge/Version-1.1-important" alt="App Version">
    <img src="https://img.shields.io/badge/Lecense-MIT-9cf" alt="License">
 </p>
 
@@ -26,7 +26,7 @@ And
 
 <details>
    <summary> Subject area</summary>
-<img width="501" alt="subject area" src="https://user-images.githubusercontent.com/108410527/236857271-7d948c00-a254-44dd-b49c-c46ee2f02510.png">
+    <img width="541" alt="Снимок экрана 2024-02-24 в 12 27 49" src="https://github.com/gnori-zon/MailSenderBot/assets/108410527/ffff5e82-1903-4fee-a4df-e00c0df42789">
 </details>
 
 <details>
@@ -39,22 +39,32 @@ And
    Document and PhotoSize date types from telegram library 
    
    ```java
-   public class Message implements Serializable {
-    Long chatId;
-    SendMode sendMode;
-    String title;
-    String text;
-    Document docAnnex;
-    PhotoSize photoAnnex;
-    byte[] binaryContentForAnnex;
-    List<String> recipients;
-    Integer countForRecipient = 1;
-    Date sentDate;
-    
-   public enum SendMode {
+   public record Message(
+           long accountId, 
+           SendMode sendMode, 
+           String title, 
+           String text, 
+           FileData fileData, 
+           List<String> recipients, 
+           int countForRecipient, 
+           LocalDate sentDate
+   ) implements Serializable {}
+
+   enum SendMode {
     ANONYMOUSLY,
     CURRENT_MAIL;
-}
+   }
+   
+   record FileData(
+        String id,
+        String name,
+        FileType type
+   ) {}
+   
+   enum FileType {
+        PHOTO,
+        DOCUMENT;
+   }
    ```
 </details>
 
