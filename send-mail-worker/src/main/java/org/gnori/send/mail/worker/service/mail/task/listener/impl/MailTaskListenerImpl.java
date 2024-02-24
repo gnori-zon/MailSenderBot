@@ -30,12 +30,12 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class MailTaskListenerImpl implements MailTaskListener {
 
-    private final MailSender mailSender;
-    private final DefaultEmailDataStorage defaultEmailDataStorage;
-    private final MailingHistoryService mailingHistoryService;
-    private final MessageSentRecordService messageSentRecordService;
-    private final AccountService accountService;
     private final CryptoTool cryptoTool;
+    private final MailSender mailSender;
+    private final AccountService accountService;
+    private final MailingHistoryService mailingHistoryService;
+    private final DefaultEmailDataStorage defaultEmailDataStorage;
+    private final MessageSentRecordService messageSentRecordService;
 
     @RabbitListener(queues = "${spring.rabbitmq.queue-name}")
     public void receivedMailTask(Message message) {

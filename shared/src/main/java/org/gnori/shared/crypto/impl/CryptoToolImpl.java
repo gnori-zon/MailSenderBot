@@ -81,6 +81,8 @@ public class CryptoToolImpl implements CryptoTool {
             return Result.failure(CryptoFailure.ILLEGAL_BLOCK_SIZE_EXCEPTION);
         } catch (BadPaddingException e) {
             return Result.failure(CryptoFailure.BAD_PADDING_EXCEPTION);
+        } catch (IllegalArgumentException e) {
+            return Result.failure(CryptoFailure.ILLEGAL_ARGUMENT_EXCEPTION);
         }
     }
 }
