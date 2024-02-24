@@ -3,18 +3,28 @@
  */
 dependencies {
     provided project(':data')
-    provided project(':store')
 }
-/**
- * Spring
- */
+// Spring
 dependencies {
     provided group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    provided group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 }
 
-/**
- * commons-io
- */
+// Commons-io
 dependencies {
-    provided group: 'commons-codec', name: 'commons-codec'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+}
+
+// Lombok
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+
+// Telegram
+dependencies {
+    provided group: 'org.telegram', name: 'telegrambots-meta', version: '6.1.0'
 }
