@@ -13,6 +13,7 @@ public class RabbitConfig {
 
   @Value("${spring.rabbitmq.queue-name}")
   private String queueName;
+
   @Value("${spring.rabbitmq.exchange-name}")
   private String exchangeName;
 

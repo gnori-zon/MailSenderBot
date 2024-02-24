@@ -1,101 +1,152 @@
 package org.gnori.data.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.telegram.telegrambots.meta.api.objects.Document;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import java.util.Optional;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
-public class Message implements Serializable {
-    private Long chatId;
-    private SendMode sendMode;
-    private String title;
-    private String text;
-    private Document docAnnex;
-    private PhotoSize photoAnnex;
-    private byte[] binaryContentForAnnex;
+public record Message(
+        long accountId,
+        SendMode sendMode,
+        String title,
+        String text,
+        FileData fileData,
+        List<String> recipients,
+        int countForRecipient,
+        LocalDate sentDate
 
-    private List<String> recipients;
-    private Integer countForRecipient = 1;
-    private Date sentDate;
+) implements Serializable {
 
-    public Date getSentDate() {
-        return sentDate;
-    }
-    public SendMode getSendMode() {
-        return sendMode;
-    }
-    public String getTitle() {
-        return title!=null? title : "";
-    }
-    public String getText() {
-        return text!=null? text : "";
-    }
-    public Document getDocAnnex() {
-        return docAnnex;
-    }
-    public PhotoSize getPhotoAnnex() {
-        return photoAnnex;
-    }
-    public boolean hasAnnex(){
-        return (docAnnex !=null || photoAnnex !=null);
-    }
-    public List<String> getRecipients() {
-        return recipients!=null? recipients : Collections.emptyList();
-    }
-    public Integer getCountForRecipient() {
-        return countForRecipient;
-    }
-    public byte[] getBinaryContentForAnnex() {
-        return binaryContentForAnnex;
-    }
-    public Long getChatId() {
-        return chatId;
+    public boolean hasAnnex() {
+        return fileData != null;
     }
 
-    public void setSentDate(Date sentDate) {
-        this.sentDate = sentDate;
-    }
-    public void setSendMode(SendMode sendMode) {
-        this.sendMode = sendMode;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public void setText(String text) {
-        this.text = text;
-    }
-    public void setDocAnnex(Document docAnnex) {
-        this.docAnnex = docAnnex;
-        photoAnnex = null;
-        this.binaryContentForAnnex = null;
-    }
-    public void setPhotoAnnex(PhotoSize photoAnnex) {
-        this.photoAnnex = photoAnnex;
-        docAnnex = null;
-        this.binaryContentForAnnex = null;
-    }
-    public void setBinaryContentForAnnex(byte[] binaryContentForAnnex) {
-        this.binaryContentForAnnex = binaryContentForAnnex;
-    }
-    public void setRecipients(List<String> recipients) {
-        this.recipients = recipients;
-    }
-    public void setCountForRecipient(Integer countForRecipient) {
-        this.countForRecipient = countForRecipient;
-    }
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
     public boolean hasSentDate(){
-        return sentDate!=null;
+        return sentDate != null;
     }
 
+    public List<String> recipients() {
+
+        return Optional.ofNullable(recipients)
+                .orElseGet(Collections::emptyList);
+    }
+
+    public Message withCountForRecipient(Integer countForRecipient) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                this.title,
+                this.text,
+                this.fileData,
+                this.recipients,
+                countForRecipient,
+                this.sentDate
+        );
+    }
+
+    public Message withFileData(FileData fileData) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                this.title,
+                this.text,
+                fileData,
+                this.recipients,
+                this.countForRecipient,
+                this.sentDate
+        );
+    }
+
+    public Message withRecipients(List<String> recipients) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                this.title,
+                this.text,
+                this.fileData,
+                recipients,
+                this.countForRecipient,
+                this.sentDate
+        );
+    }
+
+    public Message withSentDate(LocalDate sentDate) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                this.title,
+                this.text,
+                this.fileData,
+                this.recipients,
+                this.countForRecipient,
+                sentDate
+        );
+    }
+
+    public Message withText(String text) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                this.title,
+                text,
+                this.fileData,
+                this.recipients,
+                this.countForRecipient,
+                this.sentDate
+        );
+    }
+
+    public Message withTitle(String title) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                title,
+                this.text,
+                this.fileData,
+                this.recipients,
+                this.countForRecipient,
+                this.sentDate
+        );
+    }
+
+    public Message with(
+            String title,
+            String text,
+            List<String> recipients,
+            Integer countForRecipient,
+            LocalDate sentDate
+    ) {
+
+        return new Message(
+                this.accountId,
+                this.sendMode,
+                title,
+                text,
+                this.fileData,
+                recipients,
+                countForRecipient,
+                sentDate
+        );
+    }
+
+    public Message withSendMode(SendMode sendMode) {
+
+        return new Message(
+                this.accountId,
+                sendMode,
+                this.title,
+                this.text,
+                this.fileData,
+                this.recipients,
+                this.countForRecipient,
+                this.sentDate
+        );
+    }
 }
